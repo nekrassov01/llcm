@@ -12,7 +12,7 @@ var (
 	_ Entry = (*PreviewEntry)(nil)
 )
 
-// Entry represents an entry for log group.
+// Entry is an interface for log group entry.
 type Entry interface {
 	Name() string    // Name returns the name of the entry.
 	Bytes() int64    // Bytes returns the stored bytes of the entry.
@@ -159,7 +159,7 @@ func (e *PreviewEntry) setBytesPerDay() {
 	e.BytesPerDay = e.StoredBytes / retentionInDays
 }
 
-// setReductionInDays sets the expected deletion days after action.
+// setReductionInDays sets the expected reduction in days after action.
 func (e *PreviewEntry) setReductionInDays() {
 	if e.StoredBytes <= 0 || e.BytesPerDay <= 0 {
 		e.ReductionInDays = 0
