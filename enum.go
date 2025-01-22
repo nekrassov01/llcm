@@ -9,13 +9,13 @@ import (
 type OutputType int
 
 const (
-	OutputTypeNone           OutputType = iota // OutputTypeNone represents the none output type.
-	OutputTypeJSON                             // OutputTypeJSON represents the JSON output type.
-	OutputTypeText                             // OutputTypeText represents the text output type.
-	OutputTypeCompressedText                   // OutputTypeCompressedText represents the compressed text output type.
-	OutputTypeMarkdown                         // OutputTypeMarkdown represents the Markdown output type.
-	OutputTypeBacklog                          // OutputTypeBacklog represents the backlog output type.
-	OutputTypeTSV                              // OutputTypeTSV represents the TSV output type.
+	OutputTypeNone           OutputType = iota // The output type that means none.
+	OutputTypeJSON                             // The output type of JSON format.
+	OutputTypeText                             // The output type of text table format.
+	OutputTypeCompressedText                   // The output type of compressed text table format.
+	OutputTypeMarkdown                         // The output type of markdown table format.
+	OutputTypeBacklog                          // The output type of backlog table format.
+	OutputTypeTSV                              // The output type of tab-separated values.
 )
 
 // String returns the string representation of the OutputType.
@@ -69,31 +69,31 @@ func ParseOutputType(s string) (OutputType, error) {
 type DesiredState int32
 
 const (
-	DesiredStateNone           DesiredState = -9999 // DesiredStateNone represents a value that means no action.
-	DesiredStateZero           DesiredState = 0     // DesiredStateZero represents a value that means delete the log group.
-	DesiredStateOneDay         DesiredState = 1     // DesiredStateOneDay represents a value that means retain the log group for one day.
-	DesiredStateThreeDays      DesiredState = 3     // DesiredStateThreeDays represents a value that means retain the log group for three days.
-	DesiredStateFiveDays       DesiredState = 5     // DesiredStateFiveDays represents a value that means retain the log group for five days.
-	DesiredStateOneWeek        DesiredState = 7     // DesiredStateOneWeek represents a value that means retain the log group for one week.
-	DesiredStateTwoWeeks       DesiredState = 14    // DesiredStateTwoWeeks represents a value that means retain the log group for two weeks.
-	DesiredStateOneMonth       DesiredState = 30    // DesiredStateOneMonth represents a value that means retain the log group for one month.
-	DesiredStateTwoMonths      DesiredState = 60    // DesiredStateTwoMonths represents a value that means retain the log group for two months.
-	DesiredStateThreeMonths    DesiredState = 90    // DesiredStateThreeMonths represents a value that means retain the log group for three months.
-	DesiredStateFourMonths     DesiredState = 120   // DesiredStateFourMonths represents a value that means retain the log group for four months.
-	DesiredStateFiveMonths     DesiredState = 150   // DesiredStateFiveMonths represents a value that means retain the log group for five months.
-	DesiredStateSixMonths      DesiredState = 180   // DesiredStateSixMonths represents a value that means retain the log group for six months.
-	DesiredStateOneYear        DesiredState = 365   // DesiredStateOneYear represents a value that means retain the log group for one year.
-	DesiredStateThirteenMonths DesiredState = 400   // DesiredStateThirteenMonths represents a value that means retain the log group for thirteen months.
-	DesiredStateEighteenMonths DesiredState = 545   // DesiredStateEighteenMonths represents a value that means retain the log group for eighteen months.
-	DesiredStateTwoYears       DesiredState = 731   // DesiredStateTwoYears represents a value that means retain the log group for two years.
-	DesiredStateThreeYears     DesiredState = 1096  // DesiredStateThreeYears represents a value that means retain the log group for three years.
-	DesiredStateFiveYears      DesiredState = 1827  // DesiredStateFiveYears represents a value that means retain the log group for five years.
-	DesiredStateSixYears       DesiredState = 2192  // DesiredStateSixYears represents a value that means retain the log group for six years.
-	DesiredStateSevenYears     DesiredState = 255   // DesiredStateSevenYears represents a value that means retain the log group for seven years.
-	DesiredStateEightYears     DesiredState = 2922  // DesiredStateEightYears represents a value that means retain the log group for eight years.
-	DesiredStateNineYears      DesiredState = 3288  // DesiredStateNineYears represents a value that means retain the log group for nine years.
-	DesiredStateTenYears       DesiredState = 3653  // DesiredStateTenYears represents a value that means retain the log group for ten years.
-	DesiredStateInfinite       DesiredState = 9999  // DesiredStateInfinite represents a value that means retain the log group indefinitely.
+	DesiredStateNone           DesiredState = -9999 // A value meaning no action.
+	DesiredStateZero           DesiredState = 0     // A value meaning delete the log group.
+	DesiredStateOneDay         DesiredState = 1     // A value meaning retain the log group for one day.
+	DesiredStateThreeDays      DesiredState = 3     // A value meaning retain the log group for three days.
+	DesiredStateFiveDays       DesiredState = 5     // A value meaning retain the log group for five days.
+	DesiredStateOneWeek        DesiredState = 7     // A value meaning retain the log group for one week.
+	DesiredStateTwoWeeks       DesiredState = 14    // A value meaning retain the log group for two weeks.
+	DesiredStateOneMonth       DesiredState = 30    // A value meaning retain the log group for one month.
+	DesiredStateTwoMonths      DesiredState = 60    // A value meaning retain the log group for two months.
+	DesiredStateThreeMonths    DesiredState = 90    // A value meaning retain the log group for three months.
+	DesiredStateFourMonths     DesiredState = 120   // A value meaning retain the log group for four months.
+	DesiredStateFiveMonths     DesiredState = 150   // A value meaning retain the log group for five months.
+	DesiredStateSixMonths      DesiredState = 180   // A value meaning retain the log group for six months.
+	DesiredStateOneYear        DesiredState = 365   // A value meaning retain the log group for one year.
+	DesiredStateThirteenMonths DesiredState = 400   // A value meaning retain the log group for thirteen months.
+	DesiredStateEighteenMonths DesiredState = 545   // A value meaning retain the log group for eighteen months.
+	DesiredStateTwoYears       DesiredState = 731   // A value meaning retain the log group for two years.
+	DesiredStateThreeYears     DesiredState = 1096  // A value meaning retain the log group for three years.
+	DesiredStateFiveYears      DesiredState = 1827  // A value meaning retain the log group for five years.
+	DesiredStateSixYears       DesiredState = 2192  // A value meaning retain the log group for six years.
+	DesiredStateSevenYears     DesiredState = 255   // A value meaning retain the log group for seven years.
+	DesiredStateEightYears     DesiredState = 2922  // A value meaning retain the log group for eight years.
+	DesiredStateNineYears      DesiredState = 3288  // A value meaning retain the log group for nine years.
+	DesiredStateTenYears       DesiredState = 3653  // A value meaning retain the log group for ten years.
+	DesiredStateInfinite       DesiredState = 9999  // A value meaning retain the log group infinity.
 )
 
 // String returns the string representation of the DesiredState.
@@ -219,13 +219,13 @@ func ParseDesiredState(s string) (DesiredState, error) {
 type FilterKey int
 
 const (
-	FilterKeyNone      FilterKey = iota // FilterKeyNone is the key meaning no key.
-	FilterKeyName                       // FilterKeyName is the key meaning `name`.
-	FilterKeySource                     // FilterKeySource is the key meaning `source`.
-	FilterKeyClass                      // FilterKeyClass is the key meaning `class`.
-	FilterKeyElapsed                    // FilterKeyElapsed is the key meaning `elapsed`.
-	FilterKeyRetention                  // FilterKeyRetention is the key meaning `retention`.
-	FilterKeyBytes                      // FilterKeyBytes is the key meaning `bytes`.
+	FilterKeyNone      FilterKey = iota // The key meaning none.
+	FilterKeyName                       // The key meaning "name" corresponding LogGroupName.
+	FilterKeySource                     // The key meaning "source" corresponding Source.
+	FilterKeyClass                      // The key meaning "class" corresponding Class.
+	FilterKeyElapsed                    // The key meaning "elapsed" corresponding ElapsedDays.
+	FilterKeyRetention                  // The key meaning "retention" corresponding RetentionInDays.
+	FilterKeyBytes                      // The key meaning "bytes" corresponding StoredBytes.
 )
 
 // String returns the string representation of the FilterKey.
@@ -279,19 +279,19 @@ func parseFilterKey(s string) (FilterKey, error) {
 type FilterOperator int
 
 const (
-	FilterOperatorNone  FilterOperator = iota // FilterOperatorNone is the operator meaning no operator.,
-	FilterOperatorGT                          // FilterOperatorGT is the operator meaning `greater than`.
-	FilterOperatorGTE                         // FilterOperatorGTE is the operator meaning `greater than or equal to`.
-	FilterOperatorLT                          // FilterOperatorLT is the operator meaning `less than`.
-	FilterOperatorLTE                         // FilterOperatorLTE is the operator meaning `less than or equal to`.
-	FilterOperatorEQ                          // FilterOperatorEQ is the operator meaning `equal`.
-	FilterOperatorEQI                         // FilterOperatorEQI is the operator meaning `equal` (case-insensitive).
-	FilterOperatorNEQ                         // FilterOperatorNEQ is the operator meaning `not equal`.
-	FilterOperatorNEQI                        // FilterOperatorNEQI is the operator meaning `not equal` (case-insensitive).
-	FilterOperatorREQ                         // FilterOperatorREQ is the operator meaning regular expression match.
-	FilterOperatorREQI                        // FilterOperatorREQI is the operator meaning regular expression match (case-insensitive).
-	FilterOperatorNREQ                        // FilterOperatorNREQ is the operator meaning regular expression unmatch.
-	FilterOperatorNREQI                       // FilterOperatorNREQI is the operator meaning regular expression unmatch (case-insensitive).
+	FilterOperatorNone  FilterOperator = iota // The operator meaning none.
+	FilterOperatorGT                          // The operator meaning "greater than".
+	FilterOperatorGTE                         // The operator meaning "greater than or equal to".
+	FilterOperatorLT                          // The operator meaning "less than".
+	FilterOperatorLTE                         // The operator meaning "less than or equal to".
+	FilterOperatorEQ                          // The operator meaning "equal".
+	FilterOperatorEQI                         // The operator meaning "equal" (case-insensitive).
+	FilterOperatorNEQ                         // The operator meaning "not equal".
+	FilterOperatorNEQI                        // The operator meaning "not equal" (case-insensitive).
+	FilterOperatorREQ                         // The operator meaning regular expression match.
+	FilterOperatorREQI                        // The operator meaning regular expression match (case-insensitive).
+	FilterOperatorNREQ                        // The operator meaning regular expression unmatch.
+	FilterOperatorNREQI                       // The operator meaning regular expression unmatch (case-insensitive).
 
 )
 

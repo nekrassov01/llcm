@@ -13,38 +13,23 @@ import (
 
 // Manager represents a log group lifecycle manager.
 type Manager struct {
-	// Client is the client for CloudWatch Logs.
-	*Client `json:"-"`
-
-	// DesiredState is the desired state of the log group.
-	DesiredState DesiredState
-
-	// Filters is the expressions to filter the log group entries.
-	Filters []Filter
-
-	// Regions is the list of target regions.
-	Regions []string
-
-	// desiredState is the native type of DesiredState.
-	desiredState *int32
-
-	// filterFns is the list of filter functions.
-	filterFns []func(*entry) bool
-
-	// sem is the semaphore for concurrent processing.
-	sem *semaphore.Weighted
-
-	// ctx is the context for concurrent processing.
-	ctx context.Context
+	*Client      `json:"-"`          // The client for CloudWatch Logs.
+	Regions      []string            // The list of target regions.
+	DesiredState DesiredState        // The desired state of the log group.
+	Filters      []Filter            // The expressions for filtering log groups.
+	desiredState *int32              // The desired state with the native type.
+	filterFns    []func(*entry) bool // The list of functions for filtering log groups.
+	sem          *semaphore.Weighted // The weighted semaphore for concurrent processing.
+	ctx          context.Context     // The context for concurrent processing.
 }
 
 // NewManager creates a new manager for log group lifecycle management.
 func NewManager(ctx context.Context, client *Client) *Manager {
 	return &Manager{
 		Client:       client,
+		Regions:      DefaultRegions,
 		DesiredState: -9999,
 		Filters:      nil,
-		Regions:      DefaultRegions,
 		sem:          semaphore.NewWeighted(NumWorker),
 		ctx:          ctx,
 	}
@@ -85,7 +70,7 @@ func (man *Manager) SetFilter(filters []Filter) error {
 	return nil
 }
 
-// String returns the string representation of the log group lifecycle manager.
+// String returns the string representation of the manager.
 func (man *Manager) String() string {
 	b, _ := json.MarshalIndent(man, "", "  ")
 	return string(b)

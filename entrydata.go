@@ -56,7 +56,7 @@ type EntryData[T Entry] interface {
 
 // ListEntryData represents the collection of ListEntry.
 type ListEntryData struct {
-	TotalStoredBytes int64 // TotalStoredBytes represents the total stored bytes of the log groups.
+	TotalStoredBytes int64 // The total stored bytes of the log groups.
 
 	header  []string
 	entries []*ListEntry
@@ -81,9 +81,9 @@ func (d *ListEntryData) Total() map[string]int64 {
 
 // PreviewEntryData represents the collection of PreviewEntry.
 type PreviewEntryData struct {
-	TotalStoredBytes    int64 // TotalStoredBytes represents the total stored bytes of the log groups.
-	TotalReducibleBytes int64 // TotalReducibleBytes represents the total reducible bytes of the log groups.
-	TotalRemainingBytes int64 // TotalRemainingBytes represents the total remaining bytes of the log groups.
+	TotalStoredBytes    int64 // The total stored bytes of the log groups.
+	TotalReducibleBytes int64 // The total reducible bytes of the log groups.
+	TotalRemainingBytes int64 // The total remaining bytes of the log groups.
 
 	header  []string
 	entries []*PreviewEntry

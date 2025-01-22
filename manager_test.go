@@ -725,14 +725,6 @@ func TestManager_String(t *testing.T) {
 				ctx:          context.Background(),
 			},
 			want: `{
-  "DesiredState": "1week",
-  "Filters": [
-    {
-      "Key": "name",
-      "Operator": "==",
-      "Value": "logname"
-    }
-  ],
   "Regions": [
     "us-east-1",
     "us-east-2",
@@ -751,6 +743,14 @@ func TestManager_String(t *testing.T) {
     "eu-west-3",
     "eu-north-1",
     "sa-east-1"
+  ],
+  "DesiredState": "1week",
+  "Filters": [
+    {
+      "Key": "name",
+      "Operator": "==",
+      "Value": "logname"
+    }
   ]
 }`,
 		},
@@ -767,9 +767,9 @@ func TestManager_String(t *testing.T) {
 				ctx:          context.Background(),
 			},
 			want: `{
+  "Regions": null,
   "DesiredState": "delete",
-  "Filters": null,
-  "Regions": null
+  "Filters": null
 }`,
 		},
 	}

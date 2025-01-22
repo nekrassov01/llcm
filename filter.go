@@ -7,11 +7,11 @@ import (
 	"strings"
 )
 
-// Filter represents a filter expression for log group lifecycle management.
+// Filter represents a filter expression for filtering log group entries.
 type Filter struct {
-	Key      FilterKey      // Key of the filter expression
-	Operator FilterOperator // Operator of the filter expression
-	Value    string         // Value of the filter expression
+	Key      FilterKey      // The key of the filter expression
+	Operator FilterOperator // The operator of the filter expression
+	Value    string         // The value of the filter expression
 }
 
 // EvaluateFilter evaluates the filter expressions.

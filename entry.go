@@ -22,15 +22,15 @@ type Entry interface {
 
 // entry represents the base entry for log group.
 type entry struct {
-	LogGroupName    string              // LogGroupName represents the name of the log group
-	Region          string              // Region represents the region of the log group
-	Source          string              // Source represents the source of the log group
-	Class           types.LogGroupClass // Class represents the class of the log group
-	CreatedAt       time.Time           // CreatedAt represents the creation time of the log group
-	ElapsedDays     int64               // ElapsedDays represents the ElapsedDays of the log group
-	RetentionInDays int64               // RetentionInDays represents the retention days of the log group
-	StoredBytes     int64               // StoredBytes represents the stored bytes of the log group
-	name            *string             // name is the native type of the log group name
+	LogGroupName    string              // The name of the log group.
+	Region          string              // The region that the log group belongs to.
+	Source          string              // The information of linked source account.
+	Class           types.LogGroupClass // The class of the log group.
+	CreatedAt       time.Time           // The time when the log group was created.
+	ElapsedDays     int64               // The number of days elapsed since the log group was created.
+	RetentionInDays int64               // The retention days of the log group.
+	StoredBytes     int64               // The stored bytes of the log group.
+	name            *string             // The native type of LogGroupName.
 }
 
 // Name returns the name of the entry.
@@ -79,11 +79,11 @@ func (e *ListEntry) toTSV() []string {
 // PreviewEntry is an extended representation of entry with the desired state and its simulated results.
 type PreviewEntry struct {
 	*entry
-	BytesPerDay     int64 // BytesPerDay represents the bytes per day for the log group.
-	DesiredState    int64 // DesiredState represents the desired state for the log group.
-	ReductionInDays int64 // ReductionInDays represents the expected number of days of reduction after the action.
-	ReducibleBytes  int64 // ReducibleBytes represents the expected number of bytes that can be reduced after the action.
-	RemainingBytes  int64 // RemainingBytes represents the expected number of bytes remaining after the action.
+	BytesPerDay     int64 // The bytes per day of the log group.
+	DesiredState    int64 // The desired state of the log group.
+	ReductionInDays int64 // The number of days to be reduced after the action.
+	ReducibleBytes  int64 // The number of bytes that can be reduced after the action.
+	RemainingBytes  int64 // The number of bytes that remain after the action.
 }
 
 // toInput returns the input of the desired entry for rendering.

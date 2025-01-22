@@ -114,7 +114,7 @@ func newEntry(logGroup types.LogGroup, region string) *entry {
 	return e
 }
 
-// source returns the source of the log group.
+// source returns the linked source account of the log group.
 func source(s *string) string {
 	parsed, err := arn.Parse(aws.ToString(s))
 	if err != nil {
