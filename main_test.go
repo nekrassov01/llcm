@@ -28,13 +28,21 @@ func setTimeZone(z *time.Location) (original *time.Location) {
 }
 
 // mustTime is helper function to parse time string to time.Time.
+// It panics if the string is not in RFC3339 format.
 func mustTime(s string) time.Time {
-	t, _ := time.Parse(time.RFC3339, s)
+	t, err := time.Parse(time.RFC3339, s)
+	if err != nil {
+		panic(err)
+	}
 	return t
 }
 
 // mustUnixMilli is helper function to parse time string to Unix milliseconds.
+// It panics if the string is not in RFC3339 format.
 func mustUnixMilli(s string) int64 {
-	t, _ := time.Parse(time.RFC3339, s)
+	t, err := time.Parse(time.RFC3339, s)
+	if err != nil {
+		panic(err)
+	}
 	return t.UnixMilli()
 }
