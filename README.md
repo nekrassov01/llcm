@@ -177,6 +177,18 @@ llcm list --filter 'bytes == 0','elapsed > 365' --region ap-northeast-1,us-west-
 llcm apply --desired delete --filter 'bytes == 0','elapsed > 365' --region ap-northeast-1,us-west-2
 ```
 
+### Case 3
+
+- For a more serious investigation, copy all log groups for that account in TSV format to the clipboard and paste them into a spreadsheet.
+
+```sh
+# macOS
+llcm list --output tsv | pbcopy
+
+# Windows
+llcm list --output tsv | Set-Clipboard
+```
+
 ## Warnings
 
 - Consider enclosing strings passed to the filter in single quotes. Unintended expansion may occur, e.g., history expansion by the shell (Try typing this command in your shell environment: `echo "name !~ ^test.*"`)
