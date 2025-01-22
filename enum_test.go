@@ -1,7 +1,6 @@
 package llcm
 
 import (
-	_ "embed"
 	"reflect"
 	"testing"
 )
