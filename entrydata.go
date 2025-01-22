@@ -10,7 +10,7 @@ var (
 	TotalStoredBytesLabel = "storedBytes"
 
 	// TotalReducibleBytesLabel is the label of the total reducible bytes.
-	TotalReducibleBytesLabel = "ReducibleBytes"
+	TotalReducibleBytesLabel = "reducibleBytes"
 
 	// TotalRemainingBytesLabel is the label of the total remaining bytes.
 	TotalRemainingBytesLabel = "remainingBytes"
