@@ -28,13 +28,13 @@ type Manager struct {
 	// desiredState is the native type of DesiredState.
 	desiredState *int32
 
-	// filterFunc is the functions to filtering log group entries.
+	// filterFns is the list of filter functions.
 	filterFns []func(*entry) bool
 
 	// sem is the semaphore for concurrent processing.
 	sem *semaphore.Weighted
 
-	// ctx is the context for the manager.
+	// ctx is the context for concurrent processing.
 	ctx context.Context
 }
 
