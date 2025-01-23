@@ -28,7 +28,7 @@ func NewManager(ctx context.Context, client *Client) *Manager {
 	return &Manager{
 		Client:       client,
 		Regions:      DefaultRegions,
-		DesiredState: -9999,
+		DesiredState: DesiredStateNone,
 		Filters:      nil,
 		sem:          semaphore.NewWeighted(NumWorker),
 		ctx:          ctx,
