@@ -152,11 +152,15 @@ func (e *PreviewEntry) setBytesPerDay() {
 	if retentionInDays >= e.ElapsedDays {
 		retentionInDays = e.ElapsedDays
 	}
-	if retentionInDays <= 0 {
+	if retentionInDays <= int64(DesiredStateZero) {
 		e.BytesPerDay = e.StoredBytes
 		return
 	}
 	e.BytesPerDay = e.StoredBytes / retentionInDays
+	// The minimum bytes per day is 1 when the stored bytes is greater than 0.
+	if e.BytesPerDay <= 0 {
+		e.BytesPerDay = 1
+	}
 }
 
 // setReductionInDays sets the expected reduction in days after action.
@@ -173,6 +177,11 @@ func (e *PreviewEntry) setReductionInDays() {
 		if e.RetentionInDays > int64(DesiredStateZero) && e.RetentionInDays < int64(DesiredStateInfinite) {
 			e.ReductionInDays = e.RetentionInDays
 		} else {
+			// edge case: the retention days is less than or equal to 0.
+			if e.ElapsedDays <= 0 {
+				e.ReductionInDays = 1
+				return
+			}
 			e.ReductionInDays = e.ElapsedDays
 		}
 		return

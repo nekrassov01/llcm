@@ -139,6 +139,7 @@ func elapsedDays(t time.Time) int64 {
 // retentionInDays returns the retention days from the log group.
 func retentionInDays(n *int32) int64 {
 	d := aws.ToInt32(n)
+	// convert 0 meaning none to 9999 meaning infinite
 	if d == 0 {
 		d = 9999
 	}
