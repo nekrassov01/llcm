@@ -12,7 +12,10 @@ import (
 	"golang.org/x/sync/semaphore"
 )
 
-var benchN = 10
+var (
+	benchN = 10
+	benchR = []string{"us-east-1"}
+)
 
 func prepare(n int, regions []string) *Manager {
 	var (
@@ -60,7 +63,7 @@ func prepare(n int, regions []string) *Manager {
 }
 
 func BenchmarkList(b *testing.B) {
-	man := prepare(benchN, []string{"us-east-1"})
+	man := prepare(benchN, benchR)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, err := man.List()
@@ -71,7 +74,7 @@ func BenchmarkList(b *testing.B) {
 }
 
 func BenchmarkPreview(b *testing.B) {
-	man := prepare(benchN, []string{"us-east-1"})
+	man := prepare(benchN, benchR)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, err := man.Preview()
@@ -82,7 +85,7 @@ func BenchmarkPreview(b *testing.B) {
 }
 
 func BenchmarkApply(b *testing.B) {
-	man := prepare(benchN, []string{"us-east-1"})
+	man := prepare(benchN, benchR)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, err := man.Apply(io.Discard)
