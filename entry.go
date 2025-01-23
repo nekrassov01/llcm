@@ -210,7 +210,7 @@ func (e *PreviewEntry) setReducibleBytes() {
 	e.ReducibleBytes = e.BytesPerDay * e.ReductionInDays
 }
 
-// setRemainingBytes sets the expected bytes after action.
+// setRemainingBytes sets the expected remaining bytes after action.
 func (e *PreviewEntry) setRemainingBytes() {
 	if e.ReducibleBytes > e.StoredBytes {
 		e.RemainingBytes = 0

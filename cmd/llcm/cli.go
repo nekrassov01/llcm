@@ -121,7 +121,7 @@ func newApp(w, ew io.Writer) *app {
 }
 
 func (a *app) before(c *cli.Context) error {
-	// parses log level passed as string
+	// parse log level passed as string
 	level, err := log.ParseLevel(c.String(a.loglevel.Name))
 	if err != nil {
 		return err
