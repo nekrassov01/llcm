@@ -91,7 +91,7 @@ endif
 
 .PHONY: publish
 publish: deps-gobump check-git
-	$(GOBIN)/gobump up -w .
+	$(GOBIN)/gobump up -w $(CMD_PATH)
 	git commit -am "bump up version to $(VERSION)"
 	git push origin main
 
