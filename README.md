@@ -13,7 +13,7 @@ llcm is a CLI tool to manage the lifecycle of Amazon CloudWatch Logs log groups.
 - **Preview**: By passing the desired state as an argument, the log group is listed with the results of the reduction simulation.
 - **Apply**: The desired state passed in the argument is actually applied to the listed log groups.
 
-All of these subcommands can be passed a filter expression to narrow down the target log group.
+All of these subcommands can be passed the filter expressions to narrow down the target log groups.
 
 ## Command
 
