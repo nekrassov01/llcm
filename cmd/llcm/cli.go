@@ -214,7 +214,7 @@ func (a *app) list(c *cli.Context) error {
 	debug(man)
 
 	// sort result
-	llcm.SortEntries(data.Entries())
+	llcm.SortEntries(data)
 
 	// render result
 	ren := llcm.NewRenderer(a.Writer, data, outputType)
@@ -291,7 +291,7 @@ func (a *app) preview(c *cli.Context) error {
 	debug(man)
 
 	// sort result
-	llcm.SortEntries(data.Entries())
+	llcm.SortEntries(data)
 
 	// render result
 	ren := llcm.NewRenderer(a.Writer, data, outputType)

@@ -6,8 +6,8 @@ import (
 )
 
 // SortEntries sorts the entries by bytes and name.
-func SortEntries[T Entry](entries []T) {
-	slices.SortFunc(entries, func(a, b T) int {
+func SortEntries[E Entry, D EntryData[E]](data D) {
+	slices.SortFunc(data.Entries(), func(a, b E) int {
 		if n := cmp.Compare(b.Bytes(), a.Bytes()); n != 0 {
 			return n
 		}

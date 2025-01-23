@@ -1256,7 +1256,7 @@ func TestManager_List(t *testing.T) {
 				return
 			}
 			if got != nil && got.entries != nil {
-				SortEntries(got.entries)
+				SortEntries(got)
 			}
 			opt := cmp.AllowUnexported(ListEntryData{}, ListEntry{}, entry{})
 			if diff := cmp.Diff(tt.want, got, opt); diff != "" {
