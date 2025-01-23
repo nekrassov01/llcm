@@ -708,6 +708,96 @@ func TestManager_setFilter(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "elapsed >= 1year",
+			args: args{
+				filters: []Filter{
+					{
+						Key:      FilterKeyElapsed,
+						Operator: FilterOperatorGTE,
+						Value:    "1year",
+					},
+				},
+			},
+			want: want{
+				entry: &entry{ElapsedDays: 731},
+				fns:   []bool{true},
+			},
+			wantErr: false,
+		},
+		{
+			name: "retention >= 1year",
+			args: args{
+				filters: []Filter{
+					{
+						Key:      FilterKeyRetention,
+						Operator: FilterOperatorGTE,
+						Value:    "1year",
+					},
+				},
+			},
+			want: want{
+				entry: &entry{RetentionInDays: 731},
+				fns:   []bool{true},
+			},
+			wantErr: false,
+		},
+		{
+			name: "elapsed >= delete",
+			args: args{
+				filters: []Filter{
+					{
+						Key:      FilterKeyElapsed,
+						Operator: FilterOperatorGTE,
+						Value:    "delete",
+					},
+				},
+			},
+			want:    want{},
+			wantErr: true,
+		},
+		{
+			name: "retention >= delete",
+			args: args{
+				filters: []Filter{
+					{
+						Key:      FilterKeyRetention,
+						Operator: FilterOperatorGTE,
+						Value:    "delete",
+					},
+				},
+			},
+			want:    want{},
+			wantErr: true,
+		},
+		{
+			name: "elapsed >= none",
+			args: args{
+				filters: []Filter{
+					{
+						Key:      FilterKeyElapsed,
+						Operator: FilterOperatorGTE,
+						Value:    "none",
+					},
+				},
+			},
+			want:    want{},
+			wantErr: true,
+		},
+		{
+			name: "retention >= none",
+			args: args{
+				filters: []Filter{
+					{
+						Key:      FilterKeyRetention,
+						Operator: FilterOperatorGTE,
+						Value:    "none",
+					},
+				},
+			},
+			want:    want{},
+			wantErr: true,
+		},
+		{
 			name: "name == foo && bytes > 100",
 			args: args{
 				filters: []Filter{

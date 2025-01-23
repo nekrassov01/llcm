@@ -145,15 +145,16 @@ func stringFilterFunc(filter Filter) (func(string) bool, error) {
 
 func numberFilterFunc(filter Filter) (func(int64) bool, error) {
 	var (
+		key      = filter.Key
 		operator = filter.Operator
 		value    = filter.Value
 	)
 	n, err := strconv.ParseInt(value, 0, 64)
 	if err != nil {
-		if filter.Key == FilterKeyRetention {
+		if key == FilterKeyElapsed || key == FilterKeyRetention {
 			d, err := ParseDesiredState(value)
 			if err != nil || d <= 0 {
-				return nil, fmt.Errorf("invalid desired state: %q", value)
+				return nil, fmt.Errorf("invalid retention: %q", value)
 			}
 			n = int64(d)
 		} else {
