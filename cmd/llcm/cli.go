@@ -182,7 +182,7 @@ func (a *app) list(c *cli.Context) error {
 		"output", outputType,
 	)
 
-	// evaluate filter expression passed as string
+	// evaluate filter expressions passed as string
 	filter, err := llcm.EvaluateFilter(c.StringSlice(a.filter.Name))
 	if err != nil {
 		return err
@@ -248,7 +248,7 @@ func (a *app) preview(c *cli.Context) error {
 		"output", outputType,
 	)
 
-	// parse filter expression passed as string
+	// evaluate filter expressions passed as string
 	filter, err := llcm.EvaluateFilter(c.StringSlice(a.filter.Name))
 	if err != nil {
 		return err
@@ -320,7 +320,7 @@ func (a *app) apply(c *cli.Context) error {
 		"desired", c.String(a.desired.Name),
 	)
 
-	// parse filter expression passed as string
+	// evaluate filter expressions passed as string
 	filter, err := llcm.EvaluateFilter(c.StringSlice(a.filter.Name))
 	if err != nil {
 		return err
