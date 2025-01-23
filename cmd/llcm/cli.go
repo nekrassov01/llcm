@@ -129,7 +129,6 @@ func (a *app) before(c *cli.Context) error {
 
 	// set logger for the application
 	logger.SetLevel(level)
-	logger.SetReportCaller(level == log.DebugLevel)
 
 	// load aws config with the specified profile
 	cfg, err := llcm.LoadConfig(c.Context, c.String(a.profile.Name))

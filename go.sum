@@ -54,8 +54,8 @@ github.com/mattn/go-runewidth v0.0.15 h1:UNAjwbU9l54TA3KzvqLGxwWjHmMgBUVhBiTjelZ
 github.com/mattn/go-runewidth v0.0.15/go.mod h1:Jdepj2loyihRzMpdS35Xk/zdY8IAYHsh153qUoGf23w=
 github.com/muesli/termenv v0.15.2 h1:GohcuySI0QmI3wN8Ok9PtKGkgkFIk7y6Vpb5PvrY+Wo=
 github.com/muesli/termenv v0.15.2/go.mod h1:Epx+iuz8sNs7mNKhxzH4fWXGNpZwUaJKRS1noLXviQ8=
-github.com/nekrassov01/logwrapper v0.0.5 h1:/bR3cOPZiz2Tjg1XTA9dawsXgc9WWl9Q158fRseUoCw=
-github.com/nekrassov01/logwrapper v0.0.5/go.mod h1:kEf/vpvQx7YqT5iu3oEJOJnVsz5ZgBwpLVl0+dPMg2s=
+github.com/nekrassov01/logwrapper v0.0.8 h1:z9CS5QsfNBU0nFLmoNjirFTOTwt+29PH57JToGXPC+Y=
+github.com/nekrassov01/logwrapper v0.0.8/go.mod h1:kEf/vpvQx7YqT5iu3oEJOJnVsz5ZgBwpLVl0+dPMg2s=
 github.com/nekrassov01/mintab v0.0.57 h1:nerSHtmxMDu1gnyUlUD0ZB3hu6n0ce18O/9xyAQI7ZA=
 github.com/nekrassov01/mintab v0.0.57/go.mod h1:jIZGBd3fLAf3v/8TG66HDJ3hPiYQ+HFuyg7+OV6GRoQ=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
