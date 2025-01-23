@@ -10,7 +10,8 @@ builds:
     binary: llcm
     ldflags:
       - -s -w
-      - -X github.com/nekrassov01/llcm/main.Version={{.Version}}
+      - -X main.Version={{.Version}}
+      - -X main.Commit={{.ShortCommit}}
     env:
       - CGO_ENABLED=0
     goos:
