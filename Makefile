@@ -7,8 +7,8 @@ endif
 CMD_PATH := ./cmd/$(NAME)/
 GOBIN ?= $(shell go env GOPATH)/bin
 VERSION := $$(make -s show-version)
-COMMIT := $$(git rev-parse --short HEAD)
-LDFLAGS := "-s -w -X main.Version=$(VERSION) -X main.Commit=$(COMMIT)"
+REVISION := $$(git rev-parse --short HEAD)
+LDFLAGS := "-s -w -X main.Version=$(VERSION) -X main.Revision=$(REVISION)"
 
 HAS_LINT := $(shell command -v $(GOBIN)/golangci-lint 2> /dev/null)
 HAS_VULNCHECK := $(shell command -v $(GOBIN)/govulncheck 2> /dev/null)

@@ -5,13 +5,13 @@ import "fmt"
 // Version is the current version of llcm.
 const Version = "0.0.7"
 
-// Commit is the git revision of llcm.
-var Commit = ""
+// Revision is the git revision of llcm.
+var Revision = ""
 
 // version returns the version and revision of llcm.
 func version() string {
-	if Commit == "" {
+	if Revision == "" {
 		return Version
 	}
-	return fmt.Sprintf("%s (revision: %s)", Version, Commit)
+	return fmt.Sprintf("%s (revision: %s)", Version, Revision)
 }
