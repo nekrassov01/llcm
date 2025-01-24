@@ -154,7 +154,7 @@ func numberFilterFunc(filter Filter) (func(int64) bool, error) {
 		if key == FilterKeyElapsed || key == FilterKeyRetention {
 			d, err := ParseDesiredState(value)
 			if err != nil || d <= 0 {
-				return nil, fmt.Errorf("invalid retention: %q", value)
+				return nil, fmt.Errorf("invalid value: %q", value)
 			}
 			n = int64(d)
 		} else {
