@@ -21,7 +21,7 @@ func prepare(n int, regions []string) *Manager {
 	var (
 		logGroups       = make([]types.LogGroup, n)
 		logGroupName    = aws.String("log-group")
-		creationTime    = aws.Int64(time.Now().UnixNano() / int64(time.Millisecond))
+		creationTime    = aws.Int64(nowFunc().UnixNano() / int64(time.Millisecond))
 		retentionInDays = aws.Int32(365)
 		storedBytes     = aws.Int64(1024)
 		arn             = aws.String("arn:aws:logs:region:account-id:log-group:log-group")
