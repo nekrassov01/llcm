@@ -71,6 +71,9 @@ func (ren *Renderer[E, D]) toTable() error {
 }
 
 func (ren *Renderer[E, D]) toTSV() error {
+	if len(ren.Data.Entries()) == 0 {
+		return nil
+	}
 	w := csv.NewWriter(ren.w)
 	w.Comma = '\t'
 	if err := w.Write(ren.Data.Header()); err != nil {
