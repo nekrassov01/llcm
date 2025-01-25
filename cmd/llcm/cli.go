@@ -197,7 +197,7 @@ func (a *app) list(c *cli.Context) error {
 	man := llcm.NewManager(c.Context, client)
 
 	// set regions to the manager
-	if err := man.SetRegions(c.StringSlice(a.region.Name)); err != nil {
+	if err := man.SetRegion(c.StringSlice(a.region.Name)); err != nil {
 		return err
 	}
 
@@ -269,7 +269,7 @@ func (a *app) preview(c *cli.Context) error {
 	man := llcm.NewManager(c.Context, client)
 
 	// set regions to the manager
-	if err := man.SetRegions(c.StringSlice(a.region.Name)); err != nil {
+	if err := man.SetRegion(c.StringSlice(a.region.Name)); err != nil {
 		return err
 	}
 
@@ -341,7 +341,7 @@ func (a *app) apply(c *cli.Context) error {
 	man := llcm.NewManager(c.Context, client)
 
 	// set regions to the manager
-	if err := man.SetRegions(c.StringSlice(a.region.Name)); err != nil {
+	if err := man.SetRegion(c.StringSlice(a.region.Name)); err != nil {
 		return err
 	}
 

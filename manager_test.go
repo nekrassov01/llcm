@@ -60,7 +60,7 @@ func TestNewManager(t *testing.T) {
 	}
 }
 
-func TestManager_SetRegions(t *testing.T) {
+func TestManager_SetRegion(t *testing.T) {
 	type fields struct {
 		Client       *Client
 		DesiredState DesiredState
@@ -213,7 +213,7 @@ func TestManager_SetRegions(t *testing.T) {
 				sem:          tt.fields.sem,
 				ctx:          tt.fields.ctx,
 			}
-			if err := man.SetRegions(tt.args.regions); (err != nil) != tt.wantErr {
+			if err := man.SetRegion(tt.args.regions); (err != nil) != tt.wantErr {
 				t.Errorf("Manager.SetRegions() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

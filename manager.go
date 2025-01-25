@@ -35,8 +35,8 @@ func NewManager(ctx context.Context, client *Client) *Manager {
 	}
 }
 
-// SetRegions sets the specified regions.
-func (man *Manager) SetRegions(regions []string) error {
+// SetRegion sets the specified regions.
+func (man *Manager) SetRegion(regions []string) error {
 	if len(regions) == 0 {
 		return nil
 	}
