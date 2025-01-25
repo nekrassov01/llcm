@@ -181,28 +181,9 @@ func (a *app) list(c *cli.Context) error {
 		"output", outputType,
 	)
 
-	// evaluate filter expressions passed as string
-	filter, err := llcm.EvaluateFilter(c.StringSlice(a.filter.Name))
+	// create manager with common settings
+	man, err := a.new(c)
 	if err != nil {
-		return err
-	}
-
-	// get aws config from the metadata
-	cfg := a.Metadata["config"].(aws.Config)
-
-	// create a new client
-	client := llcm.NewClient(cfg)
-
-	// initialize the manager
-	man := llcm.NewManager(c.Context, client)
-
-	// set regions to the manager
-	if err := man.SetRegion(c.StringSlice(a.region.Name)); err != nil {
-		return err
-	}
-
-	// set filter to the manager
-	if err := man.SetFilter(filter); err != nil {
 		return err
 	}
 
@@ -239,6 +220,12 @@ func (a *app) preview(c *cli.Context) error {
 		return err
 	}
 
+	// parse desired state passed as string
+	desired, err := llcm.ParseDesiredState(c.String(a.desired.Name))
+	if err != nil {
+		return err
+	}
+
 	// logging at process start
 	logger.Info(
 		"started",
@@ -247,39 +234,14 @@ func (a *app) preview(c *cli.Context) error {
 		"output", outputType,
 	)
 
-	// evaluate filter expressions passed as string
-	filter, err := llcm.EvaluateFilter(c.StringSlice(a.filter.Name))
+	// create manager with common settings
+	man, err := a.new(c)
 	if err != nil {
-		return err
-	}
-
-	// parse desired state passed as string
-	desired, err := llcm.ParseDesiredState(c.String(a.desired.Name))
-	if err != nil {
-		return err
-	}
-
-	// get aws config from the metadata
-	cfg := a.Metadata["config"].(aws.Config)
-
-	// create a new client
-	client := llcm.NewClient(cfg)
-
-	// initialize the manager
-	man := llcm.NewManager(c.Context, client)
-
-	// set regions to the manager
-	if err := man.SetRegion(c.StringSlice(a.region.Name)); err != nil {
 		return err
 	}
 
 	// set desired state to the manager
 	if err := man.SetDesiredState(desired); err != nil {
-		return err
-	}
-
-	// set filter to the manager
-	if err := man.SetFilter(filter); err != nil {
 		return err
 	}
 
@@ -312,6 +274,12 @@ func (a *app) preview(c *cli.Context) error {
 }
 
 func (a *app) apply(c *cli.Context) error {
+	// parse desired state passed as string
+	desired, err := llcm.ParseDesiredState(c.String(a.desired.Name))
+	if err != nil {
+		return err
+	}
+
 	// logging at process start
 	logger.Info(
 		"started",
@@ -319,39 +287,14 @@ func (a *app) apply(c *cli.Context) error {
 		"desired", c.String(a.desired.Name),
 	)
 
-	// evaluate filter expressions passed as string
-	filter, err := llcm.EvaluateFilter(c.StringSlice(a.filter.Name))
+	// create manager with common settings
+	man, err := a.new(c)
 	if err != nil {
-		return err
-	}
-
-	// parse desired state passed as string
-	desired, err := llcm.ParseDesiredState(c.String(a.desired.Name))
-	if err != nil {
-		return err
-	}
-
-	// get aws config from the metadata
-	cfg := a.Metadata["config"].(aws.Config)
-
-	// create a new client
-	client := llcm.NewClient(cfg)
-
-	// initialize the manager
-	man := llcm.NewManager(c.Context, client)
-
-	// set regions to the manager
-	if err := man.SetRegion(c.StringSlice(a.region.Name)); err != nil {
 		return err
 	}
 
 	// set desired state to the manager
 	if err := man.SetDesiredState(desired); err != nil {
-		return err
-	}
-
-	// set filter to the manager
-	if err := man.SetFilter(filter); err != nil {
 		return err
 	}
 
@@ -369,6 +312,35 @@ func (a *app) apply(c *cli.Context) error {
 	)
 
 	return nil
+}
+
+func (a *app) new(c *cli.Context) (*llcm.Manager, error) {
+	// evaluate filter expressions passed as string
+	filter, err := llcm.EvaluateFilter(c.StringSlice(a.filter.Name))
+	if err != nil {
+		return nil, err
+	}
+
+	// get aws config from the metadata
+	cfg := a.Metadata["config"].(aws.Config)
+
+	// create a new client
+	client := llcm.NewClient(cfg)
+
+	// initialize the manager
+	man := llcm.NewManager(c.Context, client)
+
+	// set regions to the manager
+	if err := man.SetRegion(c.StringSlice(a.region.Name)); err != nil {
+		return nil, err
+	}
+
+	// set filter to the manager
+	if err := man.SetFilter(filter); err != nil {
+		return nil, err
+	}
+
+	return man, nil
 }
 
 func debug(man *llcm.Manager) {
