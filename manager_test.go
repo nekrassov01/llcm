@@ -214,7 +214,7 @@ func TestManager_SetRegion(t *testing.T) {
 				ctx:          tt.fields.ctx,
 			}
 			if err := man.SetRegion(tt.args.regions); (err != nil) != tt.wantErr {
-				t.Errorf("Manager.SetRegions() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("Manager.SetRegion() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"slices"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"golang.org/x/sync/semaphore"
@@ -41,7 +40,7 @@ func (man *Manager) SetRegion(regions []string) error {
 		return nil
 	}
 	for _, region := range regions {
-		if !slices.Contains(DefaultRegions, region) {
+		if _, ok := allowedRegions[region]; !ok {
 			return fmt.Errorf("unsupported region: %s", region)
 		}
 	}
