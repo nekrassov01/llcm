@@ -32,7 +32,7 @@ func (man *Manager) Preview() (*PreviewEntryData, error) {
 		e := &PreviewEntry{
 			entry: entry,
 		}
-		e.simulate(man.DesiredState)
+		e.simulate(man.desiredState)
 		select {
 		case entryChan <- e:
 			return nil

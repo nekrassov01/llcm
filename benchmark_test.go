@@ -55,8 +55,8 @@ func prepare(n int, regions []string) *Manager {
 				return &cloudwatchlogs.DeleteRetentionPolicyOutput{}, nil
 			},
 		}),
-		DesiredState: 365,
-		Regions:      regions,
+		regions:      regions,
+		desiredState: 365,
 		sem:          semaphore.NewWeighted(NumWorker),
 		ctx:          context.Background(),
 	}

@@ -17,7 +17,7 @@ func (man *Manager) handle(handler func(*Manager, *entry) error) error {
 	var (
 		wg          sync.WaitGroup
 		ctx, cancel = context.WithCancel(man.ctx)
-		errorChan   = make(chan error, len(man.Regions))
+		errorChan   = make(chan error, len(man.regions))
 		linked      = aws.Bool(true)
 	)
 	defer cancel()
@@ -28,7 +28,7 @@ func (man *Manager) handle(handler func(*Manager, *entry) error) error {
 		default:
 		}
 	}
-	for _, region := range man.Regions {
+	for _, region := range man.regions {
 		region := region
 		wg.Add(1)
 		go func() {
@@ -88,7 +88,7 @@ func (man *Manager) handle(handler func(*Manager, *entry) error) error {
 
 // applyFilter applies the filter to the entry.
 func (man *Manager) applyFilter(entry *entry) bool {
-	if len(man.Filters) == 0 {
+	if len(man.filters) == 0 {
 		return true
 	}
 	for _, fn := range man.filterFns {

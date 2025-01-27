@@ -12,9 +12,9 @@ import (
 func (man *Manager) Apply(w io.Writer) (int32, error) {
 	var n int32
 	err := man.handle(func(man *Manager, entry *entry) error {
-		switch man.DesiredState {
+		switch man.desiredState {
 		case DesiredStateNone:
-			return fmt.Errorf("invalid desired state: %q", man.DesiredState)
+			return fmt.Errorf("invalid desired state: %q", man.desiredState)
 		case DesiredStateZero:
 			fmt.Fprintf(w, "deleting log group: %s\n", entry.LogGroupName)
 			if err := man.deleteLogGroup(entry.name, entry.Region); err != nil {
@@ -77,7 +77,7 @@ func (man *Manager) putRetentionPolicy(name *string, region string) error {
 	}
 	in := &cloudwatchlogs.PutRetentionPolicyInput{
 		LogGroupName:    name,
-		RetentionInDays: man.desiredState,
+		RetentionInDays: man.desiredStateNative,
 	}
 	_, err := man.PutRetentionPolicy(man.ctx, in, opt)
 	if err != nil {

@@ -446,14 +446,14 @@ func TestEvaluateFilter(t *testing.T) {
 
 func TestManager_setFilter(t *testing.T) {
 	type fields struct {
-		Client       *Client
-		DesiredState DesiredState
-		Filters      []Filter
-		Regions      []string
-		desiredState *int32
-		filterFns    []func(*entry) bool
-		sem          *semaphore.Weighted
-		ctx          context.Context
+		Client             *Client
+		regions            []string
+		desiredState       DesiredState
+		desiredStateNative *int32
+		filters            []Filter
+		filterFns          []func(*entry) bool
+		sem                *semaphore.Weighted
+		ctx                context.Context
 	}
 	type args struct {
 		filters []Filter
@@ -969,14 +969,14 @@ func TestManager_setFilter(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			man := &Manager{
-				Client:       tt.fields.Client,
-				DesiredState: tt.fields.DesiredState,
-				Filters:      tt.fields.Filters,
-				Regions:      tt.fields.Regions,
-				desiredState: tt.fields.desiredState,
-				filterFns:    tt.fields.filterFns,
-				sem:          tt.fields.sem,
-				ctx:          tt.fields.ctx,
+				Client:             tt.fields.Client,
+				regions:            tt.fields.regions,
+				desiredState:       tt.fields.desiredState,
+				desiredStateNative: tt.fields.desiredStateNative,
+				filters:            tt.fields.filters,
+				filterFns:          tt.fields.filterFns,
+				sem:                tt.fields.sem,
+				ctx:                tt.fields.ctx,
 			}
 			err := man.setFilter(tt.args.filters)
 			if (err != nil) != tt.wantErr {

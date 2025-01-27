@@ -14,14 +14,14 @@ import (
 
 func TestManager_Apply(t *testing.T) {
 	type fields struct {
-		Client       *Client
-		DesiredState DesiredState
-		Filters      []Filter
-		Regions      []string
-		desiredState *int32
-		filterFns    []func(*entry) bool
-		sem          *semaphore.Weighted
-		ctx          context.Context
+		Client             *Client
+		regions            []string
+		desiredState       DesiredState
+		desiredStateNative *int32
+		filters            []Filter
+		filterFns          []func(*entry) bool
+		sem                *semaphore.Weighted
+		ctx                context.Context
 	}
 	tests := []struct {
 		name    string
@@ -49,9 +49,9 @@ func TestManager_Apply(t *testing.T) {
 						return out, nil
 					},
 				}),
-				DesiredState: DesiredStateNone,
-				Filters:      nil,
-				Regions:      []string{"us-east-1"},
+				regions:      []string{"us-east-1"},
+				desiredState: DesiredStateNone,
+				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
 				ctx:          context.Background(),
 			},
@@ -81,9 +81,9 @@ func TestManager_Apply(t *testing.T) {
 						return &cloudwatchlogs.DeleteLogGroupOutput{}, nil
 					},
 				}),
-				DesiredState: DesiredStateZero,
-				Filters:      nil,
-				Regions:      []string{"us-east-1"},
+				regions:      []string{"us-east-1"},
+				desiredState: DesiredStateZero,
+				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
 				ctx:          context.Background(),
 			},
@@ -113,9 +113,9 @@ func TestManager_Apply(t *testing.T) {
 						return &cloudwatchlogs.DeleteRetentionPolicyOutput{}, nil
 					},
 				}),
-				DesiredState: DesiredStateInfinite,
-				Filters:      nil,
-				Regions:      []string{"us-east-1"},
+				regions:      []string{"us-east-1"},
+				desiredState: DesiredStateInfinite,
+				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
 				ctx:          context.Background(),
 			},
@@ -145,9 +145,9 @@ func TestManager_Apply(t *testing.T) {
 						return &cloudwatchlogs.PutRetentionPolicyOutput{}, nil
 					},
 				}),
-				DesiredState: DesiredStateOneDay,
-				Filters:      nil,
-				Regions:      []string{"us-east-1"},
+				regions:      []string{"us-east-1"},
+				desiredState: DesiredStateOneDay,
+				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
 				ctx:          context.Background(),
 			},
@@ -177,9 +177,9 @@ func TestManager_Apply(t *testing.T) {
 						return nil, errors.New("error")
 					},
 				}),
-				DesiredState: DesiredStateZero,
-				Filters:      nil,
-				Regions:      []string{"us-east-1"},
+				regions:      []string{"us-east-1"},
+				desiredState: DesiredStateZero,
+				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
 				ctx:          context.Background(),
 			},
@@ -209,9 +209,9 @@ func TestManager_Apply(t *testing.T) {
 						return nil, errors.New("error")
 					},
 				}),
-				DesiredState: DesiredStateInfinite,
-				Filters:      nil,
-				Regions:      []string{"us-east-1"},
+				regions:      []string{"us-east-1"},
+				desiredState: DesiredStateInfinite,
+				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
 				ctx:          context.Background(),
 			},
@@ -241,9 +241,9 @@ func TestManager_Apply(t *testing.T) {
 						return nil, errors.New("error")
 					},
 				}),
-				DesiredState: DesiredStateOneDay,
-				Filters:      nil,
-				Regions:      []string{"us-east-1"},
+				regions:      []string{"us-east-1"},
+				desiredState: DesiredStateOneDay,
+				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
 				ctx:          context.Background(),
 			},
@@ -281,9 +281,9 @@ func TestManager_Apply(t *testing.T) {
 						return &cloudwatchlogs.DeleteLogGroupOutput{}, nil
 					},
 				}),
-				DesiredState: DesiredStateZero,
-				Filters:      nil,
-				Regions:      []string{"us-east-1"},
+				regions:      []string{"us-east-1"},
+				desiredState: DesiredStateZero,
+				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
 				ctx:          context.Background(),
 			},
@@ -294,14 +294,14 @@ func TestManager_Apply(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			man := &Manager{
-				Client:       tt.fields.Client,
-				DesiredState: tt.fields.DesiredState,
-				Filters:      tt.fields.Filters,
-				Regions:      tt.fields.Regions,
-				desiredState: tt.fields.desiredState,
-				filterFns:    tt.fields.filterFns,
-				sem:          tt.fields.sem,
-				ctx:          tt.fields.ctx,
+				Client:             tt.fields.Client,
+				regions:            tt.fields.regions,
+				desiredState:       tt.fields.desiredState,
+				desiredStateNative: tt.fields.desiredStateNative,
+				filters:            tt.fields.filters,
+				filterFns:          tt.fields.filterFns,
+				sem:                tt.fields.sem,
+				ctx:                tt.fields.ctx,
 			}
 			got, err := man.Apply(io.Discard)
 			if (err != nil) != tt.wantErr {

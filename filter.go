@@ -50,7 +50,7 @@ func EvaluateFilter(expressions []string) ([]Filter, error) {
 }
 
 func (man *Manager) setFilter(filters []Filter) error {
-	man.Filters = filters
+	man.filters = filters
 	man.filterFns = make([]func(*entry) bool, 0, len(filters))
 	for _, filter := range filters {
 		switch filter.Key {

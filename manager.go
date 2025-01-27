@@ -12,23 +12,23 @@ import (
 
 // Manager represents a log group lifecycle manager.
 type Manager struct {
-	*Client      `json:"-"`          // The client for CloudWatch Logs.
-	Regions      []string            // The list of target regions.
-	DesiredState DesiredState        // The desired state of the log group.
-	Filters      []Filter            // The expressions for filtering log groups.
-	desiredState *int32              // The desired state with the native type.
-	filterFns    []func(*entry) bool // The list of functions for filtering log groups.
-	sem          *semaphore.Weighted // The weighted semaphore for concurrent processing.
-	ctx          context.Context     // The context for concurrent processing.
+	*Client            `json:"-"`          // The client for CloudWatch Logs.
+	regions            []string            // The list of target regions.
+	desiredState       DesiredState        // The desired state of the log group.
+	desiredStateNative *int32              // The desired state with the native type.
+	filters            []Filter            // The expressions for filtering log groups.
+	filterFns          []func(*entry) bool // The list of functions for filtering log groups.
+	sem                *semaphore.Weighted // The weighted semaphore for concurrent processing.
+	ctx                context.Context     // The context for concurrent processing.
 }
 
 // NewManager creates a new manager for log group lifecycle management.
 func NewManager(ctx context.Context, client *Client) *Manager {
 	return &Manager{
 		Client:       client,
-		Regions:      DefaultRegions,
-		DesiredState: DesiredStateNone,
-		Filters:      nil,
+		regions:      DefaultRegions,
+		desiredState: DesiredStateNone,
+		filters:      nil,
 		sem:          semaphore.NewWeighted(NumWorker),
 		ctx:          ctx,
 	}
@@ -44,7 +44,7 @@ func (man *Manager) SetRegion(regions []string) error {
 			return fmt.Errorf("unsupported region: %s", region)
 		}
 	}
-	man.Regions = regions
+	man.regions = regions
 	return nil
 }
 
@@ -53,8 +53,8 @@ func (man *Manager) SetDesiredState(desired DesiredState) error {
 	if desired == DesiredStateNone {
 		return errors.New("invalid desired state")
 	}
-	man.DesiredState = desired
-	man.desiredState = aws.Int32(int32(man.DesiredState))
+	man.desiredState = desired
+	man.desiredStateNative = aws.Int32(int32(man.desiredState))
 	return nil
 }
 
@@ -71,6 +71,15 @@ func (man *Manager) SetFilter(filters []Filter) error {
 
 // String returns the string representation of the manager.
 func (man *Manager) String() string {
-	b, _ := json.MarshalIndent(man, "", "  ")
+	s := struct {
+		Regions      []string `json:"regions"`
+		DesiredState string   `json:"desiredState"`
+		Filters      []Filter `json:"filters"`
+	}{
+		Regions:      man.regions,
+		DesiredState: man.desiredState.String(),
+		Filters:      man.filters,
+	}
+	b, _ := json.MarshalIndent(s, "", "  ")
 	return string(b)
 }
