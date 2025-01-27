@@ -53,44 +53,60 @@ func (man *Manager) setFilter(filters []Filter) error {
 	man.filters = filters
 	man.filterFns = make([]func(*entry) bool, 0, len(filters))
 	for _, filter := range filters {
+		var fn func(*entry) bool
 		switch filter.Key {
-		case FilterKeyName, FilterKeySource, FilterKeyClass:
-			fn, err := stringFilterFunc(filter)
+		case FilterKeyName:
+			f, err := stringFilterFunc(filter)
 			if err != nil {
 				return err
 			}
-			man.filterFns = append(man.filterFns, func(e *entry) bool {
-				switch filter.Key {
-				case FilterKeyName:
-					return fn(e.LogGroupName)
-				case FilterKeySource:
-					return fn(e.Source)
-				case FilterKeyClass:
-					return fn(string(e.Class))
-				default:
-					return true
-				}
-			})
-		case FilterKeyElapsed, FilterKeyRetention, FilterKeyBytes:
-			fn, err := numberFilterFunc(filter)
+			fn = func(e *entry) bool {
+				return f(e.LogGroupName)
+			}
+		case FilterKeySource:
+			f, err := stringFilterFunc(filter)
 			if err != nil {
 				return err
 			}
-			man.filterFns = append(man.filterFns, func(e *entry) bool {
-				switch filter.Key {
-				case FilterKeyElapsed:
-					return fn(e.ElapsedDays)
-				case FilterKeyRetention:
-					return fn(e.RetentionInDays)
-				case FilterKeyBytes:
-					return fn(e.StoredBytes)
-				default:
-					return true
-				}
-			})
+			fn = func(e *entry) bool {
+				return f(e.Source)
+			}
+		case FilterKeyClass:
+			f, err := stringFilterFunc(filter)
+			if err != nil {
+				return err
+			}
+			fn = func(e *entry) bool {
+				return f(string(e.Class))
+			}
+		case FilterKeyElapsed:
+			f, err := numberFilterFunc(filter)
+			if err != nil {
+				return err
+			}
+			fn = func(e *entry) bool {
+				return f(e.ElapsedDays)
+			}
+		case FilterKeyRetention:
+			f, err := numberFilterFunc(filter)
+			if err != nil {
+				return err
+			}
+			fn = func(e *entry) bool {
+				return f(e.RetentionInDays)
+			}
+		case FilterKeyBytes:
+			f, err := numberFilterFunc(filter)
+			if err != nil {
+				return err
+			}
+			fn = func(e *entry) bool {
+				return f(e.StoredBytes)
+			}
 		default:
 			return fmt.Errorf("invalid key: %q", filter.Key)
 		}
+		man.filterFns = append(man.filterFns, fn)
 	}
 	return nil
 }
