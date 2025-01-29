@@ -65,11 +65,11 @@ func ParseOutputType(s string) (OutputType, error) {
 	}
 }
 
-// DesiredState represents the retention days of the log group.
+// DesiredState represents the desired state of the log group.
 type DesiredState int32
 
 const (
-	DesiredStateNone           DesiredState = -9999 // A value meaning no action.
+	DesiredStateNone           DesiredState = -9999 // A value meaning none.
 	DesiredStateZero           DesiredState = 0     // A value meaning delete the log group.
 	DesiredStateOneDay         DesiredState = 1     // A value meaning retain the log group for one day.
 	DesiredStateThreeDays      DesiredState = 3     // A value meaning retain the log group for three days.
