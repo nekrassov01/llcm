@@ -11,6 +11,7 @@ type OutputType int
 const (
 	OutputTypeNone           OutputType = iota // The output type that means none.
 	OutputTypeJSON                             // The output type of JSON format.
+	OutputTypePrettyJSON                       // The output type of pretty JSON format.
 	OutputTypeText                             // The output type of text table format.
 	OutputTypeCompressedText                   // The output type of compressed text table format.
 	OutputTypeMarkdown                         // The output type of markdown table format.
@@ -25,10 +26,12 @@ func (t OutputType) String() string {
 		return "none"
 	case OutputTypeJSON:
 		return "json"
+	case OutputTypePrettyJSON:
+		return "prettyjson"
 	case OutputTypeText:
 		return "text"
 	case OutputTypeCompressedText:
-		return "compressed"
+		return "compressedtext"
 	case OutputTypeMarkdown:
 		return "markdown"
 	case OutputTypeBacklog:
@@ -50,6 +53,8 @@ func ParseOutputType(s string) (OutputType, error) {
 	switch s {
 	case OutputTypeJSON.String():
 		return OutputTypeJSON, nil
+	case OutputTypePrettyJSON.String():
+		return OutputTypePrettyJSON, nil
 	case OutputTypeText.String():
 		return OutputTypeText, nil
 	case OutputTypeCompressedText.String():

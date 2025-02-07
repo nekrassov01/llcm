@@ -185,6 +185,16 @@ func TestRenderer_Render1(t *testing.T) {
 				Data:       listEntryData,
 				OutputType: OutputTypeJSON,
 			},
+			want: `[{"LogGroupName":"group0","Region":"ap-northeast-1","Source":"source0","Class":"STANDARD","CreatedAt":"2025-01-01T00:00:00Z","ElapsedDays":90,"RetentionInDays":30,"StoredBytes":1024},{"LogGroupName":"group1","Region":"ap-northeast-2","Source":"source1","Class":"INFREQUENT_ACCESS","CreatedAt":"2024-04-01T00:00:00Z","ElapsedDays":365,"RetentionInDays":30,"StoredBytes":2048}]
+`,
+			wantErr: false,
+		},
+		{
+			name: "prettyjson",
+			fields: fields{
+				Data:       listEntryData,
+				OutputType: OutputTypePrettyJSON,
+			},
 			want: `[
   {
     "LogGroupName": "group0",
@@ -332,6 +342,16 @@ func TestRenderer_Render2(t *testing.T) {
 			fields: fields{
 				Data:       previewEntryData,
 				OutputType: OutputTypeJSON,
+			},
+			want: `[{"LogGroupName":"group0","Region":"ap-northeast-1","Source":"source0","Class":"STANDARD","CreatedAt":"2025-01-01T00:00:00Z","ElapsedDays":90,"RetentionInDays":30,"StoredBytes":1024,"BytesPerDay":0,"DesiredState":0,"ReductionInDays":0,"ReducibleBytes":0,"RemainingBytes":0},{"LogGroupName":"group1","Region":"ap-northeast-2","Source":"source1","Class":"INFREQUENT_ACCESS","CreatedAt":"2024-04-01T00:00:00Z","ElapsedDays":365,"RetentionInDays":30,"StoredBytes":2048,"BytesPerDay":100,"DesiredState":100,"ReductionInDays":100,"ReducibleBytes":100,"RemainingBytes":100}]
+`,
+			wantErr: false,
+		},
+		{
+			name: "prettyjson",
+			fields: fields{
+				Data:       previewEntryData,
+				OutputType: OutputTypePrettyJSON,
 			},
 			want: `[
   {

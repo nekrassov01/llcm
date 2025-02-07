@@ -33,7 +33,7 @@ func (ren *Renderer[E, D]) String() string {
 // Render renders the output.
 func (ren *Renderer[E, D]) Render() error {
 	switch ren.OutputType {
-	case OutputTypeJSON:
+	case OutputTypeJSON, OutputTypePrettyJSON:
 		return ren.toJSON()
 	case OutputTypeText, OutputTypeCompressedText, OutputTypeMarkdown, OutputTypeBacklog:
 		return ren.toTable()
@@ -46,7 +46,9 @@ func (ren *Renderer[E, D]) Render() error {
 
 func (ren *Renderer[E, D]) toJSON() error {
 	b := json.NewEncoder(ren.w)
-	b.SetIndent("", "  ")
+	if ren.OutputType == OutputTypePrettyJSON {
+		b.SetIndent("", "  ")
+	}
 	return b.Encode(ren.Data.Entries())
 }
 

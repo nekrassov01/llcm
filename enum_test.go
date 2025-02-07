@@ -22,14 +22,19 @@ func TestOutputType_String(t *testing.T) {
 			want: "json",
 		},
 		{
+			name: "prettyjson",
+			tr:   OutputTypePrettyJSON,
+			want: "prettyjson",
+		},
+		{
 			name: "text",
 			tr:   OutputTypeText,
 			want: "text",
 		},
 		{
-			name: "compressed",
+			name: "compressedtext",
 			tr:   OutputTypeCompressedText,
-			want: "compressed",
+			want: "compressedtext",
 		},
 		{
 			name: "markdown",
@@ -79,9 +84,19 @@ func TestOutputType_MarshalJSON(t *testing.T) {
 			want: []byte(`"json"`),
 		},
 		{
+			name: "prettyjson",
+			tr:   OutputTypePrettyJSON,
+			want: []byte(`"prettyjson"`),
+		},
+		{
 			name: "text",
 			tr:   OutputTypeText,
 			want: []byte(`"text"`),
+		},
+		{
+			name: "compressedtext",
+			tr:   OutputTypeCompressedText,
+			want: []byte(`"compressedtext"`),
 		},
 		{
 			name: "markdown",
@@ -137,6 +152,14 @@ func TestParseOutputType(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "prettyjson",
+			args: args{
+				s: "prettyjson",
+			},
+			want:    OutputTypePrettyJSON,
+			wantErr: false,
+		},
+		{
 			name: "text",
 			args: args{
 				s: "text",
@@ -145,9 +168,9 @@ func TestParseOutputType(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "compressed",
+			name: "compressedtext",
 			args: args{
-				s: "compressed",
+				s: "compressedtext",
 			},
 			want:    OutputTypeCompressedText,
 			wantErr: false,
