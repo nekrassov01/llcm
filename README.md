@@ -224,7 +224,7 @@ llcm completion bash|zsh|pwsh
 
 ## Todo
 
-- [ ] Add to readme an example of implementing as a lambda function
+- [x] Add to readme an example of implementing as a lambda function
 - [ ] Implement logical operators: `&&` `||`
 - [ ] Implement visualization of simulation results
 - [ ] Support streaming output (in `github.com/nekrassov01/mintab`)
