@@ -168,8 +168,8 @@ func numberFilterFunc(filter Filter) (func(int64) bool, error) {
 	n, err := strconv.ParseInt(value, 0, 64)
 	if err != nil {
 		if key == FilterKeyElapsed || key == FilterKeyRetention {
-			d, err := ParseDesiredState(value)
-			if err != nil || d <= 0 {
+			d, err2 := ParseDesiredState(value)
+			if err2 != nil || d <= 0 {
 				return nil, fmt.Errorf("invalid value: %q", value)
 			}
 			n = int64(d)
