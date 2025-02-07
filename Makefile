@@ -1,13 +1,8 @@
 NAME := llcm
-BIN := $(NAME)
-ifeq ($(OS),Windows_NT)
-BIN := $(BIN).exe
-endif
-
 CMD_PATH := ./cmd/$(NAME)/
 GOBIN ?= $(shell go env GOPATH)/bin
 VERSION := $$(make -s show-version)
-REVISION := $$(git rev-parse --short HEAD)
+REVISION := $(shell git rev-parse --short HEAD)
 LDFLAGS := "-s -w -X main.Version=$(VERSION) -X main.Revision=$(REVISION)"
 
 HAS_LINT := $(shell command -v $(GOBIN)/golangci-lint 2> /dev/null)
@@ -23,11 +18,7 @@ export GO111MODULE=on
 .PHONY: build
 build: clean
 	go mod tidy
-	go build -ldflags $(LDFLAGS) -o $(BIN) $(CMD_PATH)
-
-.PHONY: put
-put: build
-	cp $(BIN) $(GOBIN)/$(BIN)
+	go build -ldflags $(LDFLAGS) -o $(NAME) $(CMD_PATH)
 
 .PHONY: check
 check: test cover bench vet golangci-lint govulncheck
@@ -103,4 +94,8 @@ release: check-git
 .PHONY: clean
 clean:
 	go clean
-	rm -f $(BIN) cover.out cover.html cpu.prof mem.prof $(NAME).test
+	rm -f $(NAME) cover.out cover.html cpu.prof mem.prof $(NAME).test
+
+.PHONY: aaa
+aaa:
+	@echo $(REVISION)
