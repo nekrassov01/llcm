@@ -67,9 +67,6 @@ OPTIONS:
 
 ### Preview
 
-> [!WARNING]
-> This feature is still experimental.
-
 ```text
 NAME:
    llcm preview - Preview simulation results based on desired state
@@ -124,7 +121,7 @@ The following values can be passed for each option.
 | `--region value1,value2...` `-r value1,value2...` | `us-east-1` `us-east-2` `us-west-1` `us-west-2` `ap-south-1` `ap-northeast-3` `ap-northeast-2` `ap-southeast-1` `ap-southeast-2` `ap-northeast-1` `ca-central-1` `eu-central-1` `eu-west-1` `eu-west-2` `eu-west-3` `eu-north-1` `sa-east` ", | [All regions with no opt-in required](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-regionsz) | -                    |
 | `--filter value1,value2...` `-f value1,value2...` | key, operator, and value separated by spaces, as in `bytes != 0`<br>key: `name` `source` `class` `elapsed` `retention` `bytes`<br>operator: `>` `>=` `<` `<=` `==` `==*` `!=` `!=*` `=~` `=~*` `!~` `!~*`                                     | -                                                                                                                                                  | -                    |
 | `--desired value` `-d value`                      | `delete` `1day` `3days` `5days` `1week` `2weeks` `1month` `2months` `3months` `4months` `5months` `6months` `1year` `13months` `18months` `2years` `3years` `5years` `6years` `7years` `8years` `9years` `10years` `infinite`                 | -                                                                                                                                                  | -                    |
-| `--output value` `-o value`                       | `json` `text` `compressed` `markdown` `backlog` `tsv`                                                                                                                                                                                         | `compressed`                                                                                                                                       | `LLCM_OUTPUT_TYPE`   |
+| `--output value` `-o value`                       | `json` `prettyjson` `text` `compressedtext` `markdown` `backlog` `tsv`                                                                                                                                                                        | `compressedtext`                                                                                                                                   | `LLCM_OUTPUT_TYPE`   |
 | `--help` `-h`                                     | -                                                                                                                                                                                                                                             | -                                                                                                                                                  | -                    |
 | `--version` `-v`                                  | -                                                                                                                                                                                                                                             | -                                                                                                                                                  | -                    |
 
@@ -169,6 +166,7 @@ llcm list --filter 'bytes == 0','elapsed > 365' --region ap-northeast-1,us-west-
 | test-2 | us-west-2      | 000000000000/us-west-2      | STANDARD | 2017-12-07T12:44:45+09:00 |        2601 |             731 |           0 |
 | test-3 | ap-northeast-1 | 000000000000/ap-northeast-1 | STANDARD | 2017-12-07T13:21:09+09:00 |        2601 |             731 |           0 |
 | test-4 | us-west-2      | 000000000000/us-west-2      | STANDARD | 2017-12-07T12:50:11+09:00 |        2601 |             731 |           0 |
+...
 ```
 
 - Delete the log groups identified above in a batch.
@@ -192,8 +190,9 @@ llcm list --output tsv | Set-Clipboard
 ## Warnings
 
 - Consider enclosing strings passed to the filter in single quotes. Unintended expansion may occur, e.g., history expansion by the shell (Try typing this command in your shell environment: `echo "name !~ ^test.*"`)
-- The Preview command is currently treated as experimental. It is best used to simulate reduced capacity, but do not trust the output of this command too much.
+- The Preview command is the best used to simulate reductions, but note that it is only a simple calculation of the log volume pro-rated by day.
 - The fields such as `ElapsedDays` and `ReductionInDays` represent the number of days, but are rounded down to the nearest whole number when cast to int64. This means that the reduction simulation will not be inflated beyond what is expected.
+- The minimum value for `BytesPerDay` is 1. Note this specification if you have a large number of log groups that have just been created and are small in size.
 
 ## Installation
 
