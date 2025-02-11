@@ -14,10 +14,11 @@ var (
 
 // Entry is an interface for log group entry.
 type Entry interface {
-	Name() string    // Name returns the name of the entry.
-	Bytes() int64    // Bytes returns the stored bytes of the entry.
-	toInput() []any  // toInput returns the input of the entry for rendering.
-	toTSV() []string // toTSV returns the TSV of the entry for rendering.
+	Name() string              // Name returns the name of the entry.
+	Bytes() int64              // Bytes returns the stored bytes of the entry.
+	DataSet() map[string]int64 // DataSet returns map for plotting the chart.
+	toInput() []any            // toInput returns the input of the entry for rendering.
+	toTSV() []string           // toTSV returns the TSV of the entry for rendering.
 }
 
 // entry represents the base entry for log group.
@@ -46,6 +47,15 @@ func (e *entry) Bytes() int64 {
 // ListEntry represents an entry to list log group.
 type ListEntry struct {
 	*entry
+}
+
+// DataSet returns map for plotting the chart.
+func (e *ListEntry) DataSet() map[string]int64 {
+	return map[string]int64{
+		"entryType":       0,
+		"retentionInDays": e.RetentionInDays,
+		"storedBytes":     e.StoredBytes,
+	}
 }
 
 // toInput returns the input of the list entry for rendering.
@@ -84,6 +94,18 @@ type PreviewEntry struct {
 	ReductionInDays int64 // The number of days to be reduced after the action.
 	ReducibleBytes  int64 // The number of bytes that can be reduced after the action.
 	RemainingBytes  int64 // The number of bytes that remain after the action.
+}
+
+// DataSet returns map for plotting the chart.
+func (e *PreviewEntry) DataSet() map[string]int64 {
+	return map[string]int64{
+		"entryType":       1,
+		"retentionInDays": e.RetentionInDays,
+		"storedBytes":     e.StoredBytes,
+		"desiredState":    e.DesiredState,
+		"reducibleBytes":  e.ReducibleBytes,
+		"remainingBytes":  e.RemainingBytes,
+	}
 }
 
 // toInput returns the input of the desired entry for rendering.

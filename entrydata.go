@@ -52,6 +52,7 @@ type EntryData[T Entry] interface {
 	Header() []string
 	Entries() []T
 	Total() map[string]int64
+	entryType() int64
 }
 
 // ListEntryData represents the collection of ListEntry.
@@ -77,6 +78,11 @@ func (d *ListEntryData) Total() map[string]int64 {
 	return map[string]int64{
 		TotalStoredBytesLabel: d.TotalStoredBytes,
 	}
+}
+
+// entryType returns the type of the ListEntryData.
+func (d *ListEntryData) entryType() int64 {
+	return 0
 }
 
 // PreviewEntryData represents the collection of PreviewEntry.
@@ -106,4 +112,9 @@ func (d *PreviewEntryData) Total() map[string]int64 {
 		TotalReducibleBytesLabel: d.TotalReducibleBytes,
 		TotalRemainingBytesLabel: d.TotalRemainingBytes,
 	}
+}
+
+// entryType returns the type of the PreviewEntryData.
+func (d *PreviewEntryData) entryType() int64 {
+	return 1
 }

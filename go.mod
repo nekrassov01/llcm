@@ -7,9 +7,11 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.28.7
 	github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs v1.45.1
 	github.com/dustin/go-humanize v1.0.1
+	github.com/go-echarts/go-echarts/v2 v2.5.0
 	github.com/google/go-cmp v0.6.0
 	github.com/nekrassov01/logwrapper v0.0.8
 	github.com/nekrassov01/mintab v0.0.57
+	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/urfave/cli/v2 v2.27.5
 	golang.org/x/sync v0.10.0
 )

@@ -17,6 +17,7 @@ const (
 	OutputTypeMarkdown                         // The output type of markdown table format.
 	OutputTypeBacklog                          // The output type of backlog table format.
 	OutputTypeTSV                              // The output type of tab-separated values.
+	OutputTypeChart                            // The output type that means pie chart.
 )
 
 // String returns the string representation of the OutputType.
@@ -38,6 +39,8 @@ func (t OutputType) String() string {
 		return "backlog"
 	case OutputTypeTSV:
 		return "tsv"
+	case OutputTypeChart:
+		return "chart"
 	default:
 		return ""
 	}
@@ -65,6 +68,8 @@ func ParseOutputType(s string) (OutputType, error) {
 		return OutputTypeBacklog, nil
 	case OutputTypeTSV.String():
 		return OutputTypeTSV, nil
+	case OutputTypeChart.String():
+		return OutputTypeChart, nil
 	default:
 		return OutputTypeNone, fmt.Errorf("unsupported output type: %q", s)
 	}

@@ -19,6 +19,12 @@ var (
 	// DelayTimeSec is the sleep time in seconds for retry.
 	DelayTimeSec = 3
 
+	// MaxPieChartItems is the maximum number of items in a pie chart.
+	MaxPieChartItems = 11
+
+	// MaxBarChartItems is the maximum number of items in a bar chart.
+	MaxBarChartItems = 31
+
 	// DefaultRegion is the region speficied by default.
 	DefaultRegion = "us-east-1"
 

@@ -39,6 +39,8 @@ func (ren *Renderer[E, D]) Render() error {
 		return ren.toTable()
 	case OutputTypeTSV:
 		return ren.toTSV()
+	case OutputTypeChart:
+		return ren.toChart()
 	default:
 		return nil
 	}
@@ -72,6 +74,17 @@ func (ren *Renderer[E, D]) toTable() error {
 	return nil
 }
 
+func (ren *Renderer[E, D]) toInput() mintab.Input {
+	data := make([][]any, len(ren.Data.Entries()))
+	for i, entry := range ren.Data.Entries() {
+		data[i] = entry.toInput()
+	}
+	return mintab.Input{
+		Header: ren.Data.Header(),
+		Data:   data,
+	}
+}
+
 func (ren *Renderer[E, D]) toTSV() error {
 	if len(ren.Data.Entries()) == 0 {
 		return nil
@@ -90,13 +103,18 @@ func (ren *Renderer[E, D]) toTSV() error {
 	return w.Error()
 }
 
-func (ren *Renderer[E, D]) toInput() mintab.Input {
-	data := make([][]any, len(ren.Data.Entries()))
-	for i, entry := range ren.Data.Entries() {
-		data[i] = entry.toInput()
-	}
-	return mintab.Input{
-		Header: ren.Data.Header(),
-		Data:   data,
+func (ren *Renderer[E, D]) toChart() error {
+	switch ren.Data.entryType() {
+	case 0:
+		title, items := getPieItems(ren.Data)
+		pie := newPieChart(title, items)
+		return renderPieChart(pie)
+	case 1:
+		title, subtitle := getBarTitle(ren.Data)
+		names, sb, rb := getBarItems(ren.Data)
+		bar := newBarChart(title, subtitle, names, sb, rb)
+		return renderBarChart(bar)
+	default:
+		return nil
 	}
 }
