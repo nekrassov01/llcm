@@ -187,6 +187,24 @@ llcm list --output tsv | pbcopy
 llcm list --output tsv | Set-Clipboard
 ```
 
+### Case 4
+
+- Visualize the reductions in order to submit the rate reduction plan in a document. A simple stacked bar chart will appear in your browser in one stroke!
+
+```sh
+llcm preview --desired 1year --output chart
+```
+
+![chart](_assets/preview.png)
+
+- If the output type is chart in the list command, a pie chart is displayed.
+
+```sh
+llcm list --output chart
+```
+
+![chart](_assets/list.png)
+
 ## Warnings
 
 - Consider enclosing strings passed to the filter in single quotes. Unintended expansion may occur, e.g., history expansion by the shell (Try typing this command in your shell environment: `echo "name !~ ^test.*"`)
@@ -226,7 +244,7 @@ llcm completion bash|zsh|pwsh
 
 - [x] Add to readme an example of implementing as a lambda function
 - [ ] Implement logical operators: `&&` `||`
-- [ ] Implement visualization of simulation results
+- [x] Implement visualization of simulation results
 - [ ] Support streaming output (in `github.com/nekrassov01/mintab`)
 
 ## Author
