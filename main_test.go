@@ -1,23 +1,41 @@
 package llcm
 
 import (
-	"os"
 	"testing"
 	"time"
 )
 
 // TestMain is the entry point of the test.
 func TestMain(m *testing.M) {
-	local := setTimeZone(time.UTC)
+	var (
+		originalMaxPieChartItems = setMaxPieChartItems(3)
+		originalMaxBarChartItems = setMaxBarChartItems(3)
+		localTimeZone            = setTimeZone(time.UTC)
+	)
 	nowFunc = func() time.Time {
 		return mustTime("2025-04-01T00:00:00Z")
 	}
-	code := m.Run()
 	defer func() {
-		_ = setTimeZone(local)
+		setMaxPieChartItems(originalMaxPieChartItems)
+		setMaxBarChartItems(originalMaxBarChartItems)
+		setTimeZone(localTimeZone)
 		nowFunc = time.Now
-		os.Exit(code)
 	}()
+	m.Run()
+}
+
+// setMaxPieChartItems is helper function to set MaxPieChartItems and return the original value.
+func setMaxPieChartItems(n int) (original int) {
+	original = MaxPieChartItems
+	MaxPieChartItems = n
+	return original
+}
+
+// setMaxBarChartItems is helper function to set MaxBarChartItems and return the original value.
+func setMaxBarChartItems(n int) (original int) {
+	original = MaxBarChartItems
+	MaxBarChartItems = n
+	return original
 }
 
 // setTimeZone is helper function to set time zone and return the original time zone.
