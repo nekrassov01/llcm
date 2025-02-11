@@ -707,7 +707,7 @@ func TestManager_String(t *testing.T) {
 		want   string
 	}{
 		{
-			name: "normal manager",
+			name: "basic manager",
 			fields: fields{
 				Client:       &Client{},
 				DesiredState: 7,

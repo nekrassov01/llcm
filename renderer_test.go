@@ -104,7 +104,7 @@ func TestNewRenderer(t *testing.T) {
 		want *Renderer[*ListEntry, *ListEntryData]
 	}{
 		{
-			name: "normal",
+			name: "basic",
 			args: args{
 				data:       listEntryData,
 				outputType: OutputTypeJSON,
