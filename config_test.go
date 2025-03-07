@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestLoadAWSConfig(t *testing.T) {
+func TestLoadConfig(t *testing.T) {
 	type args struct {
 		ctx     context.Context
 		profile string

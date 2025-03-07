@@ -111,8 +111,8 @@ func (ren *Renderer[E, D]) toChart() error {
 		return renderPieChart(pie)
 	case 1:
 		title, subtitle := getBarTitle(ren.Data)
-		names, sb, rb := getBarItems(ren.Data)
-		bar := newBarChart(title, subtitle, names, sb, rb)
+		lnames, rmbytes, rdbytes := getBarItems(ren.Data)
+		bar := newBarChart(title, subtitle, lnames, rmbytes, rdbytes)
 		return renderBarChart(bar)
 	default:
 		return nil
