@@ -13,6 +13,14 @@ import (
 var _ aws.RetryerV2 = (*Retryer)(nil)
 
 var (
+	// MaxRetryAttempts is the maximum number of retry attempts.
+	MaxRetryAttempts = 10
+
+	// DelayTimeSec is the sleep time in seconds for retry.
+	DelayTimeSec = 3
+)
+
+var (
 	retryer       = NewRetryer(retryableFunc, DelayTimeSec)
 	retryableFunc = func(err error) bool {
 		return strings.Contains(err.Error(), "api error ThrottlingException")

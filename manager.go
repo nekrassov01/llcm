@@ -5,10 +5,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"runtime"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"golang.org/x/sync/semaphore"
 )
+
+// NumWorker is the number of workers for concurrent processing.
+var NumWorker = int64(runtime.NumCPU()*2 + 1)
 
 // Manager represents a log group lifecycle manager.
 type Manager struct {

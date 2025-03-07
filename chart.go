@@ -11,6 +11,14 @@ import (
 	"github.com/pkg/browser"
 )
 
+var (
+	// MaxPieChartItems is the maximum number of items in a pie chart.
+	MaxPieChartItems = 11
+
+	// MaxBarChartItems is the maximum number of items in a bar chart.
+	MaxBarChartItems = 31
+)
+
 func getPieItems[E Entry, D EntryData[E]](data D) (string, []opts.PieData) {
 	var (
 		othersTotal int64
@@ -80,10 +88,7 @@ func renderPieChart(pie *charts.Pie) error {
 		return nil
 	}
 	title := "llcm"
-	page := components.NewPage()
-	page.SetPageTitle(title)
-	page.AddCharts(pie)
-	fname := title + ".html"
+	fname := "llcm.html"
 	i := 1
 	for {
 		if _, err := os.Stat(fname); err != nil {
@@ -99,6 +104,9 @@ func renderPieChart(pie *charts.Pie) error {
 	if err != nil {
 		return err
 	}
+	page := components.NewPage()
+	page.SetPageTitle(title)
+	page.AddCharts(pie)
 	if err := page.Render(io.MultiWriter(f)); err != nil {
 		return err
 	}
@@ -214,10 +222,7 @@ func renderBarChart(bar *charts.Bar) error {
 		return nil
 	}
 	title := "llcm"
-	page := components.NewPage()
-	page.SetPageTitle(title)
-	page.AddCharts(bar)
-	fname := title + ".html"
+	fname := "llcm.html"
 	i := 1
 	for {
 		if _, err := os.Stat(fname); err != nil {
@@ -233,6 +238,9 @@ func renderBarChart(bar *charts.Bar) error {
 	if err != nil {
 		return err
 	}
+	page := components.NewPage()
+	page.SetPageTitle(title)
+	page.AddCharts(bar)
 	if err := page.Render(io.MultiWriter(f)); err != nil {
 		return err
 	}

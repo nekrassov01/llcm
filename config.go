@@ -2,7 +2,6 @@ package llcm
 
 import (
 	"context"
-	"runtime"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -10,36 +9,17 @@ import (
 )
 
 var (
-	// NumWorker is the number of workers for concurrent processing.
-	NumWorker = int64(runtime.NumCPU()*2 + 1)
-
-	// MaxRetryAttempts is the maximum number of retry attempts.
-	MaxRetryAttempts = 10
-
-	// DelayTimeSec is the sleep time in seconds for retry.
-	DelayTimeSec = 3
-
-	// MaxPieChartItems is the maximum number of items in a pie chart.
-	MaxPieChartItems = 11
-
-	// MaxBarChartItems is the maximum number of items in a bar chart.
-	MaxBarChartItems = 31
-
 	// DefaultRegion is the region speficied by default.
 	DefaultRegion = "us-east-1"
 
 	// DefaultRegions is the default target regions.
 	DefaultRegions = []string{
-		"us-east-1",
-		"us-east-2",
-		"us-west-1",
-		"us-west-2",
-		"ap-south-1",
-		"ap-northeast-3",
+		"ap-northeast-1",
 		"ap-northeast-2",
+		"ap-northeast-3",
+		"ap-south-1",
 		"ap-southeast-1",
 		"ap-southeast-2",
-		"ap-northeast-1",
 		"ca-central-1",
 		"eu-central-1",
 		"eu-west-1",
@@ -47,14 +27,19 @@ var (
 		"eu-west-3",
 		"eu-north-1",
 		"sa-east-1",
+		"us-east-1",
+		"us-east-2",
+		"us-west-1",
+		"us-west-2",
 	}
 )
 
 var (
-	nowFunc             = time.Now
-	globalEntriesSize   = 8192
-	regionalEntriesSize = 1024
-	allowedRegions      = map[string]struct{}{
+	// nowFunc is used to mock time in tests.
+	nowFunc = time.Now
+
+	// allowedRegions is the list of allowed regions.
+	allowedRegions = map[string]struct{}{
 		"af-south-1":     {},
 		"ap-east-1":      {},
 		"ap-northeast-1": {},
