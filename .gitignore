@@ -26,6 +26,5 @@ cover.*
 /llcm
 dist/
 *.pem
-*.test
 *.prof
 *.html
