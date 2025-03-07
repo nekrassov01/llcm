@@ -33,6 +33,7 @@ func handleRequest(ctx context.Context) error {
 		return err
 	}
 
+	// parse filters passed as comma-separated string
 	f := os.Getenv("FILTERS")
 	filter, err := llcm.EvaluateFilter(strings.Split(f, ","))
 	if err != nil {
