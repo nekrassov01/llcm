@@ -15,7 +15,7 @@ llcm is a CLI tool to manage the lifecycle of Amazon CloudWatch Logs log groups.
 
 All of these subcommands can be passed the filter expressions to narrow down the target log groups.
 
-## Command
+## Commands
 
 ```text
 NAME:
@@ -204,6 +204,13 @@ llcm list --output chart
 ```
 
 ![chart](_assets/list.png)
+
+## Moreover
+
+In addition to use from the command line, it is designed to be used as is as a package; see the example of running it with Lambda defined in the AWS CDK.
+
+- [CDK stack sample](_examples/cdk/sample/lib/sample-stack.ts)
+- [Lambda function sample](_examples/cdk/sample/src/lambda/main.go)
 
 ## Warnings
 
