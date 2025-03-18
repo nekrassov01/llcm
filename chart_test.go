@@ -12,7 +12,7 @@ import (
 
 func Test_getPieItems(t *testing.T) {
 	type args struct {
-		data *ListEntryData
+		entries []*ListEntry
 	}
 	type want struct {
 		title string
@@ -26,32 +26,29 @@ func Test_getPieItems(t *testing.T) {
 		{
 			name: "basic",
 			args: args{
-				data: &ListEntryData{
-					header: listEntryDataHeader,
-					entries: []*ListEntry{
-						{
-							entry: &entry{
-								LogGroupName:    "group0",
-								Region:          "ap-northeast-1",
-								Source:          "source0",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     0,
-								RetentionInDays: 30,
-								StoredBytes:     1024,
-							},
+				entries: []*ListEntry{
+					{
+						entry: &entry{
+							LogGroupName:    "group0",
+							Region:          "ap-northeast-1",
+							Source:          "source0",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     0,
+							RetentionInDays: 30,
+							StoredBytes:     1024,
 						},
-						{
-							entry: &entry{
-								LogGroupName:    "group1",
-								Region:          "ap-northeast-2",
-								Source:          "source1",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     0,
-								RetentionInDays: 30,
-								StoredBytes:     4096,
-							},
+					},
+					{
+						entry: &entry{
+							LogGroupName:    "group1",
+							Region:          "ap-northeast-2",
+							Source:          "source1",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     0,
+							RetentionInDays: 30,
+							StoredBytes:     4096,
 						},
 					},
 				},
@@ -73,32 +70,29 @@ func Test_getPieItems(t *testing.T) {
 		{
 			name: "include zero",
 			args: args{
-				data: &ListEntryData{
-					header: listEntryDataHeader,
-					entries: []*ListEntry{
-						{
-							entry: &entry{
-								LogGroupName:    "group0",
-								Region:          "ap-northeast-1",
-								Source:          "source0",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     0,
-								RetentionInDays: 30,
-								StoredBytes:     0,
-							},
+				entries: []*ListEntry{
+					{
+						entry: &entry{
+							LogGroupName:    "group0",
+							Region:          "ap-northeast-1",
+							Source:          "source0",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     0,
+							RetentionInDays: 30,
+							StoredBytes:     0,
 						},
-						{
-							entry: &entry{
-								LogGroupName:    "group1",
-								Region:          "ap-northeast-2",
-								Source:          "source1",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     0,
-								RetentionInDays: 30,
-								StoredBytes:     4096,
-							},
+					},
+					{
+						entry: &entry{
+							LogGroupName:    "group1",
+							Region:          "ap-northeast-2",
+							Source:          "source1",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     0,
+							RetentionInDays: 30,
+							StoredBytes:     4096,
 						},
 					},
 				},
@@ -116,56 +110,53 @@ func Test_getPieItems(t *testing.T) {
 		{
 			name: "others",
 			args: args{
-				data: &ListEntryData{
-					header: listEntryDataHeader,
-					entries: []*ListEntry{
-						{
-							entry: &entry{
-								LogGroupName:    "group0",
-								Region:          "ap-northeast-1",
-								Source:          "source0",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     0,
-								RetentionInDays: 30,
-								StoredBytes:     1024,
-							},
+				entries: []*ListEntry{
+					{
+						entry: &entry{
+							LogGroupName:    "group0",
+							Region:          "ap-northeast-1",
+							Source:          "source0",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     0,
+							RetentionInDays: 30,
+							StoredBytes:     1024,
 						},
-						{
-							entry: &entry{
-								LogGroupName:    "group1",
-								Region:          "ap-northeast-2",
-								Source:          "source1",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     0,
-								RetentionInDays: 30,
-								StoredBytes:     4096,
-							},
+					},
+					{
+						entry: &entry{
+							LogGroupName:    "group1",
+							Region:          "ap-northeast-2",
+							Source:          "source1",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     0,
+							RetentionInDays: 30,
+							StoredBytes:     4096,
 						},
-						{
-							entry: &entry{
-								LogGroupName:    "group2",
-								Region:          "us-east-1",
-								Source:          "source2",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     0,
-								RetentionInDays: 30,
-								StoredBytes:     256,
-							},
+					},
+					{
+						entry: &entry{
+							LogGroupName:    "group2",
+							Region:          "us-east-1",
+							Source:          "source2",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     0,
+							RetentionInDays: 30,
+							StoredBytes:     256,
 						},
-						{
-							entry: &entry{
-								LogGroupName:    "group3",
-								Region:          "us-east-1",
-								Source:          "source3",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     0,
-								RetentionInDays: 30,
-								StoredBytes:     512,
-							},
+					},
+					{
+						entry: &entry{
+							LogGroupName:    "group3",
+							Region:          "us-east-1",
+							Source:          "source3",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     0,
+							RetentionInDays: 30,
+							StoredBytes:     512,
 						},
 					},
 				},
@@ -191,7 +182,7 @@ func Test_getPieItems(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			title, items := getPieItems(tt.args.data)
+			title, items := getPieItems(tt.args.entries)
 			if title != tt.want.title {
 				t.Errorf("getPieItems() title = %v, want %v", title, tt.want)
 			}
@@ -250,7 +241,7 @@ func Test_renderPieChart(t *testing.T) {
 
 func Test_getBarTitle(t *testing.T) {
 	type args struct {
-		data *PreviewEntryData
+		entries []*PreviewEntry
 	}
 	type want struct {
 		title    string
@@ -264,43 +255,40 @@ func Test_getBarTitle(t *testing.T) {
 		{
 			name: "desired state 0",
 			args: args{
-				data: &PreviewEntryData{
-					header: previewEntryDataHeader,
-					entries: []*PreviewEntry{
-						{
-							entry: &entry{
-								LogGroupName:    "group0",
-								Region:          "ap-northeast-1",
-								Source:          "source0",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     0,
-								RetentionInDays: 9999,
-								StoredBytes:     1024,
-							},
-							BytesPerDay:     1024,
-							DesiredState:    0,
-							ReductionInDays: 1,
-							ReducibleBytes:  0,
-							RemainingBytes:  1024,
+				entries: []*PreviewEntry{
+					{
+						entry: &entry{
+							LogGroupName:    "group0",
+							Region:          "ap-northeast-1",
+							Source:          "source0",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     0,
+							RetentionInDays: 9999,
+							StoredBytes:     1024,
 						},
-						{
-							entry: &entry{
-								LogGroupName:    "group1",
-								Region:          "ap-northeast-2",
-								Source:          "source1",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     0,
-								RetentionInDays: 731,
-								StoredBytes:     0,
-							},
-							BytesPerDay:     0,
-							DesiredState:    0,
-							ReductionInDays: 0,
-							ReducibleBytes:  0,
-							RemainingBytes:  0,
+						BytesPerDay:     1024,
+						DesiredState:    0,
+						ReductionInDays: 1,
+						ReducibleBytes:  0,
+						RemainingBytes:  1024,
+					},
+					{
+						entry: &entry{
+							LogGroupName:    "group1",
+							Region:          "ap-northeast-2",
+							Source:          "source1",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     0,
+							RetentionInDays: 731,
+							StoredBytes:     0,
 						},
+						BytesPerDay:     0,
+						DesiredState:    0,
+						ReductionInDays: 0,
+						ReducibleBytes:  0,
+						RemainingBytes:  0,
 					},
 				},
 			},
@@ -312,43 +300,40 @@ func Test_getBarTitle(t *testing.T) {
 		{
 			name: "desired state 9999",
 			args: args{
-				data: &PreviewEntryData{
-					header: previewEntryDataHeader,
-					entries: []*PreviewEntry{
-						{
-							entry: &entry{
-								LogGroupName:    "group0",
-								Region:          "ap-northeast-1",
-								Source:          "source0",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     0,
-								RetentionInDays: 30,
-								StoredBytes:     1024,
-							},
-							BytesPerDay:     1024,
-							DesiredState:    9999,
-							ReductionInDays: 1,
-							ReducibleBytes:  0,
-							RemainingBytes:  1024,
+				entries: []*PreviewEntry{
+					{
+						entry: &entry{
+							LogGroupName:    "group0",
+							Region:          "ap-northeast-1",
+							Source:          "source0",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     0,
+							RetentionInDays: 30,
+							StoredBytes:     1024,
 						},
-						{
-							entry: &entry{
-								LogGroupName:    "group1",
-								Region:          "ap-northeast-2",
-								Source:          "source1",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     0,
-								RetentionInDays: 731,
-								StoredBytes:     0,
-							},
-							BytesPerDay:     0,
-							DesiredState:    9999,
-							ReductionInDays: 0,
-							ReducibleBytes:  0,
-							RemainingBytes:  0,
+						BytesPerDay:     1024,
+						DesiredState:    9999,
+						ReductionInDays: 1,
+						ReducibleBytes:  0,
+						RemainingBytes:  1024,
+					},
+					{
+						entry: &entry{
+							LogGroupName:    "group1",
+							Region:          "ap-northeast-2",
+							Source:          "source1",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     0,
+							RetentionInDays: 731,
+							StoredBytes:     0,
 						},
+						BytesPerDay:     0,
+						DesiredState:    9999,
+						ReductionInDays: 0,
+						ReducibleBytes:  0,
+						RemainingBytes:  0,
 					},
 				},
 			},
@@ -360,43 +345,40 @@ func Test_getBarTitle(t *testing.T) {
 		{
 			name: "desired state 365",
 			args: args{
-				data: &PreviewEntryData{
-					header: previewEntryDataHeader,
-					entries: []*PreviewEntry{
-						{
-							entry: &entry{
-								LogGroupName:    "group0",
-								Region:          "ap-northeast-1",
-								Source:          "source0",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     0,
-								RetentionInDays: 30,
-								StoredBytes:     1024,
-							},
-							BytesPerDay:     1024,
-							DesiredState:    365,
-							ReductionInDays: 1,
-							ReducibleBytes:  0,
-							RemainingBytes:  1024,
+				entries: []*PreviewEntry{
+					{
+						entry: &entry{
+							LogGroupName:    "group0",
+							Region:          "ap-northeast-1",
+							Source:          "source0",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     0,
+							RetentionInDays: 30,
+							StoredBytes:     1024,
 						},
-						{
-							entry: &entry{
-								LogGroupName:    "group1",
-								Region:          "ap-northeast-2",
-								Source:          "source1",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     0,
-								RetentionInDays: 731,
-								StoredBytes:     0,
-							},
-							BytesPerDay:     0,
-							DesiredState:    365,
-							ReductionInDays: 0,
-							ReducibleBytes:  0,
-							RemainingBytes:  0,
+						BytesPerDay:     1024,
+						DesiredState:    365,
+						ReductionInDays: 1,
+						ReducibleBytes:  0,
+						RemainingBytes:  1024,
+					},
+					{
+						entry: &entry{
+							LogGroupName:    "group1",
+							Region:          "ap-northeast-2",
+							Source:          "source1",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     0,
+							RetentionInDays: 731,
+							StoredBytes:     0,
 						},
+						BytesPerDay:     0,
+						DesiredState:    365,
+						ReductionInDays: 0,
+						ReducibleBytes:  0,
+						RemainingBytes:  0,
 					},
 				},
 			},
@@ -408,7 +390,7 @@ func Test_getBarTitle(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			title, subtitle := getBarTitle(tt.args.data)
+			title, subtitle := getBarTitle(tt.args.entries)
 			if title != tt.want.title {
 				t.Errorf("getBarTitle() got = %v, title %v", title, tt.want.title)
 			}
@@ -421,7 +403,7 @@ func Test_getBarTitle(t *testing.T) {
 
 func Test_getBarItems(t *testing.T) {
 	type args struct {
-		data *PreviewEntryData
+		entries []*PreviewEntry
 	}
 	type want struct {
 		names      []string
@@ -436,43 +418,40 @@ func Test_getBarItems(t *testing.T) {
 		{
 			name: "basic",
 			args: args{
-				data: &PreviewEntryData{
-					header: previewEntryDataHeader,
-					entries: []*PreviewEntry{
-						{
-							entry: &entry{
-								LogGroupName:    "group0",
-								Region:          "ap-northeast-1",
-								Source:          "source0",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     3000,
-								RetentionInDays: 2192,
-								StoredBytes:     6144,
-							},
-							BytesPerDay:     0,
-							DesiredState:    365,
-							ReductionInDays: 0,
-							ReducibleBytes:  5120,
-							RemainingBytes:  1024,
+				entries: []*PreviewEntry{
+					{
+						entry: &entry{
+							LogGroupName:    "group0",
+							Region:          "ap-northeast-1",
+							Source:          "source0",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     3000,
+							RetentionInDays: 2192,
+							StoredBytes:     6144,
 						},
-						{
-							entry: &entry{
-								LogGroupName:    "group1",
-								Region:          "ap-northeast-2",
-								Source:          "source1",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     3000,
-								RetentionInDays: 2192,
-								StoredBytes:     3072,
-							},
-							BytesPerDay:     0,
-							DesiredState:    365,
-							ReductionInDays: 0,
-							ReducibleBytes:  512,
-							RemainingBytes:  2560,
+						BytesPerDay:     0,
+						DesiredState:    365,
+						ReductionInDays: 0,
+						ReducibleBytes:  5120,
+						RemainingBytes:  1024,
+					},
+					{
+						entry: &entry{
+							LogGroupName:    "group1",
+							Region:          "ap-northeast-2",
+							Source:          "source1",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     3000,
+							RetentionInDays: 2192,
+							StoredBytes:     3072,
 						},
+						BytesPerDay:     0,
+						DesiredState:    365,
+						ReductionInDays: 0,
+						ReducibleBytes:  512,
+						RemainingBytes:  2560,
 					},
 				},
 			},
@@ -499,43 +478,40 @@ func Test_getBarItems(t *testing.T) {
 		{
 			name: "include zero",
 			args: args{
-				data: &PreviewEntryData{
-					header: previewEntryDataHeader,
-					entries: []*PreviewEntry{
-						{
-							entry: &entry{
-								LogGroupName:    "group0",
-								Region:          "ap-northeast-1",
-								Source:          "source0",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     3000,
-								RetentionInDays: 2192,
-								StoredBytes:     0,
-							},
-							BytesPerDay:     0,
-							DesiredState:    365,
-							ReductionInDays: 0,
-							ReducibleBytes:  0,
-							RemainingBytes:  0,
+				entries: []*PreviewEntry{
+					{
+						entry: &entry{
+							LogGroupName:    "group0",
+							Region:          "ap-northeast-1",
+							Source:          "source0",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     3000,
+							RetentionInDays: 2192,
+							StoredBytes:     0,
 						},
-						{
-							entry: &entry{
-								LogGroupName:    "group1",
-								Region:          "ap-northeast-2",
-								Source:          "source1",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     3000,
-								RetentionInDays: 2192,
-								StoredBytes:     3072,
-							},
-							BytesPerDay:     0,
-							DesiredState:    365,
-							ReductionInDays: 0,
-							ReducibleBytes:  512,
-							RemainingBytes:  2560,
+						BytesPerDay:     0,
+						DesiredState:    365,
+						ReductionInDays: 0,
+						ReducibleBytes:  0,
+						RemainingBytes:  0,
+					},
+					{
+						entry: &entry{
+							LogGroupName:    "group1",
+							Region:          "ap-northeast-2",
+							Source:          "source1",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     3000,
+							RetentionInDays: 2192,
+							StoredBytes:     3072,
 						},
+						BytesPerDay:     0,
+						DesiredState:    365,
+						ReductionInDays: 0,
+						ReducibleBytes:  512,
+						RemainingBytes:  2560,
 					},
 				},
 			},
@@ -556,77 +532,74 @@ func Test_getBarItems(t *testing.T) {
 		{
 			name: "others",
 			args: args{
-				data: &PreviewEntryData{
-					header: previewEntryDataHeader,
-					entries: []*PreviewEntry{
-						{
-							entry: &entry{
-								LogGroupName:    "group0",
-								Region:          "ap-northeast-1",
-								Source:          "source0",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     3000,
-								RetentionInDays: 2192,
-								StoredBytes:     6144,
-							},
-							BytesPerDay:     0,
-							DesiredState:    365,
-							ReductionInDays: 0,
-							ReducibleBytes:  5120,
-							RemainingBytes:  1024,
+				entries: []*PreviewEntry{
+					{
+						entry: &entry{
+							LogGroupName:    "group0",
+							Region:          "ap-northeast-1",
+							Source:          "source0",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     3000,
+							RetentionInDays: 2192,
+							StoredBytes:     6144,
 						},
-						{
-							entry: &entry{
-								LogGroupName:    "group1",
-								Region:          "ap-northeast-2",
-								Source:          "source1",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     3000,
-								RetentionInDays: 2192,
-								StoredBytes:     3072,
-							},
-							BytesPerDay:     0,
-							DesiredState:    365,
-							ReductionInDays: 0,
-							ReducibleBytes:  512,
-							RemainingBytes:  2560,
+						BytesPerDay:     0,
+						DesiredState:    365,
+						ReductionInDays: 0,
+						ReducibleBytes:  5120,
+						RemainingBytes:  1024,
+					},
+					{
+						entry: &entry{
+							LogGroupName:    "group1",
+							Region:          "ap-northeast-2",
+							Source:          "source1",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     3000,
+							RetentionInDays: 2192,
+							StoredBytes:     3072,
 						},
-						{
-							entry: &entry{
-								LogGroupName:    "group2",
-								Region:          "us-east-1",
-								Source:          "source2",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     3000,
-								RetentionInDays: 2192,
-								StoredBytes:     256,
-							},
-							BytesPerDay:     0,
-							DesiredState:    365,
-							ReductionInDays: 0,
-							ReducibleBytes:  512,
-							RemainingBytes:  256,
+						BytesPerDay:     0,
+						DesiredState:    365,
+						ReductionInDays: 0,
+						ReducibleBytes:  512,
+						RemainingBytes:  2560,
+					},
+					{
+						entry: &entry{
+							LogGroupName:    "group2",
+							Region:          "us-east-1",
+							Source:          "source2",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     3000,
+							RetentionInDays: 2192,
+							StoredBytes:     256,
 						},
-						{
-							entry: &entry{
-								LogGroupName:    "group3",
-								Region:          "us-east-1",
-								Source:          "source3",
-								Class:           types.LogGroupClassStandard,
-								CreatedAt:       time.Now(),
-								ElapsedDays:     3000,
-								RetentionInDays: 2192,
-								StoredBytes:     512,
-							},
-							BytesPerDay:     0,
-							DesiredState:    365,
-							ReductionInDays: 0,
-							ReducibleBytes:  512,
-							RemainingBytes:  0,
+						BytesPerDay:     0,
+						DesiredState:    365,
+						ReductionInDays: 0,
+						ReducibleBytes:  512,
+						RemainingBytes:  256,
+					},
+					{
+						entry: &entry{
+							LogGroupName:    "group3",
+							Region:          "us-east-1",
+							Source:          "source3",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       time.Now(),
+							ElapsedDays:     3000,
+							RetentionInDays: 2192,
+							StoredBytes:     512,
 						},
+						BytesPerDay:     0,
+						DesiredState:    365,
+						ReductionInDays: 0,
+						ReducibleBytes:  512,
+						RemainingBytes:  0,
 					},
 				},
 			},
@@ -659,7 +632,7 @@ func Test_getBarItems(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			names, remainings, reducibles := getBarItems(tt.args.data)
+			names, remainings, reducibles := getBarItems(tt.args.entries)
 			if !reflect.DeepEqual(names, tt.want.names) {
 				t.Errorf("getBarItems() names = %v, want %v", names, tt.want.names)
 			}

@@ -19,13 +19,43 @@ var (
 	MaxBarChartItems = 31
 )
 
-func getPieItems[E Entry, D EntryData[E]](data D) (string, []opts.PieData) {
+func renderChart(chart components.Charter) error {
+	var (
+		title = "llcm"
+		fname = fmt.Sprintf("%s.html", title)
+		i     = 1
+	)
+	for {
+		if _, err := os.Stat(fname); err != nil {
+			if os.IsNotExist(err) {
+				break
+			}
+			return err
+		}
+		fname = fmt.Sprintf("%s%d.html", title, i)
+		i++
+	}
+	f, err := os.Create(fname)
+	if err != nil {
+		return err
+	}
+	page := components.NewPage()
+	page.SetPageTitle(title)
+	page.AddCharts(chart)
+	if err := page.Render(io.MultiWriter(f)); err != nil {
+		return err
+	}
+	browser.OpenFile(fname) //nolint:errcheck
+	return nil
+}
+
+func getPieItems[E Entry](entries []E) (string, []opts.PieData) {
 	var (
 		othersTotal int64
 		items       = make([]opts.PieData, 0, MaxPieChartItems)
 		title       = "Stored bytes of log groups"
 	)
-	for i, entry := range data.Entries() {
+	for i, entry := range entries {
 		m := entry.DataSet()
 		v := m["storedBytes"]
 		if v == 0 {
@@ -87,39 +117,15 @@ func renderPieChart(pie *charts.Pie) error {
 	if pie == nil {
 		return nil
 	}
-	title := "llcm"
-	fname := "llcm.html"
-	i := 1
-	for {
-		if _, err := os.Stat(fname); err != nil {
-			if os.IsNotExist(err) {
-				break
-			}
-			return err
-		}
-		fname = fmt.Sprintf("%s%d.html", title, i)
-		i++
-	}
-	f, err := os.Create(fname)
-	if err != nil {
-		return err
-	}
-	page := components.NewPage()
-	page.SetPageTitle(title)
-	page.AddCharts(pie)
-	if err := page.Render(io.MultiWriter(f)); err != nil {
-		return err
-	}
-	browser.OpenFile(fname) //nolint:errcheck
-	return nil
+	return renderChart(pie)
 }
 
-func getBarTitle[E Entry, D EntryData[E]](data D) (string, string) {
+func getBarTitle[E Entry](entries []E) (string, string) {
 	var (
 		title    = "The simulation of reductions in log groups"
 		subtitle = ""
 	)
-	for _, entry := range data.Entries() {
+	for _, entry := range entries {
 		if subtitle != "" {
 			break
 		}
@@ -139,7 +145,7 @@ func getBarTitle[E Entry, D EntryData[E]](data D) (string, string) {
 	return title, subtitle
 }
 
-func getBarItems[E Entry, D EntryData[E]](data D) ([]string, []opts.BarData, []opts.BarData) {
+func getBarItems[E Entry](entries []E) ([]string, []opts.BarData, []opts.BarData) {
 	var (
 		rmOthersTotal int64
 		rdOthersTotal int64
@@ -147,7 +153,7 @@ func getBarItems[E Entry, D EntryData[E]](data D) ([]string, []opts.BarData, []o
 		rmbytes       = make([]opts.BarData, 0, MaxBarChartItems)
 		rdbytes       = make([]opts.BarData, 0, MaxBarChartItems)
 	)
-	for i, entry := range data.Entries() {
+	for i, entry := range entries {
 		var (
 			m   = entry.DataSet()
 			rmb = m["remainingBytes"]
@@ -221,29 +227,5 @@ func renderBarChart(bar *charts.Bar) error {
 	if bar == nil {
 		return nil
 	}
-	title := "llcm"
-	fname := "llcm.html"
-	i := 1
-	for {
-		if _, err := os.Stat(fname); err != nil {
-			if os.IsNotExist(err) {
-				break
-			}
-			return err
-		}
-		fname = fmt.Sprintf("%s%d.html", title, i)
-		i++
-	}
-	f, err := os.Create(fname)
-	if err != nil {
-		return err
-	}
-	page := components.NewPage()
-	page.SetPageTitle(title)
-	page.AddCharts(bar)
-	if err := page.Render(io.MultiWriter(f)); err != nil {
-		return err
-	}
-	browser.OpenFile(fname) //nolint:errcheck
-	return nil
+	return renderChart(bar)
 }

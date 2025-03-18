@@ -75,8 +75,11 @@ func (ren *Renderer[E, D]) toTable() error {
 }
 
 func (ren *Renderer[E, D]) toInput() mintab.Input {
-	data := make([][]any, len(ren.Data.Entries()))
-	for i, entry := range ren.Data.Entries() {
+	var (
+		entries = ren.Data.Entries()
+		data    = make([][]any, len(entries))
+	)
+	for i, entry := range entries {
 		data[i] = entry.toInput()
 	}
 	return mintab.Input{
@@ -86,7 +89,8 @@ func (ren *Renderer[E, D]) toInput() mintab.Input {
 }
 
 func (ren *Renderer[E, D]) toTSV() error {
-	if len(ren.Data.Entries()) == 0 {
+	entries := ren.Data.Entries()
+	if len(entries) == 0 {
 		return nil
 	}
 	w := csv.NewWriter(ren.w)
@@ -94,7 +98,7 @@ func (ren *Renderer[E, D]) toTSV() error {
 	if err := w.Write(ren.Data.Header()); err != nil {
 		return err
 	}
-	for _, entry := range ren.Data.Entries() {
+	for _, entry := range entries {
 		if err := w.Write(entry.toTSV()); err != nil {
 			return err
 		}
@@ -104,14 +108,15 @@ func (ren *Renderer[E, D]) toTSV() error {
 }
 
 func (ren *Renderer[E, D]) toChart() error {
+	entries := ren.Data.Entries()
 	switch ren.Data.entryType() {
 	case 0:
-		title, items := getPieItems(ren.Data)
+		title, items := getPieItems(entries)
 		pie := newPieChart(title, items)
 		return renderPieChart(pie)
 	case 1:
-		title, subtitle := getBarTitle(ren.Data)
-		lnames, rmbytes, rdbytes := getBarItems(ren.Data)
+		title, subtitle := getBarTitle(entries)
+		lnames, rmbytes, rdbytes := getBarItems(entries)
 		bar := newBarChart(title, subtitle, lnames, rmbytes, rdbytes)
 		return renderBarChart(bar)
 	default:
