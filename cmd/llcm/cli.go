@@ -76,7 +76,7 @@ func newApp(w, ew io.Writer) *app {
 	}
 	a.App = &cli.App{
 		Name:                 name,
-		Version:              version(),
+		Version:              getVersion(),
 		Usage:                "AWS Log groups lifecycle manager",
 		Description:          "A listing, updating, and deleting tool to manage the lifecycle of Amazon CloudWatch Logs.\nIt handles multiple regions fast while avoiding throttling. It can also return simulation\nresults based on the desired state.",
 		HideHelpCommand:      true,

@@ -6,9 +6,9 @@ import (
 
 // TestMain is the entry point of the test.
 func TestMain(m *testing.M) {
-	revision := Revision
+	original := revision
 	defer func() {
-		Revision = revision
+		revision = original
 	}()
 	m.Run()
 }

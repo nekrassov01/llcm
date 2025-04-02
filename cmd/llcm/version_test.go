@@ -15,19 +15,19 @@ func Test_version(t *testing.T) {
 		{
 			name:     "basic",
 			revision: "1234567",
-			want:     fmt.Sprintf("%s (revision: 1234567)", Version),
+			want:     fmt.Sprintf("%s (revision: 1234567)", version),
 		},
 		{
 			name:     "no revision",
-			version:  Version,
+			version:  version,
 			revision: "",
-			want:     Version,
+			want:     version,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			Revision = tt.revision
-			if got := version(); got != tt.want {
+			revision = tt.revision
+			if got := getVersion(); got != tt.want {
 				t.Errorf("version() = %v, want %v", got, tt.want)
 			}
 		})
