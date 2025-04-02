@@ -5,93 +5,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs/types"
 	"github.com/google/go-cmp/cmp"
 )
-
-var errData = ListEntryData{
-	header: previewEntryDataHeader,
-	entries: []*ListEntry{
-		{
-			entry: &entry{},
-		},
-	},
-}
-
-var listEntryData = ListEntryData{
-	header: listEntryDataHeader,
-	entries: []*ListEntry{
-		{
-			entry: &entry{
-				LogGroupName:    "group0",
-				Region:          "ap-northeast-1",
-				Source:          "source0",
-				Class:           types.LogGroupClassStandard,
-				CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
-				ElapsedDays:     90,
-				RetentionInDays: 30,
-				StoredBytes:     1024,
-				name:            aws.String("group0"),
-			},
-		},
-		{
-			entry: &entry{
-				LogGroupName:    "group1",
-				Region:          "ap-northeast-2",
-				Source:          "source1",
-				Class:           types.LogGroupClassInfrequentAccess,
-				CreatedAt:       mustTime("2024-04-01T00:00:00Z"),
-				ElapsedDays:     365,
-				RetentionInDays: 30,
-				StoredBytes:     2048,
-				name:            aws.String("group1"),
-			},
-		},
-	},
-}
-
-var previewEntryData = PreviewEntryData{
-	header: previewEntryDataHeader,
-	entries: []*PreviewEntry{
-		{
-			BytesPerDay:     0,
-			DesiredState:    0,
-			ReductionInDays: 0,
-			ReducibleBytes:  0,
-			RemainingBytes:  0,
-			entry: &entry{
-				LogGroupName:    "group0",
-				Region:          "ap-northeast-1",
-				Source:          "source0",
-				Class:           types.LogGroupClassStandard,
-				CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
-				ElapsedDays:     90,
-				RetentionInDays: 30,
-				StoredBytes:     1024,
-				name:            aws.String("group0"),
-			},
-		},
-		{
-			BytesPerDay:     100,
-			DesiredState:    100,
-			ReductionInDays: 100,
-			ReducibleBytes:  100,
-			RemainingBytes:  100,
-			entry: &entry{
-				LogGroupName:    "group1",
-				Region:          "ap-northeast-2",
-				Source:          "source1",
-				Class:           types.LogGroupClassInfrequentAccess,
-				CreatedAt:       mustTime("2024-04-01T00:00:00Z"),
-				ElapsedDays:     365,
-				RetentionInDays: 30,
-				StoredBytes:     2048,
-				name:            aws.String("group1"),
-			},
-		},
-	},
-}
 
 func TestNewRenderer(t *testing.T) {
 	type args struct {
@@ -470,6 +385,96 @@ group1	ap-northeast-2	source1	INFREQUENT_ACCESS	2024-04-01T00:00:00Z	365	30	2048
 			}
 			if got := w.String(); got != tt.want {
 				t.Errorf("Renderer.Render() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRenderer_toChart1(t *testing.T) {
+	type fields struct {
+		Data       *ListEntryData
+		OutputType OutputType
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		wantErr bool
+	}{
+		{
+			name: "list",
+			fields: fields{
+				Data:       &listEntryData,
+				OutputType: OutputTypeChart,
+			},
+			wantErr: false,
+		},
+		{
+			name: "nil",
+			fields: fields{
+				Data:       &ListEntryData{},
+				OutputType: OutputTypeChart,
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			w := &bytes.Buffer{}
+			ren := &Renderer[*ListEntry, *ListEntryData]{
+				Data:       tt.fields.Data,
+				OutputType: tt.fields.OutputType,
+				w:          w,
+			}
+			if err := ren.toChart(); (err != nil) != tt.wantErr {
+				t.Errorf("Renderer.toChart() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if err := ren.toChart(); (err != nil) != tt.wantErr {
+				t.Errorf("Renderer.toChart() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestRenderer_toChart2(t *testing.T) {
+	type fields struct {
+		Data       *PreviewEntryData
+		OutputType OutputType
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		wantErr bool
+	}{
+		{
+			name: "list",
+			fields: fields{
+				Data:       &previewEntryData,
+				OutputType: OutputTypeChart,
+			},
+			wantErr: false,
+		},
+		{
+			name: "nil",
+			fields: fields{
+				Data:       &PreviewEntryData{},
+				OutputType: OutputTypeChart,
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			w := &bytes.Buffer{}
+			ren := &Renderer[*PreviewEntry, *PreviewEntryData]{
+				Data:       tt.fields.Data,
+				OutputType: tt.fields.OutputType,
+				w:          w,
+			}
+			if err := ren.toChart(); (err != nil) != tt.wantErr {
+				t.Errorf("Renderer.toChart() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if err := ren.toChart(); (err != nil) != tt.wantErr {
+				t.Errorf("Renderer.toChart() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

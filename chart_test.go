@@ -7,15 +7,100 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs/types"
 	"github.com/go-echarts/go-echarts/v2/charts"
+	"github.com/go-echarts/go-echarts/v2/components"
 	"github.com/go-echarts/go-echarts/v2/opts"
 )
+
+func Test_render(t *testing.T) {
+	type args struct {
+		chart components.Charter
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "pie",
+			args: args{
+				chart: newPieChart([]opts.PieData{
+					{
+						Name:  "group1",
+						Value: float64(8192),
+					},
+					{
+						Name:  "group0",
+						Value: float64(2048),
+					},
+					{
+						Name:  "others",
+						Value: float64(512),
+					},
+				}),
+			},
+			wantErr: false,
+		},
+		{
+			name: "bar",
+			args: args{
+				chart: newBarChart(
+					"Desired state: Change retention to 365 days",
+					[]string{"/aws/lambda/loggroup1-0123456789abcdef", "/aws/lambda/loggroup2-0123456789abcdef", "/aws/lambda/loggroup0-0123456789abcdef", "others"},
+					[]opts.BarData{
+						{
+							Name:  "/aws/lambda/loggroup1-0123456789abcdef",
+							Value: float64(2048),
+						},
+						{
+							Name:  "/aws/lambda/loggroup2-0123456789abcdef",
+							Value: float64(1024),
+						},
+						{
+							Name:  "/aws/lambda/loggroup0-0123456789abcdef",
+							Value: float64(2048),
+						},
+						{
+							Name:  "others",
+							Value: float64(128),
+						},
+					},
+					[]opts.BarData{
+						{
+							Name:  "/aws/lambda/loggroup1-0123456789abcdef",
+							Value: float64(6144),
+						},
+						{
+							Name:  "/aws/lambda/loggroup2-0123456789abcdef",
+							Value: float64(3072),
+						},
+						{
+							Name:  "/aws/lambda/loggroup0-0123456789abcdef",
+							Value: float64(0),
+						},
+						{
+							Name:  "others",
+							Value: float64(384),
+						},
+					},
+				),
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := render(tt.args.chart); (err != nil) != tt.wantErr {
+				t.Errorf("render() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
 
 func Test_getPieItems(t *testing.T) {
 	type args struct {
 		entries []*ListEntry
 	}
 	type want struct {
-		title string
 		items []opts.PieData
 	}
 	tests := []struct {
@@ -54,7 +139,6 @@ func Test_getPieItems(t *testing.T) {
 				},
 			},
 			want: want{
-				title: "Stored bytes of log groups",
 				items: []opts.PieData{
 					{
 						Name:  "group0",
@@ -98,7 +182,6 @@ func Test_getPieItems(t *testing.T) {
 				},
 			},
 			want: want{
-				title: "Stored bytes of log groups",
 				items: []opts.PieData{
 					{
 						Name:  "group1",
@@ -162,7 +245,6 @@ func Test_getPieItems(t *testing.T) {
 				},
 			},
 			want: want{
-				title: "Stored bytes of log groups",
 				items: []opts.PieData{
 					{
 						Name:  "group0",
@@ -182,10 +264,7 @@ func Test_getPieItems(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			title, items := getPieItems(tt.args.entries)
-			if title != tt.want.title {
-				t.Errorf("getPieItems() title = %v, want %v", title, tt.want)
-			}
+			items := getPieItems(tt.args.entries)
 			if !reflect.DeepEqual(items, tt.want.items) {
 				t.Errorf("getPieItems() items = %v, want %v", items, tt.want.items)
 			}
@@ -193,53 +272,33 @@ func Test_getPieItems(t *testing.T) {
 	}
 }
 
-func Test_renderPieChart(t *testing.T) {
+func Test_newPieChart(t *testing.T) {
 	type args struct {
-		pie *charts.Pie
+		items []opts.PieData
 	}
 	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
+		name string
+		args args
+		want *charts.Pie
 	}{
-		{
-			name: "basic",
-			args: args{
-				pie: newPieChart("Stored bytes of log groups", []opts.PieData{
-					{
-						Name:  "group1",
-						Value: float64(8192),
-					},
-					{
-						Name:  "group0",
-						Value: float64(2048),
-					},
-					{
-						Name:  "others",
-						Value: float64(512),
-					},
-				}),
-			},
-			wantErr: false,
-		},
 		{
 			name: "nil",
 			args: args{
-				pie: newPieChart("Stored bytes of log groups", nil),
+				items: []opts.PieData{},
 			},
-			wantErr: false,
+			want: nil,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := renderPieChart(tt.args.pie); (err != nil) != tt.wantErr {
-				t.Errorf("renderPieChart() error = %v, wantErr %v", err, tt.wantErr)
+			if got := newPieChart(tt.args.items); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("newPieChart() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_getBarTitle(t *testing.T) {
+func Test_getBarSubtitle(t *testing.T) {
 	type args struct {
 		entries []*PreviewEntry
 	}
@@ -390,10 +449,7 @@ func Test_getBarTitle(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			title, subtitle := getBarTitle(tt.args.entries)
-			if title != tt.want.title {
-				t.Errorf("getBarTitle() got = %v, title %v", title, tt.want.title)
-			}
+			subtitle := getBarSubtitle(tt.args.entries)
 			if subtitle != tt.want.subtitle {
 				t.Errorf("getBarTitle() subtitle = %v, subtitle %v", subtitle, tt.want.subtitle)
 			}
@@ -646,74 +702,63 @@ func Test_getBarItems(t *testing.T) {
 	}
 }
 
-func Test_renderBarChart(t *testing.T) {
+func Test_newBarChart(t *testing.T) {
 	type args struct {
-		bar *charts.Bar
+		remainings []opts.BarData
+		reducibles []opts.BarData
 	}
 	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
+		name string
+		args args
+		want *charts.Bar
 	}{
 		{
-			name: "delete log groups",
+			name: "nil 1",
 			args: args{
-				bar: newBarChart(
-					"The simulation of reductions in log groups",
-					"Desired state: Change retention to 365 days",
-					[]string{"/aws/lambda/loggroup1-0123456789abcdef", "/aws/lambda/loggroup2-0123456789abcdef", "/aws/lambda/loggroup0-0123456789abcdef", "others"},
-					[]opts.BarData{
-						{
-							Name:  "/aws/lambda/loggroup1-0123456789abcdef",
-							Value: float64(2048),
-						},
-						{
-							Name:  "/aws/lambda/loggroup2-0123456789abcdef",
-							Value: float64(1024),
-						},
-						{
-							Name:  "/aws/lambda/loggroup0-0123456789abcdef",
-							Value: float64(2048),
-						},
-						{
-							Name:  "others",
-							Value: float64(128),
-						},
-					},
-					[]opts.BarData{
-						{
-							Name:  "/aws/lambda/loggroup1-0123456789abcdef",
-							Value: float64(6144),
-						},
-						{
-							Name:  "/aws/lambda/loggroup2-0123456789abcdef",
-							Value: float64(3072),
-						},
-						{
-							Name:  "/aws/lambda/loggroup0-0123456789abcdef",
-							Value: float64(0),
-						},
-						{
-							Name:  "others",
-							Value: float64(384),
-						},
-					},
-				),
+				remainings: []opts.BarData{},
+				reducibles: []opts.BarData{},
 			},
-			wantErr: false,
+			want: nil,
 		},
 		{
-			name: "nil",
+			name: "nil 2",
 			args: args{
-				bar: newBarChart("The simulation of reductions in log groups", "", nil, nil, nil),
+				remainings: []opts.BarData{
+					{
+						Name:  "name1",
+						Value: int64(1024),
+					},
+					{
+						Name:  "name2",
+						Value: int64(2048),
+					},
+				},
+				reducibles: []opts.BarData{},
 			},
-			wantErr: false,
+			want: nil,
+		},
+		{
+			name: "nil 3",
+			args: args{
+				remainings: []opts.BarData{},
+				reducibles: []opts.BarData{
+					{
+						Name:  "name1",
+						Value: int64(1024),
+					},
+					{
+						Name:  "name2",
+						Value: int64(2048),
+					},
+				},
+			},
+			want: nil,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := renderBarChart(tt.args.bar); (err != nil) != tt.wantErr {
-				t.Errorf("renderBarChart() error = %v, wantErr %v", err, tt.wantErr)
+			if got := newBarChart("title", []string{"name1", "name2"}, tt.args.remainings, tt.args.reducibles); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("newBarChart() = %v, want %v", got, tt.want)
 			}
 		})
 	}

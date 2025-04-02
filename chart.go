@@ -12,17 +12,28 @@ import (
 )
 
 var (
+	// PageTitle is the title of the HTML page.
+	PageTitle = "llcm"
+
+	// BaseName is the base name of the HTML file.
+	BaseName = "llcm"
+
 	// MaxPieChartItems is the maximum number of items in a pie chart.
 	MaxPieChartItems = 11
 
 	// MaxBarChartItems is the maximum number of items in a bar chart.
 	MaxBarChartItems = 31
+
+	// PieChartTitle is the title of the pie chart.
+	PieChartTitle = "Stored bytes of log groups"
+
+	// barChartTitle is the title of the bar chart.
+	BarChartTitle = "The simulation of reductions in log groups"
 )
 
-func renderChart(chart components.Charter) error {
+func render(chart components.Charter) error {
 	var (
-		title = "llcm"
-		fname = fmt.Sprintf("%s.html", title)
+		fname = fmt.Sprintf("%s.html", BaseName)
 		i     = 1
 	)
 	for {
@@ -32,7 +43,7 @@ func renderChart(chart components.Charter) error {
 			}
 			return err
 		}
-		fname = fmt.Sprintf("%s%d.html", title, i)
+		fname = fmt.Sprintf("%s%d.html", BaseName, i)
 		i++
 	}
 	f, err := os.Create(fname)
@@ -40,7 +51,7 @@ func renderChart(chart components.Charter) error {
 		return err
 	}
 	page := components.NewPage()
-	page.SetPageTitle(title)
+	page.SetPageTitle(PageTitle)
 	page.AddCharts(chart)
 	if err := page.Render(io.MultiWriter(f)); err != nil {
 		return err
@@ -49,15 +60,17 @@ func renderChart(chart components.Charter) error {
 	return nil
 }
 
-func getPieItems[E Entry](entries []E) (string, []opts.PieData) {
+func getPieItems[E Entry](entries []E) []opts.PieData {
+	if len(entries) == 0 {
+		return nil
+	}
 	var (
 		othersTotal int64
 		items       = make([]opts.PieData, 0, MaxPieChartItems)
-		title       = "Stored bytes of log groups"
 	)
 	for i, entry := range entries {
 		m := entry.DataSet()
-		v := m["storedBytes"]
+		v := m[storedBytesLabel]
 		if v == 0 {
 			continue
 		}
@@ -78,10 +91,10 @@ func getPieItems[E Entry](entries []E) (string, []opts.PieData) {
 		}
 		items = append(items, item)
 	}
-	return title, items
+	return items
 }
 
-func newPieChart(title string, items []opts.PieData) *charts.Pie {
+func newPieChart(items []opts.PieData) *charts.Pie {
 	if len(items) == 0 {
 		return nil
 	}
@@ -93,7 +106,7 @@ func newPieChart(title string, items []opts.PieData) *charts.Pie {
 			Height: "720px",
 		}),
 		charts.WithTitleOpts(opts.Title{
-			Title: title,
+			Title: PieChartTitle,
 			Left:  "center",
 		}),
 		charts.WithLegendOpts(opts.Legend{
@@ -113,25 +126,18 @@ func newPieChart(title string, items []opts.PieData) *charts.Pie {
 	return pie
 }
 
-func renderPieChart(pie *charts.Pie) error {
-	if pie == nil {
-		return nil
+func getBarSubtitle[E Entry](entries []E) string {
+	if len(entries) == 0 {
+		return ""
 	}
-	return renderChart(pie)
-}
-
-func getBarTitle[E Entry](entries []E) (string, string) {
-	var (
-		title    = "The simulation of reductions in log groups"
-		subtitle = ""
-	)
+	subtitle := ""
 	for _, entry := range entries {
 		if subtitle != "" {
 			break
 		}
 		var (
 			m = entry.DataSet()
-			d = m["desiredState"]
+			d = m[desiredStateLabel]
 		)
 		switch d {
 		case 0:
@@ -142,10 +148,13 @@ func getBarTitle[E Entry](entries []E) (string, string) {
 			subtitle = fmt.Sprintf("Desired state: Change retention to %d days", d)
 		}
 	}
-	return title, subtitle
+	return subtitle
 }
 
 func getBarItems[E Entry](entries []E) ([]string, []opts.BarData, []opts.BarData) {
+	if len(entries) == 0 {
+		return nil, nil, nil
+	}
 	var (
 		rmOthersTotal int64
 		rdOthersTotal int64
@@ -156,10 +165,10 @@ func getBarItems[E Entry](entries []E) ([]string, []opts.BarData, []opts.BarData
 	for i, entry := range entries {
 		var (
 			m   = entry.DataSet()
-			rmb = m["remainingBytes"]
-			rdb = m["reducibleBytes"]
+			rmb = m[remainingBytesLabel]
+			rdb = m[reducibleBytesLabel]
 		)
-		if m["storedBytes"] == 0 {
+		if m[storedBytesLabel] == 0 {
 			continue
 		}
 		if i < MaxBarChartItems-1 {
@@ -179,8 +188,8 @@ func getBarItems[E Entry](entries []E) ([]string, []opts.BarData, []opts.BarData
 	return lnames, rmbytes, rdbytes
 }
 
-func newBarChart(title, subtitle string, names []string, remainings, reducibles []opts.BarData) *charts.Bar {
-	if len(remainings) == 0 && len(reducibles) == 0 {
+func newBarChart(subtitle string, names []string, remainings, reducibles []opts.BarData) *charts.Bar {
+	if len(remainings) == 0 || len(reducibles) == 0 {
 		return nil
 	}
 	bar := charts.NewBar()
@@ -191,7 +200,7 @@ func newBarChart(title, subtitle string, names []string, remainings, reducibles 
 			Height: "900px",
 		}),
 		charts.WithTitleOpts(opts.Title{
-			Title:    title,
+			Title:    BarChartTitle,
 			Subtitle: subtitle,
 			Left:     "center",
 		}),
@@ -221,11 +230,4 @@ func newBarChart(title, subtitle string, names []string, remainings, reducibles 
 		}),
 	)
 	return bar
-}
-
-func renderBarChart(bar *charts.Bar) error {
-	if bar == nil {
-		return nil
-	}
-	return renderChart(bar)
 }

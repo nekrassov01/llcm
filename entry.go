@@ -8,6 +8,14 @@ import (
 )
 
 var (
+	retentionInDaysLabel = "retentionInDays"
+	storedBytesLabel     = "storedBytes"
+	desiredStateLabel    = "desiredState"
+	reducibleBytesLabel  = "reducibleBytes"
+	remainingBytesLabel  = "remainingBytes"
+)
+
+var (
 	_ Entry = (*ListEntry)(nil)
 	_ Entry = (*PreviewEntry)(nil)
 )
@@ -52,9 +60,8 @@ type ListEntry struct {
 // DataSet returns map for plotting the chart.
 func (e *ListEntry) DataSet() map[string]int64 {
 	return map[string]int64{
-		"entryType":       0,
-		"retentionInDays": e.RetentionInDays,
-		"storedBytes":     e.StoredBytes,
+		retentionInDaysLabel: e.RetentionInDays,
+		storedBytesLabel:     e.StoredBytes,
 	}
 }
 
@@ -99,12 +106,11 @@ type PreviewEntry struct {
 // DataSet returns map for plotting the chart.
 func (e *PreviewEntry) DataSet() map[string]int64 {
 	return map[string]int64{
-		"entryType":       1,
-		"retentionInDays": e.RetentionInDays,
-		"storedBytes":     e.StoredBytes,
-		"desiredState":    e.DesiredState,
-		"reducibleBytes":  e.ReducibleBytes,
-		"remainingBytes":  e.RemainingBytes,
+		retentionInDaysLabel: e.RetentionInDays,
+		storedBytesLabel:     e.StoredBytes,
+		desiredStateLabel:    e.DesiredState,
+		reducibleBytesLabel:  e.ReducibleBytes,
+		remainingBytesLabel:  e.RemainingBytes,
 	}
 }
 

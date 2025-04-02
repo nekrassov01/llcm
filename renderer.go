@@ -67,25 +67,11 @@ func (ren *Renderer[E, D]) toTable() error {
 		opt = mintab.WithFormat(mintab.BacklogFormat)
 	}
 	table := mintab.New(ren.w, opt)
-	if err := table.Load(ren.toInput()); err != nil {
+	if err := table.Load(ren.getInput()); err != nil {
 		return err
 	}
 	table.Render()
 	return nil
-}
-
-func (ren *Renderer[E, D]) toInput() mintab.Input {
-	var (
-		entries = ren.Data.Entries()
-		data    = make([][]any, len(entries))
-	)
-	for i, entry := range entries {
-		data[i] = entry.toInput()
-	}
-	return mintab.Input{
-		Header: ren.Data.Header(),
-		Data:   data,
-	}
 }
 
 func (ren *Renderer[E, D]) toTSV() error {
@@ -108,18 +94,25 @@ func (ren *Renderer[E, D]) toTSV() error {
 }
 
 func (ren *Renderer[E, D]) toChart() error {
-	entries := ren.Data.Entries()
-	switch ren.Data.entryType() {
-	case 0:
-		title, items := getPieItems(entries)
-		pie := newPieChart(title, items)
-		return renderPieChart(pie)
-	case 1:
-		title, subtitle := getBarTitle(entries)
-		lnames, rmbytes, rdbytes := getBarItems(entries)
-		bar := newBarChart(title, subtitle, lnames, rmbytes, rdbytes)
-		return renderBarChart(bar)
-	default:
+	if len(ren.Data.Entries()) == 0 {
 		return nil
+	}
+	return ren.Data.Chart()
+}
+
+func (ren *Renderer[E, D]) getInput() mintab.Input {
+	var (
+		entries = ren.Data.Entries()
+		data    = make([][]any, len(entries))
+	)
+	if len(entries) == 0 {
+		return mintab.Input{}
+	}
+	for i, entry := range entries {
+		data[i] = entry.toInput()
+	}
+	return mintab.Input{
+		Header: ren.Data.Header(),
+		Data:   data,
 	}
 }

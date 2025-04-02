@@ -52,7 +52,7 @@ type EntryData[T Entry] interface {
 	Header() []string
 	Entries() []T
 	Total() map[string]int64
-	entryType() int64
+	Chart() error
 }
 
 // ListEntryData represents the collection of ListEntry.
@@ -70,6 +70,9 @@ func (d *ListEntryData) Header() []string {
 
 // Entries returns the entries of the ListEntryData.
 func (d *ListEntryData) Entries() []*ListEntry {
+	if len(d.entries) == 0 {
+		return nil
+	}
 	return d.entries
 }
 
@@ -80,9 +83,17 @@ func (d *ListEntryData) Total() map[string]int64 {
 	}
 }
 
-// entryType returns the type of the ListEntryData.
-func (d *ListEntryData) entryType() int64 {
-	return 0
+// Chart generates a pie chart for the ListEntryData.
+func (d *ListEntryData) Chart() error {
+	if len(d.entries) == 0 {
+		return nil
+	}
+	items := getPieItems(d.entries)
+	chart := newPieChart(items)
+	if chart == nil {
+		return nil
+	}
+	return render(chart)
 }
 
 // PreviewEntryData represents the collection of PreviewEntry.
@@ -102,6 +113,9 @@ func (d *PreviewEntryData) Header() []string {
 
 // Entries returns the entries of the PreviewEntryData.
 func (d *PreviewEntryData) Entries() []*PreviewEntry {
+	if len(d.entries) == 0 {
+		return nil
+	}
 	return d.entries
 }
 
@@ -114,7 +128,16 @@ func (d *PreviewEntryData) Total() map[string]int64 {
 	}
 }
 
-// entryType returns the type of the PreviewEntryData.
-func (d *PreviewEntryData) entryType() int64 {
-	return 1
+// Chart generates a bar chart for the PreviewEntryData.
+func (d *PreviewEntryData) Chart() error {
+	if len(d.entries) == 0 {
+		return nil
+	}
+	subtitle := getBarSubtitle(d.entries)
+	lnames, rmbytes, rdbytes := getBarItems(d.entries)
+	chart := newBarChart(subtitle, lnames, rmbytes, rdbytes)
+	if chart == nil {
+		return nil
+	}
+	return render(chart)
 }

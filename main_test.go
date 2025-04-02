@@ -3,6 +3,9 @@ package llcm
 import (
 	"testing"
 	"time"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs/types"
 )
 
 // TestMain is the entry point of the test.
@@ -63,4 +66,90 @@ func mustUnixMilli(s string) int64 {
 		panic(err)
 	}
 	return t.UnixMilli()
+}
+
+// errData is a test data for ListEntryData of error case.
+var errData = ListEntryData{
+	header: previewEntryDataHeader,
+	entries: []*ListEntry{
+		{
+			entry: &entry{},
+		},
+	},
+}
+
+// listEntryData is a test data for ListEntryData.
+var listEntryData = ListEntryData{
+	header: listEntryDataHeader,
+	entries: []*ListEntry{
+		{
+			entry: &entry{
+				LogGroupName:    "group0",
+				Region:          "ap-northeast-1",
+				Source:          "source0",
+				Class:           types.LogGroupClassStandard,
+				CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
+				ElapsedDays:     90,
+				RetentionInDays: 30,
+				StoredBytes:     1024,
+				name:            aws.String("group0"),
+			},
+		},
+		{
+			entry: &entry{
+				LogGroupName:    "group1",
+				Region:          "ap-northeast-2",
+				Source:          "source1",
+				Class:           types.LogGroupClassInfrequentAccess,
+				CreatedAt:       mustTime("2024-04-01T00:00:00Z"),
+				ElapsedDays:     365,
+				RetentionInDays: 30,
+				StoredBytes:     2048,
+				name:            aws.String("group1"),
+			},
+		},
+	},
+}
+
+// previewEntryData is a test data for PreviewEntryData.
+var previewEntryData = PreviewEntryData{
+	header: previewEntryDataHeader,
+	entries: []*PreviewEntry{
+		{
+			BytesPerDay:     0,
+			DesiredState:    0,
+			ReductionInDays: 0,
+			ReducibleBytes:  0,
+			RemainingBytes:  0,
+			entry: &entry{
+				LogGroupName:    "group0",
+				Region:          "ap-northeast-1",
+				Source:          "source0",
+				Class:           types.LogGroupClassStandard,
+				CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
+				ElapsedDays:     90,
+				RetentionInDays: 30,
+				StoredBytes:     1024,
+				name:            aws.String("group0"),
+			},
+		},
+		{
+			BytesPerDay:     100,
+			DesiredState:    100,
+			ReductionInDays: 100,
+			ReducibleBytes:  100,
+			RemainingBytes:  100,
+			entry: &entry{
+				LogGroupName:    "group1",
+				Region:          "ap-northeast-2",
+				Source:          "source1",
+				Class:           types.LogGroupClassInfrequentAccess,
+				CreatedAt:       mustTime("2024-04-01T00:00:00Z"),
+				ElapsedDays:     365,
+				RetentionInDays: 30,
+				StoredBytes:     2048,
+				name:            aws.String("group1"),
+			},
+		},
+	},
 }
