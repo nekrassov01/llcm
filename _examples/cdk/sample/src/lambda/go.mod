@@ -4,7 +4,7 @@ go 1.23.6
 
 require (
 	github.com/aws/aws-lambda-go v1.47.0
-	github.com/nekrassov01/llcm v0.0.11
+	github.com/nekrassov01/llcm v0.0.14
 )
 
 require (
@@ -23,8 +23,11 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.28.14 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.33.14 // indirect
 	github.com/aws/smithy-go v1.22.2 // indirect
+	github.com/go-echarts/go-echarts/v2 v2.5.0 // indirect
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/nekrassov01/mintab v0.0.57 // indirect
+	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	golang.org/x/sync v0.10.0 // indirect
+	golang.org/x/sys v0.19.0 // indirect
 )
