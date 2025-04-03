@@ -75,16 +75,18 @@ export class Schedule extends Construct {
       assumedBy: new cdk.aws_iam.ServicePrincipal("scheduler.amazonaws.com"),
     });
 
-    new cdk.aws_scheduler.CfnSchedule(this, "Schedule", {
-      flexibleTimeWindow: {
-        mode: "OFF",
-      },
-      scheduleExpression: "cron(0 0 1 * ? *)",
-      target: {
-        arn: props.alias.functionArn,
-        roleArn: role.roleArn,
-        input: undefined,
-      },
+    new cdk.aws_scheduler.Schedule(this, "Schedule", {
+      schedule: cdk.aws_scheduler.ScheduleExpression.cron({
+        minute: "0",
+        hour: "0",
+        day: "1",
+        month: "*",
+        year: "*",
+        timeZone: cdk.TimeZone.ASIA_TOKYO,
+      }),
+      target: new cdk.aws_scheduler_targets.LambdaInvoke(props.alias, {
+        role: role,
+      }),
     });
   }
 }
