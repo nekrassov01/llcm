@@ -57,7 +57,7 @@ build: clean
 #  check
 # --------
 
-check: test cover bench lint vuln clean
+check: test cover bench lint vuln
 
 test:
 	go test -race -cover -v ./... -coverprofile=cover.out -covermode=atomic
@@ -66,7 +66,7 @@ cover:
 	go tool cover -html=cover.out -o cover.html
 
 bench:
-	go test -run=^$$ -bench=. -benchmem -count 5 -cpuprofile=cpu.prof -memprofile=mem.prof
+	go test -run=^$$ -bench=. -benchmem -count 10 -benchtime=10000x -cpuprofile=cpu.prof -memprofile=mem.prof
 
 lint: deps-lint
 	golangci-lint run ./... -v
