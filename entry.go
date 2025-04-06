@@ -176,10 +176,7 @@ func (e *PreviewEntry) setBytesPerDay() {
 		e.BytesPerDay = e.StoredBytes
 		return
 	}
-	retentionInDays := e.RetentionInDays
-	if retentionInDays >= e.ElapsedDays {
-		retentionInDays = e.ElapsedDays
-	}
+	retentionInDays := min(e.RetentionInDays, e.ElapsedDays)
 	if retentionInDays <= int64(DesiredStateZero) {
 		e.BytesPerDay = e.StoredBytes
 		return
@@ -214,10 +211,7 @@ func (e *PreviewEntry) setReductionInDays() {
 		}
 		return
 	}
-	retentionInDays := e.RetentionInDays
-	if retentionInDays >= e.ElapsedDays {
-		retentionInDays = e.ElapsedDays
-	}
+	retentionInDays := min(e.RetentionInDays, e.ElapsedDays)
 	if retentionInDays > e.DesiredState {
 		e.ReductionInDays = retentionInDays - e.DesiredState
 		return

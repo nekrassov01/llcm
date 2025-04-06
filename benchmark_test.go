@@ -64,8 +64,7 @@ func prepare(n int, regions []string) *Manager {
 
 func BenchmarkList(b *testing.B) {
 	man := prepare(benchN, benchR)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		_, err := man.List()
 		if err != nil {
 			b.Fatal(err)
@@ -75,8 +74,7 @@ func BenchmarkList(b *testing.B) {
 
 func BenchmarkPreview(b *testing.B) {
 	man := prepare(benchN, benchR)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		_, err := man.Preview()
 		if err != nil {
 			b.Fatal(err)
@@ -86,8 +84,7 @@ func BenchmarkPreview(b *testing.B) {
 
 func BenchmarkApply(b *testing.B) {
 	man := prepare(benchN, benchR)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		_, err := man.Apply(io.Discard)
 		if err != nil {
 			b.Fatal(err)
