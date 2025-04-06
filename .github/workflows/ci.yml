@@ -28,7 +28,7 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v5
         with:
-          go-version: 1.23
+          go-version: 1.24
           cache: false
 
       - name: Unshallow
@@ -38,16 +38,16 @@ jobs:
         run: make build
 
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v7
         with:
-          version: v1.60
+          version: v2.0
           args: --timeout=10m
           skip-cache: true
 
       - name: Run govulncheck
         uses: golang/govulncheck-action@v1
         with:
-          go-version-input: 1.23
+          go-version-input: 1.24
           go-package: ./...
           cache: false
 
