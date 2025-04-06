@@ -1,6 +1,6 @@
 module github.com/nekrassov01/llcm
 
-go 1.23.6
+go 1.24.2
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.32.7
