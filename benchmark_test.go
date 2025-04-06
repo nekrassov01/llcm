@@ -28,7 +28,7 @@ func prepare(n int, regions []string) *Manager {
 		logGroupClass   = types.LogGroupClassStandard
 	)
 	return &Manager{
-		Client: newMockClient(&mockClient{
+		client: newMockClient(&mockClient{
 			DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 				for i := range n {
 					logGroups[i] = types.LogGroup{

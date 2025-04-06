@@ -15,7 +15,7 @@ import (
 
 func TestManager_List(t *testing.T) {
 	type fields struct {
-		Client             *Client
+		client             *Client
 		regions            []string
 		desiredState       DesiredState
 		desiredStateNative *int32
@@ -33,7 +33,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "no entries",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{},
@@ -56,7 +56,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "nil entries",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: nil,
@@ -79,7 +79,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "empty result",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						return &cloudwatchlogs.DescribeLogGroupsOutput{}, nil
 					},
@@ -99,7 +99,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "single entry",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -146,7 +146,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "multiple entries",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -214,7 +214,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "pagination",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, params *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						if params.NextToken == nil {
 							out := &cloudwatchlogs.DescribeLogGroupsOutput{
@@ -333,7 +333,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "multiple regions",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -427,7 +427,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "zero retention",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -474,7 +474,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "incompatible source",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -563,7 +563,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "with filter name",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -642,7 +642,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "with filter source",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -722,7 +722,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "with filter class",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -801,7 +801,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "with filter elepased days",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -880,7 +880,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "with filter retention 1",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -959,7 +959,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "with filter retention 2",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -1038,7 +1038,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "with filter bytes",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -1117,7 +1117,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "with filter none",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -1168,7 +1168,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "error",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						return nil, errors.New("error")
 					},
@@ -1185,7 +1185,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "error in pagination",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, params *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						if params.NextToken == nil {
 							return nil, errors.New("error")
@@ -1218,7 +1218,7 @@ func TestManager_List(t *testing.T) {
 		{
 			name: "cancel",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(ctx context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						<-ctx.Done()
 						return nil, ctx.Err()
@@ -1241,7 +1241,7 @@ func TestManager_List(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			man := &Manager{
-				Client:             tt.fields.Client,
+				client:             tt.fields.client,
 				regions:            tt.fields.regions,
 				desiredState:       tt.fields.desiredState,
 				desiredStateNative: tt.fields.desiredStateNative,

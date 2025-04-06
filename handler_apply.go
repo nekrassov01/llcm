@@ -46,7 +46,7 @@ func (man *Manager) deleteLogGroup(name *string, region string) error {
 	in := &cloudwatchlogs.DeleteLogGroupInput{
 		LogGroupName: name,
 	}
-	_, err := man.DeleteLogGroup(man.ctx, in, opt)
+	_, err := man.client.DeleteLogGroup(man.ctx, in, opt)
 	if err != nil {
 		return err
 	}
@@ -62,7 +62,7 @@ func (man *Manager) deleteRetentionPolicy(name *string, region string) error {
 	in := &cloudwatchlogs.DeleteRetentionPolicyInput{
 		LogGroupName: name,
 	}
-	_, err := man.DeleteRetentionPolicy(man.ctx, in, opt)
+	_, err := man.client.DeleteRetentionPolicy(man.ctx, in, opt)
 	if err != nil {
 		return err
 	}
@@ -79,7 +79,7 @@ func (man *Manager) putRetentionPolicy(name *string, region string) error {
 		LogGroupName:    name,
 		RetentionInDays: man.desiredStateNative,
 	}
-	_, err := man.PutRetentionPolicy(man.ctx, in, opt)
+	_, err := man.client.PutRetentionPolicy(man.ctx, in, opt)
 	if err != nil {
 		return err
 	}

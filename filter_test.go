@@ -1,13 +1,11 @@
 package llcm
 
 import (
-	"context"
 	"reflect"
 	"strings"
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs/types"
-	"golang.org/x/sync/semaphore"
 )
 
 func TestEvaluateFilter(t *testing.T) {
@@ -445,16 +443,6 @@ func TestEvaluateFilter(t *testing.T) {
 }
 
 func TestManager_setFilter(t *testing.T) {
-	type fields struct {
-		Client             *Client
-		regions            []string
-		desiredState       DesiredState
-		desiredStateNative *int32
-		filters            []Filter
-		filterFns          []func(*entry) bool
-		sem                *semaphore.Weighted
-		ctx                context.Context
-	}
 	type args struct {
 		filters []Filter
 	}
@@ -464,7 +452,6 @@ func TestManager_setFilter(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		want    want
 		wantErr bool
@@ -968,16 +955,7 @@ func TestManager_setFilter(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			man := &Manager{
-				Client:             tt.fields.Client,
-				regions:            tt.fields.regions,
-				desiredState:       tt.fields.desiredState,
-				desiredStateNative: tt.fields.desiredStateNative,
-				filters:            tt.fields.filters,
-				filterFns:          tt.fields.filterFns,
-				sem:                tt.fields.sem,
-				ctx:                tt.fields.ctx,
-			}
+			man := &Manager{}
 			err := man.setFilter(tt.args.filters)
 			if (err != nil) != tt.wantErr {
 				t.Fatalf("setFilter() error = %v, wantErr %v", err, tt.wantErr)

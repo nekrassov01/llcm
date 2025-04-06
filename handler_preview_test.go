@@ -13,7 +13,7 @@ import (
 
 func TestManager_Preview(t *testing.T) {
 	type fields struct {
-		Client             *Client
+		client             *Client
 		regions            []string
 		desiredState       DesiredState
 		desiredStateNative *int32
@@ -31,7 +31,7 @@ func TestManager_Preview(t *testing.T) {
 		{
 			name: "single entry",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -85,7 +85,7 @@ func TestManager_Preview(t *testing.T) {
 		{
 			name: "multiple entries",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -165,7 +165,7 @@ func TestManager_Preview(t *testing.T) {
 		{
 			name: "zero bytes",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -219,7 +219,7 @@ func TestManager_Preview(t *testing.T) {
 		{
 			name: "infinite retention",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -273,7 +273,7 @@ func TestManager_Preview(t *testing.T) {
 		{
 			name: "infinite retention and zero elapsed days",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -327,7 +327,7 @@ func TestManager_Preview(t *testing.T) {
 		{
 			name: "zero retention",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -381,7 +381,7 @@ func TestManager_Preview(t *testing.T) {
 		{
 			name: "zero retention and zero elapsed days",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -435,7 +435,7 @@ func TestManager_Preview(t *testing.T) {
 		{
 			name: "desired infinite retention",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -489,7 +489,7 @@ func TestManager_Preview(t *testing.T) {
 		{
 			name: "desired infinite retention and zero elapsed days",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -543,7 +543,7 @@ func TestManager_Preview(t *testing.T) {
 		{
 			name: "desired zero retention",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -597,7 +597,7 @@ func TestManager_Preview(t *testing.T) {
 		{
 			name: "desired zero retention and zero elapsed days",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -651,7 +651,7 @@ func TestManager_Preview(t *testing.T) {
 		{
 			name: "reducible bytes exceed stored bytes",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -705,7 +705,7 @@ func TestManager_Preview(t *testing.T) {
 		{
 			name: "reduction in days convert to 1",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						return &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -758,7 +758,7 @@ func TestManager_Preview(t *testing.T) {
 		{
 			name: "bytes per day convert 0 to 1",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						return &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -811,7 +811,7 @@ func TestManager_Preview(t *testing.T) {
 		{
 			name: "bytes per day == stored bytes",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						return &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -864,7 +864,7 @@ func TestManager_Preview(t *testing.T) {
 		{
 			name: "cancel",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(ctx context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						<-ctx.Done()
 						return nil, ctx.Err()
@@ -887,7 +887,7 @@ func TestManager_Preview(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			man := &Manager{
-				Client:             tt.fields.Client,
+				client:             tt.fields.client,
 				regions:            tt.fields.regions,
 				desiredState:       tt.fields.desiredState,
 				desiredStateNative: tt.fields.desiredStateNative,

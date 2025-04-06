@@ -47,7 +47,7 @@ func (man *Manager) handle(handler func(*Manager, *entry) error) error {
 				IncludeLinkedAccounts: linked,
 			}
 			for {
-				out, err := man.DescribeLogGroups(ctx, in, opt)
+				out, err := man.client.DescribeLogGroups(ctx, in, opt)
 				if err != nil {
 					errorFunc(err)
 					return

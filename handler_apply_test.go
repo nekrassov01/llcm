@@ -14,7 +14,7 @@ import (
 
 func TestManager_Apply(t *testing.T) {
 	type fields struct {
-		Client             *Client
+		client             *Client
 		regions            []string
 		desiredState       DesiredState
 		desiredStateNative *int32
@@ -32,7 +32,7 @@ func TestManager_Apply(t *testing.T) {
 		{
 			name: "none",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -61,7 +61,7 @@ func TestManager_Apply(t *testing.T) {
 		{
 			name: "delete log group",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -93,7 +93,7 @@ func TestManager_Apply(t *testing.T) {
 		{
 			name: "delete retention policy",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -125,7 +125,7 @@ func TestManager_Apply(t *testing.T) {
 		{
 			name: "put retention policy",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -157,7 +157,7 @@ func TestManager_Apply(t *testing.T) {
 		{
 			name: "delete log group returns error",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -189,7 +189,7 @@ func TestManager_Apply(t *testing.T) {
 		{
 			name: "delete retention policy returns error",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -221,7 +221,7 @@ func TestManager_Apply(t *testing.T) {
 		{
 			name: "put retention policy",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -253,7 +253,7 @@ func TestManager_Apply(t *testing.T) {
 		{
 			name: "multiple log groups",
 			fields: fields{
-				Client: newMockClient(&mockClient{
+				client: newMockClient(&mockClient{
 					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
@@ -294,7 +294,7 @@ func TestManager_Apply(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			man := &Manager{
-				Client:             tt.fields.Client,
+				client:             tt.fields.client,
 				regions:            tt.fields.regions,
 				desiredState:       tt.fields.desiredState,
 				desiredStateNative: tt.fields.desiredStateNative,

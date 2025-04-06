@@ -16,7 +16,7 @@ var NumWorker = int64(runtime.NumCPU()*2 + 1)
 
 // Manager represents a log group lifecycle manager.
 type Manager struct {
-	*Client            `json:"-"`          // The client for CloudWatch Logs.
+	client             *Client             // The client for CloudWatch Logs.
 	regions            []string            // The list of target regions.
 	desiredState       DesiredState        // The desired state of the log group.
 	desiredStateNative *int32              // The desired state with the native type.
@@ -29,7 +29,7 @@ type Manager struct {
 // NewManager creates a new manager for log group lifecycle management.
 func NewManager(ctx context.Context, client *Client) *Manager {
 	return &Manager{
-		Client:       client,
+		client:       client,
 		regions:      DefaultRegions,
 		desiredState: DesiredStateNone,
 		filters:      nil,

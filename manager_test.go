@@ -27,7 +27,7 @@ func TestNewManager(t *testing.T) {
 				client: &Client{},
 			},
 			want: &Manager{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: -9999,
 				filters:      nil,
@@ -42,7 +42,7 @@ func TestNewManager(t *testing.T) {
 				client: nil,
 			},
 			want: &Manager{
-				Client:       nil,
+				client:       nil,
 				regions:      DefaultRegions,
 				desiredState: -9999,
 				filters:      nil,
@@ -62,7 +62,7 @@ func TestNewManager(t *testing.T) {
 
 func TestManager_SetRegion(t *testing.T) {
 	type fields struct {
-		Client             *Client
+		client             *Client
 		regions            []string
 		desiredState       DesiredState
 		desiredStateNative *int32
@@ -83,7 +83,7 @@ func TestManager_SetRegion(t *testing.T) {
 		{
 			name: "valid regions",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
 				filters:      nil,
@@ -98,7 +98,7 @@ func TestManager_SetRegion(t *testing.T) {
 		{
 			name: "empty regions",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
 				filters:      nil,
@@ -113,7 +113,7 @@ func TestManager_SetRegion(t *testing.T) {
 		{
 			name: "nil regions",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
 				filters:      nil,
@@ -128,7 +128,7 @@ func TestManager_SetRegion(t *testing.T) {
 		{
 			name: "with unsupported region",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
 				filters:      nil,
@@ -143,7 +143,7 @@ func TestManager_SetRegion(t *testing.T) {
 		{
 			name: "with duplicate regions",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
 				filters:      nil,
@@ -158,7 +158,7 @@ func TestManager_SetRegion(t *testing.T) {
 		{
 			name: "with uppercase regions",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
 				filters:      nil,
@@ -173,7 +173,7 @@ func TestManager_SetRegion(t *testing.T) {
 		{
 			name: "default regions",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
 				filters:      nil,
@@ -188,7 +188,7 @@ func TestManager_SetRegion(t *testing.T) {
 		{
 			name: "one region",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
 				filters:      nil,
@@ -204,7 +204,7 @@ func TestManager_SetRegion(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			man := &Manager{
-				Client:             tt.fields.Client,
+				client:             tt.fields.client,
 				regions:            tt.fields.regions,
 				desiredState:       tt.fields.desiredState,
 				desiredStateNative: tt.fields.desiredStateNative,
@@ -222,7 +222,7 @@ func TestManager_SetRegion(t *testing.T) {
 
 func TestManager_SetDesiredState(t *testing.T) {
 	type fields struct {
-		Client             *Client
+		client             *Client
 		regions            []string
 		desiredState       DesiredState
 		desiredStateNative *int32
@@ -243,7 +243,7 @@ func TestManager_SetDesiredState(t *testing.T) {
 		{
 			name: "valid desired state",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 0,
 				filters:      nil,
@@ -258,7 +258,7 @@ func TestManager_SetDesiredState(t *testing.T) {
 		{
 			name: "invalid desired state",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 0,
 				filters:      nil,
@@ -273,7 +273,7 @@ func TestManager_SetDesiredState(t *testing.T) {
 		{
 			name: "multiple valid desired states 1",
 			fields: fields{
-				Client:             &Client{},
+				client:             &Client{},
 				regions:            DefaultRegions,
 				desiredState:       1,
 				desiredStateNative: aws.Int32(1),
@@ -289,7 +289,7 @@ func TestManager_SetDesiredState(t *testing.T) {
 		{
 			name: "multiple valid desired states 2",
 			fields: fields{
-				Client:             &Client{},
+				client:             &Client{},
 				regions:            DefaultRegions,
 				desiredState:       2,
 				desiredStateNative: aws.Int32(2),
@@ -305,7 +305,7 @@ func TestManager_SetDesiredState(t *testing.T) {
 		{
 			name: "multiple valid desired states 3",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
 				filters:      nil,
@@ -320,7 +320,7 @@ func TestManager_SetDesiredState(t *testing.T) {
 		{
 			name: "desired state with nil manager",
 			fields: fields{
-				Client:       nil,
+				client:       nil,
 				regions:      nil,
 				desiredState: 0,
 				filters:      nil,
@@ -335,7 +335,7 @@ func TestManager_SetDesiredState(t *testing.T) {
 		{
 			name: "desired state with max value",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 0,
 				filters:      nil,
@@ -350,7 +350,7 @@ func TestManager_SetDesiredState(t *testing.T) {
 		{
 			name: "desired state with min value",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 0,
 				filters:      nil,
@@ -366,7 +366,7 @@ func TestManager_SetDesiredState(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			man := &Manager{
-				Client:             tt.fields.Client,
+				client:             tt.fields.client,
 				regions:            tt.fields.regions,
 				desiredState:       tt.fields.desiredState,
 				desiredStateNative: tt.fields.desiredStateNative,
@@ -384,7 +384,7 @@ func TestManager_SetDesiredState(t *testing.T) {
 
 func TestManager_SetFilter(t *testing.T) {
 	type fields struct {
-		Client             *Client
+		client             *Client
 		regions            []string
 		desiredState       DesiredState
 		desiredStateNative *int32
@@ -405,7 +405,7 @@ func TestManager_SetFilter(t *testing.T) {
 		{
 			name: "valid string filter",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
 				filters:      nil,
@@ -426,7 +426,7 @@ func TestManager_SetFilter(t *testing.T) {
 		{
 			name: "valid number filter",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 30,
 				filters:      nil,
@@ -447,7 +447,7 @@ func TestManager_SetFilter(t *testing.T) {
 		{
 			name: "valid regex filter",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
 				filters:      nil,
@@ -468,7 +468,7 @@ func TestManager_SetFilter(t *testing.T) {
 		{
 			name: "invalid regex filter",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
 				filters:      nil,
@@ -489,7 +489,7 @@ func TestManager_SetFilter(t *testing.T) {
 		{
 			name: "valid delete value",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 0,
 				filters:      nil,
@@ -510,7 +510,7 @@ func TestManager_SetFilter(t *testing.T) {
 		{
 			name: "valid retention value",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 3,
 				filters:      nil,
@@ -531,7 +531,7 @@ func TestManager_SetFilter(t *testing.T) {
 		{
 			name: "numeric value for string key",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 5,
 				filters:      nil,
@@ -552,7 +552,7 @@ func TestManager_SetFilter(t *testing.T) {
 		{
 			name: "boolean value for number key",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 10,
 				filters:      nil,
@@ -573,7 +573,7 @@ func TestManager_SetFilter(t *testing.T) {
 		{
 			name: "empty value",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
 				filters:      nil,
@@ -594,7 +594,7 @@ func TestManager_SetFilter(t *testing.T) {
 		{
 			name: "unsupported key type",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      []string{"us-west-1"},
 				desiredState: 10,
 				filters:      nil,
@@ -615,7 +615,7 @@ func TestManager_SetFilter(t *testing.T) {
 		{
 			name: "unsupported operator type",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
 				filters:      nil,
@@ -636,7 +636,7 @@ func TestManager_SetFilter(t *testing.T) {
 		{
 			name: "zero retention value",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 0,
 				filters:      nil,
@@ -657,7 +657,7 @@ func TestManager_SetFilter(t *testing.T) {
 		{
 			name: "nil filter",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 0,
 				filters:      nil,
@@ -673,7 +673,7 @@ func TestManager_SetFilter(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			man := &Manager{
-				Client:             tt.fields.Client,
+				client:             tt.fields.client,
 				regions:            tt.fields.regions,
 				desiredState:       tt.fields.desiredState,
 				desiredStateNative: tt.fields.desiredStateNative,
@@ -692,7 +692,7 @@ func TestManager_SetFilter(t *testing.T) {
 
 func TestManager_String(t *testing.T) {
 	type fields struct {
-		Client       *Client
+		client       *Client
 		DesiredState DesiredState
 		Filters      []Filter
 		Regions      []string
@@ -709,7 +709,7 @@ func TestManager_String(t *testing.T) {
 		{
 			name: "basic manager",
 			fields: fields{
-				Client:       &Client{},
+				client:       &Client{},
 				DesiredState: 7,
 				Filters: []Filter{
 					{
@@ -757,7 +757,7 @@ func TestManager_String(t *testing.T) {
 		{
 			name: "empty manager",
 			fields: fields{
-				Client:       nil,
+				client:       nil,
 				DesiredState: 0,
 				Filters:      nil,
 				Regions:      nil,
@@ -776,7 +776,7 @@ func TestManager_String(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			man := &Manager{
-				Client:             tt.fields.Client,
+				client:             tt.fields.client,
 				regions:            tt.fields.Regions,
 				desiredState:       tt.fields.DesiredState,
 				desiredStateNative: tt.fields.desiredState,
