@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"context"
 	"io"
 	"time"
 
@@ -9,7 +9,7 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/nekrassov01/llcm"
 	"github.com/nekrassov01/logwrapper/log"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 const (
@@ -24,7 +24,7 @@ var (
 )
 
 type app struct {
-	*cli.App
+	*cli.Command
 	profile  *cli.StringFlag
 	loglevel *cli.StringFlag
 	region   *cli.StringSliceFlag
@@ -40,20 +40,20 @@ func newApp(w, ew io.Writer) *app {
 		Name:    "profile",
 		Aliases: []string{"p"},
 		Usage:   "set aws profile",
-		EnvVars: []string{"AWS_PROFILE"},
+		Sources: cli.EnvVars("AWS_PROFILE"),
 	}
 	a.loglevel = &cli.StringFlag{
 		Name:    "log-level",
 		Aliases: []string{"l"},
 		Usage:   "set log level",
-		EnvVars: []string{label + "_LOG_LEVEL"},
+		Sources: cli.EnvVars(label + "_LOG_LEVEL"),
 		Value:   log.InfoLevel.String(),
 	}
 	a.region = &cli.StringSliceFlag{
 		Name:        "region",
 		Aliases:     []string{"r"},
 		Usage:       "set target regions",
-		Value:       cli.NewStringSlice(llcm.DefaultRegions...),
+		Value:       llcm.DefaultRegions,
 		DefaultText: "all regions with no opt-in",
 	}
 	a.filter = &cli.StringSliceFlag{
@@ -71,26 +71,20 @@ func newApp(w, ew io.Writer) *app {
 		Name:    "output",
 		Aliases: []string{"o"},
 		Usage:   "set output type",
-		EnvVars: []string{label + "_OUTPUT_TYPE"},
+		Sources: cli.EnvVars(label + "_OUTPUT_TYPE"),
 		Value:   llcm.OutputTypeCompressedText.String(),
 	}
-	a.App = &cli.App{
-		Name:                 name,
-		Version:              getVersion(),
-		Usage:                "AWS Log groups lifecycle manager",
-		Description:          "A listing, updating, and deleting tool to manage the lifecycle of Amazon CloudWatch Logs.\nIt handles multiple regions fast while avoiding throttling. It can also return simulation\nresults based on the desired state.",
-		HideHelpCommand:      true,
-		EnableBashCompletion: true,
-		Writer:               w,
-		ErrWriter:            ew,
-		Metadata:             map[string]any{},
+	a.Command = &cli.Command{
+		Name:                  name,
+		Version:               getVersion(),
+		Usage:                 "AWS Log groups lifecycle manager",
+		Description:           "A listing, updating, and deleting tool to manage the lifecycle of Amazon CloudWatch Logs.\nIt handles multiple regions fast while avoiding throttling. It can also return simulation\nresults based on the desired state.",
+		HideHelpCommand:       true,
+		EnableShellCompletion: true,
+		Writer:                w,
+		ErrWriter:             ew,
+		Metadata:              map[string]any{},
 		Commands: []*cli.Command{
-			{
-				Name:        "completion",
-				Usage:       "Generate shell completion script",
-				Description: "Generate shell completion script for the specified shell.",
-				Action:      a.completion,
-			},
 			{
 				Name:        "list",
 				Usage:       "List log group entries with specified format",
@@ -120,20 +114,20 @@ func newApp(w, ew io.Writer) *app {
 	return &a
 }
 
-func (a *app) before(c *cli.Context) error {
+func (a *app) before(ctx context.Context, cmd *cli.Command) (context.Context, error) {
 	// parse log level passed as string
-	level, err := log.ParseLevel(c.String(a.loglevel.Name))
+	level, err := log.ParseLevel(cmd.String(a.loglevel.Name))
 	if err != nil {
-		return err
+		return ctx, err
 	}
 
 	// set logger for the application
 	logger.SetLevel(level)
 
 	// load aws config with the specified profile
-	cfg, err := llcm.LoadConfig(c.Context, c.String(a.profile.Name))
+	cfg, err := llcm.LoadConfig(ctx, cmd.String(a.profile.Name))
 	if err != nil {
-		return err
+		return ctx, err
 	}
 
 	// set logger for the AWS SDK
@@ -143,33 +137,12 @@ func (a *app) before(c *cli.Context) error {
 	// set aws config to the metadata
 	a.Metadata["config"] = cfg
 
-	return nil
+	return ctx, nil
 }
 
-func (a *app) completion(c *cli.Context) error {
-	// parse shell passed as string
-	n, err := parseShell(c.Args().First())
-	if err != nil {
-		return err
-	}
-
-	// return the completion script
-	switch n {
-	case bash:
-		fmt.Fprintln(a.Writer, bashScript)
-	case zsh:
-		fmt.Fprintln(a.Writer, zshScript)
-	case pwsh:
-		fmt.Fprintln(a.Writer, pwshScript)
-	default:
-	}
-
-	return nil
-}
-
-func (a *app) list(c *cli.Context) error {
+func (a *app) list(ctx context.Context, cmd *cli.Command) error {
 	// parse output type passed as string
-	outputType, err := llcm.ParseOutputType(c.String(a.output.Name))
+	outputType, err := llcm.ParseOutputType(cmd.String(a.output.Name))
 	if err != nil {
 		return err
 	}
@@ -182,7 +155,7 @@ func (a *app) list(c *cli.Context) error {
 	)
 
 	// create manager with common settings
-	man, err := a.new(c)
+	man, err := a.new(ctx, cmd)
 	if err != nil {
 		return err
 	}
@@ -213,15 +186,15 @@ func (a *app) list(c *cli.Context) error {
 	return nil
 }
 
-func (a *app) preview(c *cli.Context) error {
+func (a *app) preview(ctx context.Context, cmd *cli.Command) error {
 	// parse output type passed as string
-	outputType, err := llcm.ParseOutputType(c.String(a.output.Name))
+	outputType, err := llcm.ParseOutputType(cmd.String(a.output.Name))
 	if err != nil {
 		return err
 	}
 
 	// parse desired state passed as string
-	desired, err := llcm.ParseDesiredState(c.String(a.desired.Name))
+	desired, err := llcm.ParseDesiredState(cmd.String(a.desired.Name))
 	if err != nil {
 		return err
 	}
@@ -230,12 +203,12 @@ func (a *app) preview(c *cli.Context) error {
 	logger.Info(
 		"started",
 		"at", time.Now().Format(time.RFC3339),
-		"desired", c.String(a.desired.Name),
+		"desired", cmd.String(a.desired.Name),
 		"output", outputType,
 	)
 
 	// create manager with common settings
-	man, err := a.new(c)
+	man, err := a.new(ctx, cmd)
 	if err != nil {
 		return err
 	}
@@ -273,9 +246,9 @@ func (a *app) preview(c *cli.Context) error {
 	return nil
 }
 
-func (a *app) apply(c *cli.Context) error {
+func (a *app) apply(ctx context.Context, cmd *cli.Command) error {
 	// parse desired state passed as string
-	desired, err := llcm.ParseDesiredState(c.String(a.desired.Name))
+	desired, err := llcm.ParseDesiredState(cmd.String(a.desired.Name))
 	if err != nil {
 		return err
 	}
@@ -284,11 +257,11 @@ func (a *app) apply(c *cli.Context) error {
 	logger.Info(
 		"started",
 		"at", time.Now().Format(time.RFC3339),
-		"desired", c.String(a.desired.Name),
+		"desired", cmd.String(a.desired.Name),
 	)
 
 	// create manager with common settings
-	man, err := a.new(c)
+	man, err := a.new(ctx, cmd)
 	if err != nil {
 		return err
 	}
@@ -314,9 +287,9 @@ func (a *app) apply(c *cli.Context) error {
 	return nil
 }
 
-func (a *app) new(c *cli.Context) (*llcm.Manager, error) {
+func (a *app) new(ctx context.Context, cmd *cli.Command) (*llcm.Manager, error) {
 	// evaluate filter expressions passed as string
-	filter, err := llcm.EvaluateFilter(c.StringSlice(a.filter.Name))
+	filter, err := llcm.EvaluateFilter(cmd.StringSlice(a.filter.Name))
 	if err != nil {
 		return nil, err
 	}
@@ -328,10 +301,10 @@ func (a *app) new(c *cli.Context) (*llcm.Manager, error) {
 	client := llcm.NewClient(cfg)
 
 	// initialize the manager
-	man := llcm.NewManager(c.Context, client)
+	man := llcm.NewManager(ctx, client)
 
 	// set regions to the manager
-	if err := man.SetRegion(c.StringSlice(a.region.Name)); err != nil {
+	if err := man.SetRegion(cmd.StringSlice(a.region.Name)); err != nil {
 		return nil, err
 	}
 

@@ -13,26 +13,6 @@ func Test_cli(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "completion bash",
-			args:    []string{name, "completion", bash.String()},
-			wantErr: false,
-		},
-		{
-			name:    "completion zsh",
-			args:    []string{name, "completion", zsh.String()},
-			wantErr: false,
-		},
-		{
-			name:    "completion pwsh",
-			args:    []string{name, "completion", pwsh.String()},
-			wantErr: false,
-		},
-		{
-			name:    "completion unknown",
-			args:    []string{name, "completion", "fish"},
-			wantErr: true,
-		},
-		{
 			name:    "unknown profile",
 			args:    []string{name, "-p", "unknown"},
 			wantErr: true,
@@ -60,7 +40,7 @@ func Test_cli(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := newApp(io.Discard, io.Discard).RunContext(context.Background(), tt.args)
+			err := newApp(io.Discard, io.Discard).Run(context.Background(), tt.args)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("error = %v, wantErr %v", err, tt.wantErr)
 				return
