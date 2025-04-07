@@ -16,20 +16,20 @@ func (man *Manager) Apply(w io.Writer) (int32, error) {
 		case DesiredStateNone:
 			return fmt.Errorf("invalid desired state: %q", man.desiredState)
 		case DesiredStateZero:
-			fmt.Fprintf(w, "deleting log group: %s\n", entry.LogGroupName)
 			if err := man.deleteLogGroup(entry.name, entry.Region); err != nil {
 				return err
 			}
+			fmt.Fprintf(w, "deleted log group: %s\n", entry.LogGroupName)
 		case DesiredStateInfinite:
-			fmt.Fprintf(w, "deleting retention policy: %s\n", entry.LogGroupName)
 			if err := man.deleteRetentionPolicy(entry.name, entry.Region); err != nil {
 				return err
 			}
+			fmt.Fprintf(w, "deleted retention policy: %s\n", entry.LogGroupName)
 		default:
-			fmt.Fprintf(w, "updating retention policy: %s\n", entry.LogGroupName)
 			if err := man.putRetentionPolicy(entry.name, entry.Region); err != nil {
 				return err
 			}
+			fmt.Fprintf(w, "updated retention policy: %s\n", entry.LogGroupName)
 		}
 		atomic.AddInt32(&n, 1)
 		return nil

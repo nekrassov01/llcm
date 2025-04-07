@@ -2,7 +2,6 @@ package llcm
 
 import (
 	"sync"
-	"sync/atomic"
 )
 
 // Preview returns the log group entries with the desired state and its simulated results.
@@ -11,42 +10,30 @@ func (man *Manager) Preview() (*PreviewEntryData, error) {
 		totalStoredBytes    int64
 		totalReducibleBytes int64
 		totalRemainingBytes int64
-		wg                  sync.WaitGroup
-		entryChan           = make(chan *PreviewEntry, regionalEntriesSize)
-		data                = &PreviewEntryData{
-			header:  previewEntryDataHeader,
-			entries: make([]*PreviewEntry, 0, globalEntriesSize),
-		}
+		mu                  sync.Mutex
 	)
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		for entry := range entryChan {
-			data.entries = append(data.entries, entry)
-			atomic.AddInt64(&totalStoredBytes, entry.StoredBytes)
-			atomic.AddInt64(&totalReducibleBytes, entry.ReducibleBytes)
-			atomic.AddInt64(&totalRemainingBytes, entry.RemainingBytes)
-		}
-	}()
+	data := &PreviewEntryData{
+		header:  previewEntryDataHeader,
+		entries: make([]*PreviewEntry, 0, entriesSize),
+	}
 	err := man.handle(func(man *Manager, entry *entry) error {
 		e := &PreviewEntry{
 			entry: entry,
 		}
 		e.simulate(man.desiredState)
-		select {
-		case entryChan <- e:
-			return nil
-		case <-man.ctx.Done():
-			return man.ctx.Err()
-		}
+		mu.Lock()
+		data.entries = append(data.entries, e)
+		totalStoredBytes += e.StoredBytes
+		totalReducibleBytes += e.ReducibleBytes
+		totalRemainingBytes += e.RemainingBytes
+		mu.Unlock()
+		return nil
 	})
-	close(entryChan)
 	if err != nil {
 		return nil, err
 	}
-	wg.Wait()
-	data.TotalStoredBytes = atomic.LoadInt64(&totalStoredBytes)
-	data.TotalReducibleBytes = atomic.LoadInt64(&totalReducibleBytes)
-	data.TotalRemainingBytes = atomic.LoadInt64(&totalRemainingBytes)
+	data.TotalStoredBytes = totalStoredBytes
+	data.TotalReducibleBytes = totalReducibleBytes
+	data.TotalRemainingBytes = totalRemainingBytes
 	return data, nil
 }

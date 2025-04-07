@@ -11,10 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs/types"
 )
 
-var (
-	globalEntriesSize   = 8192
-	regionalEntriesSize = 1024
-)
+var entriesSize = 8192
 
 // handle enumerates log groups for all regions to get targets for the process.
 // For each entry, the specified handler is executed.
@@ -22,7 +19,7 @@ func (man *Manager) handle(handler func(*Manager, *entry) error) error {
 	var (
 		wg          sync.WaitGroup
 		ctx, cancel = context.WithCancel(man.ctx)
-		errorChan   = make(chan error, len(man.regions))
+		errorChan   = make(chan error, 1)
 		linked      = aws.Bool(true)
 	)
 	defer cancel()
@@ -79,10 +76,8 @@ func (man *Manager) handle(handler func(*Manager, *entry) error) error {
 			}
 		}()
 	}
-	go func() {
-		wg.Wait()
-		close(errorChan)
-	}()
+	wg.Wait()
+	close(errorChan)
 	select {
 	case err := <-errorChan:
 		return err

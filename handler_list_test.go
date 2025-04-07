@@ -49,7 +49,7 @@ func TestManager_List(t *testing.T) {
 			},
 			want: &ListEntryData{
 				header:  listEntryDataHeader,
-				entries: make([]*ListEntry, 0, globalEntriesSize),
+				entries: make([]*ListEntry, 0, entriesSize),
 			},
 			wantErr: false,
 		},
@@ -72,7 +72,7 @@ func TestManager_List(t *testing.T) {
 			},
 			want: &ListEntryData{
 				header:  listEntryDataHeader,
-				entries: make([]*ListEntry, 0, globalEntriesSize),
+				entries: make([]*ListEntry, 0, entriesSize),
 			},
 			wantErr: false,
 		},
@@ -92,7 +92,7 @@ func TestManager_List(t *testing.T) {
 			},
 			want: &ListEntryData{
 				header:  listEntryDataHeader,
-				entries: make([]*ListEntry, 0, globalEntriesSize),
+				entries: make([]*ListEntry, 0, entriesSize),
 			},
 			wantErr: false,
 		},
