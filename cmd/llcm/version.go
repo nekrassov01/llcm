@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 // version is the current version of llcm.
-const version = "0.0.15"
+const version = "0.0.16"
 
 // revision is the git revision of llcm.
 var revision = ""
