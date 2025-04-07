@@ -4,7 +4,7 @@ go 1.24.2
 
 require (
 	github.com/aws/aws-lambda-go v1.47.0
-	github.com/nekrassov01/llcm v0.0.14
+	github.com/nekrassov01/llcm v0.0.16
 )
 
 require (
