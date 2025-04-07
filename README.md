@@ -33,7 +33,6 @@ DESCRIPTION:
    results based on the desired state.
 
 COMMANDS:
-   completion  Generate shell completion script
    list        List log group entries with specified format
    preview     Preview simulation results based on desired state
    apply       Apply desired state to log group entries
