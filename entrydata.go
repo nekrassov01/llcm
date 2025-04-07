@@ -21,7 +21,6 @@ var (
 	listEntryDataHeader = []string{
 		"Name",
 		"Region",
-		"Source",
 		"Class",
 		"CreatedAt",
 		"ElapsedDays",
@@ -33,7 +32,6 @@ var (
 	previewEntryDataHeader = []string{
 		"Name",
 		"Region",
-		"Source",
 		"Class",
 		"CreatedAt",
 		"ElapsedDays",

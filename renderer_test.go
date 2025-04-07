@@ -100,7 +100,7 @@ func TestRenderer_Render1(t *testing.T) {
 				Data:       listEntryData,
 				OutputType: OutputTypeJSON,
 			},
-			want: `[{"LogGroupName":"group0","Region":"ap-northeast-1","Source":"source0","Class":"STANDARD","CreatedAt":"2025-01-01T00:00:00Z","ElapsedDays":90,"RetentionInDays":30,"StoredBytes":1024},{"LogGroupName":"group1","Region":"ap-northeast-2","Source":"source1","Class":"INFREQUENT_ACCESS","CreatedAt":"2024-04-01T00:00:00Z","ElapsedDays":365,"RetentionInDays":30,"StoredBytes":2048}]
+			want: `[{"LogGroupName":"group0","Region":"ap-northeast-1","Class":"STANDARD","CreatedAt":"2025-01-01T00:00:00Z","ElapsedDays":90,"RetentionInDays":30,"StoredBytes":1024},{"LogGroupName":"group1","Region":"ap-northeast-2","Class":"INFREQUENT_ACCESS","CreatedAt":"2024-04-01T00:00:00Z","ElapsedDays":365,"RetentionInDays":30,"StoredBytes":2048}]
 `,
 			wantErr: false,
 		},
@@ -114,7 +114,6 @@ func TestRenderer_Render1(t *testing.T) {
   {
     "LogGroupName": "group0",
     "Region": "ap-northeast-1",
-    "Source": "source0",
     "Class": "STANDARD",
     "CreatedAt": "2025-01-01T00:00:00Z",
     "ElapsedDays": 90,
@@ -124,7 +123,6 @@ func TestRenderer_Render1(t *testing.T) {
   {
     "LogGroupName": "group1",
     "Region": "ap-northeast-2",
-    "Source": "source1",
     "Class": "INFREQUENT_ACCESS",
     "CreatedAt": "2024-04-01T00:00:00Z",
     "ElapsedDays": 365,
@@ -141,13 +139,13 @@ func TestRenderer_Render1(t *testing.T) {
 				Data:       listEntryData,
 				OutputType: OutputTypeText,
 			},
-			want: `+--------+----------------+---------+-------------------+----------------------+-------------+-----------------+-------------+
-| Name   | Region         | Source  | Class             | CreatedAt            | ElapsedDays | RetentionInDays | StoredBytes |
-+--------+----------------+---------+-------------------+----------------------+-------------+-----------------+-------------+
-| group0 | ap-northeast-1 | source0 | STANDARD          | 2025-01-01T00:00:00Z |          90 |              30 |        1024 |
-+--------+----------------+---------+-------------------+----------------------+-------------+-----------------+-------------+
-| group1 | ap-northeast-2 | source1 | INFREQUENT_ACCESS | 2024-04-01T00:00:00Z |         365 |              30 |        2048 |
-+--------+----------------+---------+-------------------+----------------------+-------------+-----------------+-------------+
+			want: `+--------+----------------+-------------------+----------------------+-------------+-----------------+-------------+
+| Name   | Region         | Class             | CreatedAt            | ElapsedDays | RetentionInDays | StoredBytes |
++--------+----------------+-------------------+----------------------+-------------+-----------------+-------------+
+| group0 | ap-northeast-1 | STANDARD          | 2025-01-01T00:00:00Z |          90 |              30 |        1024 |
++--------+----------------+-------------------+----------------------+-------------+-----------------+-------------+
+| group1 | ap-northeast-2 | INFREQUENT_ACCESS | 2024-04-01T00:00:00Z |         365 |              30 |        2048 |
++--------+----------------+-------------------+----------------------+-------------+-----------------+-------------+
 `,
 			wantErr: false,
 		},
@@ -157,12 +155,12 @@ func TestRenderer_Render1(t *testing.T) {
 				Data:       listEntryData,
 				OutputType: OutputTypeCompressedText,
 			},
-			want: `+--------+----------------+---------+-------------------+----------------------+-------------+-----------------+-------------+
-| Name   | Region         | Source  | Class             | CreatedAt            | ElapsedDays | RetentionInDays | StoredBytes |
-+--------+----------------+---------+-------------------+----------------------+-------------+-----------------+-------------+
-| group0 | ap-northeast-1 | source0 | STANDARD          | 2025-01-01T00:00:00Z |          90 |              30 |        1024 |
-| group1 | ap-northeast-2 | source1 | INFREQUENT_ACCESS | 2024-04-01T00:00:00Z |         365 |              30 |        2048 |
-+--------+----------------+---------+-------------------+----------------------+-------------+-----------------+-------------+
+			want: `+--------+----------------+-------------------+----------------------+-------------+-----------------+-------------+
+| Name   | Region         | Class             | CreatedAt            | ElapsedDays | RetentionInDays | StoredBytes |
++--------+----------------+-------------------+----------------------+-------------+-----------------+-------------+
+| group0 | ap-northeast-1 | STANDARD          | 2025-01-01T00:00:00Z |          90 |              30 |        1024 |
+| group1 | ap-northeast-2 | INFREQUENT_ACCESS | 2024-04-01T00:00:00Z |         365 |              30 |        2048 |
++--------+----------------+-------------------+----------------------+-------------+-----------------+-------------+
 `,
 			wantErr: false,
 		},
@@ -172,10 +170,10 @@ func TestRenderer_Render1(t *testing.T) {
 				Data:       listEntryData,
 				OutputType: OutputTypeMarkdown,
 			},
-			want: `| Name   | Region         | Source  | Class             | CreatedAt            | ElapsedDays | RetentionInDays | StoredBytes |
-|--------|----------------|---------|-------------------|----------------------|-------------|-----------------|-------------|
-| group0 | ap-northeast-1 | source0 | STANDARD          | 2025-01-01T00:00:00Z |          90 |              30 |        1024 |
-| group1 | ap-northeast-2 | source1 | INFREQUENT_ACCESS | 2024-04-01T00:00:00Z |         365 |              30 |        2048 |
+			want: `| Name   | Region         | Class             | CreatedAt            | ElapsedDays | RetentionInDays | StoredBytes |
+|--------|----------------|-------------------|----------------------|-------------|-----------------|-------------|
+| group0 | ap-northeast-1 | STANDARD          | 2025-01-01T00:00:00Z |          90 |              30 |        1024 |
+| group1 | ap-northeast-2 | INFREQUENT_ACCESS | 2024-04-01T00:00:00Z |         365 |              30 |        2048 |
 `,
 			wantErr: false,
 		},
@@ -185,9 +183,9 @@ func TestRenderer_Render1(t *testing.T) {
 				Data:       listEntryData,
 				OutputType: OutputTypeBacklog,
 			},
-			want: `| Name   | Region         | Source  | Class             | CreatedAt            | ElapsedDays | RetentionInDays | StoredBytes |h
-| group0 | ap-northeast-1 | source0 | STANDARD          | 2025-01-01T00:00:00Z |          90 |              30 |        1024 |
-| group1 | ap-northeast-2 | source1 | INFREQUENT_ACCESS | 2024-04-01T00:00:00Z |         365 |              30 |        2048 |
+			want: `| Name   | Region         | Class             | CreatedAt            | ElapsedDays | RetentionInDays | StoredBytes |h
+| group0 | ap-northeast-1 | STANDARD          | 2025-01-01T00:00:00Z |          90 |              30 |        1024 |
+| group1 | ap-northeast-2 | INFREQUENT_ACCESS | 2024-04-01T00:00:00Z |         365 |              30 |        2048 |
 `,
 			wantErr: false,
 		},
@@ -197,9 +195,9 @@ func TestRenderer_Render1(t *testing.T) {
 				Data:       listEntryData,
 				OutputType: OutputTypeTSV,
 			},
-			want: `Name	Region	Source	Class	CreatedAt	ElapsedDays	RetentionInDays	StoredBytes
-group0	ap-northeast-1	source0	STANDARD	2025-01-01T00:00:00Z	90	30	1024
-group1	ap-northeast-2	source1	INFREQUENT_ACCESS	2024-04-01T00:00:00Z	365	30	2048
+			want: `Name	Region	Class	CreatedAt	ElapsedDays	RetentionInDays	StoredBytes
+group0	ap-northeast-1	STANDARD	2025-01-01T00:00:00Z	90	30	1024
+group1	ap-northeast-2	INFREQUENT_ACCESS	2024-04-01T00:00:00Z	365	30	2048
 `,
 			wantErr: false,
 		},
@@ -258,7 +256,7 @@ func TestRenderer_Render2(t *testing.T) {
 				Data:       previewEntryData,
 				OutputType: OutputTypeJSON,
 			},
-			want: `[{"LogGroupName":"group0","Region":"ap-northeast-1","Source":"source0","Class":"STANDARD","CreatedAt":"2025-01-01T00:00:00Z","ElapsedDays":90,"RetentionInDays":30,"StoredBytes":1024,"BytesPerDay":0,"DesiredState":0,"ReductionInDays":0,"ReducibleBytes":0,"RemainingBytes":0},{"LogGroupName":"group1","Region":"ap-northeast-2","Source":"source1","Class":"INFREQUENT_ACCESS","CreatedAt":"2024-04-01T00:00:00Z","ElapsedDays":365,"RetentionInDays":30,"StoredBytes":2048,"BytesPerDay":100,"DesiredState":100,"ReductionInDays":100,"ReducibleBytes":100,"RemainingBytes":100}]
+			want: `[{"LogGroupName":"group0","Region":"ap-northeast-1","Class":"STANDARD","CreatedAt":"2025-01-01T00:00:00Z","ElapsedDays":90,"RetentionInDays":30,"StoredBytes":1024,"BytesPerDay":0,"DesiredState":0,"ReductionInDays":0,"ReducibleBytes":0,"RemainingBytes":0},{"LogGroupName":"group1","Region":"ap-northeast-2","Class":"INFREQUENT_ACCESS","CreatedAt":"2024-04-01T00:00:00Z","ElapsedDays":365,"RetentionInDays":30,"StoredBytes":2048,"BytesPerDay":100,"DesiredState":100,"ReductionInDays":100,"ReducibleBytes":100,"RemainingBytes":100}]
 `,
 			wantErr: false,
 		},
@@ -272,7 +270,6 @@ func TestRenderer_Render2(t *testing.T) {
   {
     "LogGroupName": "group0",
     "Region": "ap-northeast-1",
-    "Source": "source0",
     "Class": "STANDARD",
     "CreatedAt": "2025-01-01T00:00:00Z",
     "ElapsedDays": 90,
@@ -287,7 +284,6 @@ func TestRenderer_Render2(t *testing.T) {
   {
     "LogGroupName": "group1",
     "Region": "ap-northeast-2",
-    "Source": "source1",
     "Class": "INFREQUENT_ACCESS",
     "CreatedAt": "2024-04-01T00:00:00Z",
     "ElapsedDays": 365,
@@ -309,13 +305,13 @@ func TestRenderer_Render2(t *testing.T) {
 				Data:       previewEntryData,
 				OutputType: OutputTypeText,
 			},
-			want: `+--------+----------------+---------+-------------------+----------------------+-------------+-----------------+-------------+-------------+--------------+-----------------+----------------+----------------+
-| Name   | Region         | Source  | Class             | CreatedAt            | ElapsedDays | RetentionInDays | StoredBytes | BytesPerDay | DesiredState | ReductionInDays | ReducibleBytes | RemainingBytes |
-+--------+----------------+---------+-------------------+----------------------+-------------+-----------------+-------------+-------------+--------------+-----------------+----------------+----------------+
-| group0 | ap-northeast-1 | source0 | STANDARD          | 2025-01-01T00:00:00Z |          90 |              30 |        1024 |           0 |            0 |               0 |              0 |              0 |
-+--------+----------------+---------+-------------------+----------------------+-------------+-----------------+-------------+-------------+--------------+-----------------+----------------+----------------+
-| group1 | ap-northeast-2 | source1 | INFREQUENT_ACCESS | 2024-04-01T00:00:00Z |         365 |              30 |        2048 |         100 |          100 |             100 |            100 |            100 |
-+--------+----------------+---------+-------------------+----------------------+-------------+-----------------+-------------+-------------+--------------+-----------------+----------------+----------------+
+			want: `+--------+----------------+-------------------+----------------------+-------------+-----------------+-------------+-------------+--------------+-----------------+----------------+----------------+
+| Name   | Region         | Class             | CreatedAt            | ElapsedDays | RetentionInDays | StoredBytes | BytesPerDay | DesiredState | ReductionInDays | ReducibleBytes | RemainingBytes |
++--------+----------------+-------------------+----------------------+-------------+-----------------+-------------+-------------+--------------+-----------------+----------------+----------------+
+| group0 | ap-northeast-1 | STANDARD          | 2025-01-01T00:00:00Z |          90 |              30 |        1024 |           0 |            0 |               0 |              0 |              0 |
++--------+----------------+-------------------+----------------------+-------------+-----------------+-------------+-------------+--------------+-----------------+----------------+----------------+
+| group1 | ap-northeast-2 | INFREQUENT_ACCESS | 2024-04-01T00:00:00Z |         365 |              30 |        2048 |         100 |          100 |             100 |            100 |            100 |
++--------+----------------+-------------------+----------------------+-------------+-----------------+-------------+-------------+--------------+-----------------+----------------+----------------+
 `,
 			wantErr: false,
 		},
@@ -325,12 +321,12 @@ func TestRenderer_Render2(t *testing.T) {
 				Data:       previewEntryData,
 				OutputType: OutputTypeCompressedText,
 			},
-			want: `+--------+----------------+---------+-------------------+----------------------+-------------+-----------------+-------------+-------------+--------------+-----------------+----------------+----------------+
-| Name   | Region         | Source  | Class             | CreatedAt            | ElapsedDays | RetentionInDays | StoredBytes | BytesPerDay | DesiredState | ReductionInDays | ReducibleBytes | RemainingBytes |
-+--------+----------------+---------+-------------------+----------------------+-------------+-----------------+-------------+-------------+--------------+-----------------+----------------+----------------+
-| group0 | ap-northeast-1 | source0 | STANDARD          | 2025-01-01T00:00:00Z |          90 |              30 |        1024 |           0 |            0 |               0 |              0 |              0 |
-| group1 | ap-northeast-2 | source1 | INFREQUENT_ACCESS | 2024-04-01T00:00:00Z |         365 |              30 |        2048 |         100 |          100 |             100 |            100 |            100 |
-+--------+----------------+---------+-------------------+----------------------+-------------+-----------------+-------------+-------------+--------------+-----------------+----------------+----------------+
+			want: `+--------+----------------+-------------------+----------------------+-------------+-----------------+-------------+-------------+--------------+-----------------+----------------+----------------+
+| Name   | Region         | Class             | CreatedAt            | ElapsedDays | RetentionInDays | StoredBytes | BytesPerDay | DesiredState | ReductionInDays | ReducibleBytes | RemainingBytes |
++--------+----------------+-------------------+----------------------+-------------+-----------------+-------------+-------------+--------------+-----------------+----------------+----------------+
+| group0 | ap-northeast-1 | STANDARD          | 2025-01-01T00:00:00Z |          90 |              30 |        1024 |           0 |            0 |               0 |              0 |              0 |
+| group1 | ap-northeast-2 | INFREQUENT_ACCESS | 2024-04-01T00:00:00Z |         365 |              30 |        2048 |         100 |          100 |             100 |            100 |            100 |
++--------+----------------+-------------------+----------------------+-------------+-----------------+-------------+-------------+--------------+-----------------+----------------+----------------+
 `,
 			wantErr: false,
 		},
@@ -340,10 +336,10 @@ func TestRenderer_Render2(t *testing.T) {
 				Data:       previewEntryData,
 				OutputType: OutputTypeMarkdown,
 			},
-			want: `| Name   | Region         | Source  | Class             | CreatedAt            | ElapsedDays | RetentionInDays | StoredBytes | BytesPerDay | DesiredState | ReductionInDays | ReducibleBytes | RemainingBytes |
-|--------|----------------|---------|-------------------|----------------------|-------------|-----------------|-------------|-------------|--------------|-----------------|----------------|----------------|
-| group0 | ap-northeast-1 | source0 | STANDARD          | 2025-01-01T00:00:00Z |          90 |              30 |        1024 |           0 |            0 |               0 |              0 |              0 |
-| group1 | ap-northeast-2 | source1 | INFREQUENT_ACCESS | 2024-04-01T00:00:00Z |         365 |              30 |        2048 |         100 |          100 |             100 |            100 |            100 |
+			want: `| Name   | Region         | Class             | CreatedAt            | ElapsedDays | RetentionInDays | StoredBytes | BytesPerDay | DesiredState | ReductionInDays | ReducibleBytes | RemainingBytes |
+|--------|----------------|-------------------|----------------------|-------------|-----------------|-------------|-------------|--------------|-----------------|----------------|----------------|
+| group0 | ap-northeast-1 | STANDARD          | 2025-01-01T00:00:00Z |          90 |              30 |        1024 |           0 |            0 |               0 |              0 |              0 |
+| group1 | ap-northeast-2 | INFREQUENT_ACCESS | 2024-04-01T00:00:00Z |         365 |              30 |        2048 |         100 |          100 |             100 |            100 |            100 |
 `,
 			wantErr: false,
 		},
@@ -353,9 +349,9 @@ func TestRenderer_Render2(t *testing.T) {
 				Data:       previewEntryData,
 				OutputType: OutputTypeBacklog,
 			},
-			want: `| Name   | Region         | Source  | Class             | CreatedAt            | ElapsedDays | RetentionInDays | StoredBytes | BytesPerDay | DesiredState | ReductionInDays | ReducibleBytes | RemainingBytes |h
-| group0 | ap-northeast-1 | source0 | STANDARD          | 2025-01-01T00:00:00Z |          90 |              30 |        1024 |           0 |            0 |               0 |              0 |              0 |
-| group1 | ap-northeast-2 | source1 | INFREQUENT_ACCESS | 2024-04-01T00:00:00Z |         365 |              30 |        2048 |         100 |          100 |             100 |            100 |            100 |
+			want: `| Name   | Region         | Class             | CreatedAt            | ElapsedDays | RetentionInDays | StoredBytes | BytesPerDay | DesiredState | ReductionInDays | ReducibleBytes | RemainingBytes |h
+| group0 | ap-northeast-1 | STANDARD          | 2025-01-01T00:00:00Z |          90 |              30 |        1024 |           0 |            0 |               0 |              0 |              0 |
+| group1 | ap-northeast-2 | INFREQUENT_ACCESS | 2024-04-01T00:00:00Z |         365 |              30 |        2048 |         100 |          100 |             100 |            100 |            100 |
 `,
 			wantErr: false,
 		},
@@ -365,9 +361,9 @@ func TestRenderer_Render2(t *testing.T) {
 				Data:       previewEntryData,
 				OutputType: OutputTypeTSV,
 			},
-			want: `Name	Region	Source	Class	CreatedAt	ElapsedDays	RetentionInDays	StoredBytes	BytesPerDay	DesiredState	ReductionInDays	ReducibleBytes	RemainingBytes
-group0	ap-northeast-1	source0	STANDARD	2025-01-01T00:00:00Z	90	30	1024	0	0	0	0	0
-group1	ap-northeast-2	source1	INFREQUENT_ACCESS	2024-04-01T00:00:00Z	365	30	2048	100	100	100	100	100
+			want: `Name	Region	Class	CreatedAt	ElapsedDays	RetentionInDays	StoredBytes	BytesPerDay	DesiredState	ReductionInDays	ReducibleBytes	RemainingBytes
+group0	ap-northeast-1	STANDARD	2025-01-01T00:00:00Z	90	30	1024	0	0	0	0	0
+group1	ap-northeast-2	INFREQUENT_ACCESS	2024-04-01T00:00:00Z	365	30	2048	100	100	100	100	100
 `,
 			wantErr: false,
 		},

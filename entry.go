@@ -33,7 +33,6 @@ type Entry interface {
 type entry struct {
 	LogGroupName    string              // The name of the log group.
 	Region          string              // The region that the log group belongs to.
-	Source          string              // The information of linked source account.
 	Class           types.LogGroupClass // The class of the log group.
 	CreatedAt       time.Time           // The time when the log group was created.
 	ElapsedDays     int64               // The number of days elapsed since the log group was created.
@@ -70,7 +69,6 @@ func (e *ListEntry) toInput() []any {
 	return []any{
 		e.LogGroupName,
 		e.Region,
-		e.Source,
 		e.Class,
 		e.CreatedAt.Format(time.RFC3339),
 		e.ElapsedDays,
@@ -84,7 +82,6 @@ func (e *ListEntry) toTSV() []string {
 	return []string{
 		e.LogGroupName,
 		e.Region,
-		e.Source,
 		string(e.Class),
 		e.CreatedAt.Format(time.RFC3339),
 		strconv.FormatInt(e.ElapsedDays, 10),
@@ -119,7 +116,6 @@ func (e *PreviewEntry) toInput() []any {
 	return []any{
 		e.LogGroupName,
 		e.Region,
-		e.Source,
 		e.Class,
 		e.CreatedAt.Format(time.RFC3339),
 		e.ElapsedDays,
@@ -138,7 +134,6 @@ func (e *PreviewEntry) toTSV() []string {
 	return []string{
 		e.LogGroupName,
 		e.Region,
-		e.Source,
 		string(e.Class),
 		e.CreatedAt.Format(time.RFC3339),
 		strconv.FormatInt(e.ElapsedDays, 10),

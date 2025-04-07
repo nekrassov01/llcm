@@ -3,7 +3,6 @@ package llcm
 import (
 	"context"
 	"errors"
-	"regexp"
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -129,7 +128,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -184,7 +182,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-2",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassInfrequentAccess,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -197,7 +194,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-1",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -277,7 +273,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-4",
 							Region:          "us-east-1",
-							Source:          "111111111111/us-east-2",
 							Class:           types.LogGroupClassInfrequentAccess,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -290,7 +285,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-2",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassInfrequentAccess,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -303,7 +297,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-1",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -316,7 +309,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-3",
 							Region:          "us-east-1",
-							Source:          "000000000000/us-east-2",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -371,7 +363,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-2",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassInfrequentAccess,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -384,7 +375,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-2",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassInfrequentAccess,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -397,7 +387,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-1",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -410,7 +399,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-1",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -457,7 +445,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -468,95 +455,6 @@ func TestManager_List(t *testing.T) {
 					},
 				},
 				TotalStoredBytes: 1024,
-			},
-			wantErr: false,
-		},
-		{
-			name: "incompatible source",
-			fields: fields{
-				client: newMockClient(&mockClient{
-					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
-						out := &cloudwatchlogs.DescribeLogGroupsOutput{
-							LogGroups: []types.LogGroup{
-								{
-									LogGroupName:    aws.String("test-log-group-1"),
-									LogGroupArn:     aws.String(""),
-									LogGroupClass:   types.LogGroupClassStandard,
-									CreationTime:    aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
-									RetentionInDays: aws.Int32(365),
-									StoredBytes:     aws.Int64(1024),
-								},
-								{
-									LogGroupName:    aws.String("test-log-group-2"),
-									LogGroupArn:     aws.String("arn:aws:logs:us-east-1::log-group:test-log-group-2"),
-									LogGroupClass:   types.LogGroupClassStandard,
-									CreationTime:    aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
-									RetentionInDays: aws.Int32(7),
-									StoredBytes:     aws.Int64(2048),
-								},
-								{
-									LogGroupName:    aws.String("test-log-group-3"),
-									LogGroupArn:     aws.String("arn:aws:logs::000000000000:log-group:test-log-group-3"),
-									LogGroupClass:   types.LogGroupClassStandard,
-									CreationTime:    aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
-									RetentionInDays: aws.Int32(3),
-									StoredBytes:     aws.Int64(4096),
-								},
-							},
-						}
-						return out, nil
-					},
-				}),
-				regions:      []string{"us-east-1"},
-				desiredState: DesiredStateZero,
-				filters:      nil,
-				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
-			},
-			want: &ListEntryData{
-				header: listEntryDataHeader,
-				entries: []*ListEntry{
-					{
-						entry: &entry{
-							LogGroupName:    "test-log-group-3",
-							Region:          "us-east-1",
-							Source:          "",
-							Class:           types.LogGroupClassStandard,
-							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
-							ElapsedDays:     90,
-							RetentionInDays: 3,
-							StoredBytes:     4096,
-							name:            aws.String("test-log-group-3"),
-						},
-					},
-					{
-						entry: &entry{
-							LogGroupName:    "test-log-group-2",
-							Region:          "us-east-1",
-							Source:          "",
-							Class:           types.LogGroupClassStandard,
-							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
-							ElapsedDays:     90,
-							RetentionInDays: 7,
-							StoredBytes:     2048,
-							name:            aws.String("test-log-group-2"),
-						},
-					},
-					{
-						entry: &entry{
-							LogGroupName:    "test-log-group-1",
-							Region:          "us-east-1",
-							Source:          "",
-							Class:           types.LogGroupClassStandard,
-							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
-							ElapsedDays:     90,
-							RetentionInDays: 365,
-							StoredBytes:     1024,
-							name:            aws.String("test-log-group-1"),
-						},
-					},
-				},
-				TotalStoredBytes: 7168,
 			},
 			wantErr: false,
 		},
@@ -612,7 +510,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-1",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -625,87 +522,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-1",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
-							Class:           types.LogGroupClassStandard,
-							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
-							ElapsedDays:     90,
-							RetentionInDays: 365,
-							StoredBytes:     1024,
-							name:            aws.String("test-log-group-1"),
-						},
-					},
-				},
-				TotalStoredBytes: 2048,
-			},
-			wantErr: false,
-		},
-		{
-			name: "with filter source",
-			fields: fields{
-				client: newMockClient(&mockClient{
-					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
-						out := &cloudwatchlogs.DescribeLogGroupsOutput{
-							LogGroups: []types.LogGroup{
-								{
-									LogGroupName:    aws.String("test-log-group-1"),
-									LogGroupArn:     aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group-1"),
-									LogGroupClass:   types.LogGroupClassStandard,
-									CreationTime:    aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
-									RetentionInDays: aws.Int32(365),
-									StoredBytes:     aws.Int64(1024),
-								},
-								{
-									LogGroupName:    aws.String("test-log-group-2"),
-									LogGroupArn:     aws.String("arn:aws:logs:us-east-1:000000000000:log-group:test-log-group-2"),
-									LogGroupClass:   types.LogGroupClassInfrequentAccess,
-									CreationTime:    aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
-									RetentionInDays: aws.Int32(7),
-									StoredBytes:     aws.Int64(2048),
-								},
-							},
-						}
-						return out, nil
-					},
-				}),
-				regions:      []string{"us-east-1", "us-east-1"},
-				desiredState: DesiredStateZero,
-				filters: []Filter{
-					{
-						Key:      FilterKeySource,
-						Operator: FilterOperatorREQ,
-						Value:    "123456789012.*$",
-					},
-				},
-				filterFns: []func(e *entry) bool{
-					func(e *entry) bool {
-						re := regexp.MustCompile("123456789012.*$")
-						return re.MatchString(e.Source)
-					},
-				},
-				sem: semaphore.NewWeighted(10),
-				ctx: context.Background(),
-			},
-			want: &ListEntryData{
-				header: listEntryDataHeader,
-				entries: []*ListEntry{
-					{
-						entry: &entry{
-							LogGroupName:    "test-log-group-1",
-							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
-							Class:           types.LogGroupClassStandard,
-							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
-							ElapsedDays:     90,
-							RetentionInDays: 365,
-							StoredBytes:     1024,
-							name:            aws.String("test-log-group-1"),
-						},
-					},
-					{
-						entry: &entry{
-							LogGroupName:    "test-log-group-1",
-							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -771,7 +587,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-1",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -784,7 +599,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-1",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -850,7 +664,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-2",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassInfrequentAccess,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -863,7 +676,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-2",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassInfrequentAccess,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -929,7 +741,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-2",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassInfrequentAccess,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -942,7 +753,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-2",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassInfrequentAccess,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -1008,7 +818,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-2",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassInfrequentAccess,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -1021,7 +830,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-2",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassInfrequentAccess,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -1087,7 +895,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-2",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassInfrequentAccess,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -1100,7 +907,6 @@ func TestManager_List(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-2",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassInfrequentAccess,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,

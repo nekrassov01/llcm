@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs"
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs/types"
 )
@@ -20,7 +19,6 @@ func (man *Manager) handle(handler func(*Manager, *entry) error) error {
 		wg          sync.WaitGroup
 		ctx, cancel = context.WithCancel(man.ctx)
 		errorChan   = make(chan error, 1)
-		linked      = aws.Bool(true)
 	)
 	defer cancel()
 	errorFunc := func(err error) {
@@ -39,9 +37,7 @@ func (man *Manager) handle(handler func(*Manager, *entry) error) error {
 				o.Region = region
 			}
 			in := &cloudwatchlogs.DescribeLogGroupsInput{
-				NextToken:             nil,
-				AccountIdentifiers:    nil,
-				IncludeLinkedAccounts: linked,
+				NextToken: nil,
 			}
 			for {
 				out, err := man.client.DescribeLogGroups(ctx, in, opt)
@@ -104,7 +100,6 @@ func newEntry(logGroup types.LogGroup, region string) *entry {
 	e := &entry{}
 	e.LogGroupName = aws.ToString(logGroup.LogGroupName)
 	e.Region = region
-	e.Source = source(logGroup.LogGroupArn)
 	e.Class = logGroup.LogGroupClass
 	e.CreatedAt = createdAt(logGroup.CreationTime)
 	e.ElapsedDays = elapsedDays(e.CreatedAt)
@@ -112,18 +107,6 @@ func newEntry(logGroup types.LogGroup, region string) *entry {
 	e.StoredBytes = aws.ToInt64(logGroup.StoredBytes)
 	e.name = logGroup.LogGroupName
 	return e
-}
-
-// source returns the linked source account of the log group.
-func source(s *string) string {
-	parsed, err := arn.Parse(aws.ToString(s))
-	if err != nil {
-		return ""
-	}
-	if parsed.AccountID == "" || parsed.Region == "" {
-		return ""
-	}
-	return parsed.AccountID + "/" + parsed.Region
 }
 
 // createdAt returns the creation time of the log group.

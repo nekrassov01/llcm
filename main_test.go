@@ -86,7 +86,6 @@ var listEntryData = ListEntryData{
 			entry: &entry{
 				LogGroupName:    "group0",
 				Region:          "ap-northeast-1",
-				Source:          "source0",
 				Class:           types.LogGroupClassStandard,
 				CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 				ElapsedDays:     90,
@@ -99,7 +98,6 @@ var listEntryData = ListEntryData{
 			entry: &entry{
 				LogGroupName:    "group1",
 				Region:          "ap-northeast-2",
-				Source:          "source1",
 				Class:           types.LogGroupClassInfrequentAccess,
 				CreatedAt:       mustTime("2024-04-01T00:00:00Z"),
 				ElapsedDays:     365,
@@ -124,7 +122,6 @@ var previewEntryData = PreviewEntryData{
 			entry: &entry{
 				LogGroupName:    "group0",
 				Region:          "ap-northeast-1",
-				Source:          "source0",
 				Class:           types.LogGroupClassStandard,
 				CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 				ElapsedDays:     90,
@@ -142,7 +139,6 @@ var previewEntryData = PreviewEntryData{
 			entry: &entry{
 				LogGroupName:    "group1",
 				Region:          "ap-northeast-2",
-				Source:          "source1",
 				Class:           types.LogGroupClassInfrequentAccess,
 				CreatedAt:       mustTime("2024-04-01T00:00:00Z"),
 				ElapsedDays:     365,

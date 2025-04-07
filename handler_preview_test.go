@@ -64,7 +64,6 @@ func TestManager_Preview(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -126,7 +125,6 @@ func TestManager_Preview(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-2",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -144,7 +142,6 @@ func TestManager_Preview(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group-1",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -198,7 +195,6 @@ func TestManager_Preview(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -252,7 +248,6 @@ func TestManager_Preview(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -306,7 +301,6 @@ func TestManager_Preview(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-04-01T00:00:00Z"),
 							ElapsedDays:     0,
@@ -360,7 +354,6 @@ func TestManager_Preview(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -414,7 +407,6 @@ func TestManager_Preview(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-04-01T00:00:00Z"),
 							ElapsedDays:     0,
@@ -468,7 +460,6 @@ func TestManager_Preview(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -522,7 +513,6 @@ func TestManager_Preview(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-04-01T00:00:00Z"),
 							ElapsedDays:     0,
@@ -576,7 +566,6 @@ func TestManager_Preview(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -630,7 +619,6 @@ func TestManager_Preview(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-04-01T00:00:00Z"),
 							ElapsedDays:     0,
@@ -684,7 +672,6 @@ func TestManager_Preview(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -737,7 +724,6 @@ func TestManager_Preview(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-04-01T00:00:00Z"),
 							ElapsedDays:     0,
@@ -790,7 +776,6 @@ func TestManager_Preview(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,
@@ -843,7 +828,6 @@ func TestManager_Preview(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "test-log-group",
 							Region:          "us-east-1",
-							Source:          "123456789012/us-east-1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
 							ElapsedDays:     90,

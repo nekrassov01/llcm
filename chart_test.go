@@ -116,7 +116,6 @@ func Test_getPieItems(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group0",
 							Region:          "ap-northeast-1",
-							Source:          "source0",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     0,
@@ -128,7 +127,6 @@ func Test_getPieItems(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group1",
 							Region:          "ap-northeast-2",
-							Source:          "source1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     0,
@@ -159,7 +157,6 @@ func Test_getPieItems(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group0",
 							Region:          "ap-northeast-1",
-							Source:          "source0",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     0,
@@ -171,7 +168,6 @@ func Test_getPieItems(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group1",
 							Region:          "ap-northeast-2",
-							Source:          "source1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     0,
@@ -198,7 +194,6 @@ func Test_getPieItems(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group0",
 							Region:          "ap-northeast-1",
-							Source:          "source0",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     0,
@@ -210,7 +205,6 @@ func Test_getPieItems(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group1",
 							Region:          "ap-northeast-2",
-							Source:          "source1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     0,
@@ -222,7 +216,6 @@ func Test_getPieItems(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group2",
 							Region:          "us-east-1",
-							Source:          "source2",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     0,
@@ -234,7 +227,6 @@ func Test_getPieItems(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group3",
 							Region:          "us-east-1",
-							Source:          "source3",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     0,
@@ -319,7 +311,6 @@ func Test_getBarSubtitle(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group0",
 							Region:          "ap-northeast-1",
-							Source:          "source0",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     0,
@@ -336,7 +327,6 @@ func Test_getBarSubtitle(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group1",
 							Region:          "ap-northeast-2",
-							Source:          "source1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     0,
@@ -364,7 +354,6 @@ func Test_getBarSubtitle(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group0",
 							Region:          "ap-northeast-1",
-							Source:          "source0",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     0,
@@ -381,7 +370,6 @@ func Test_getBarSubtitle(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group1",
 							Region:          "ap-northeast-2",
-							Source:          "source1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     0,
@@ -409,7 +397,6 @@ func Test_getBarSubtitle(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group0",
 							Region:          "ap-northeast-1",
-							Source:          "source0",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     0,
@@ -426,7 +413,6 @@ func Test_getBarSubtitle(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group1",
 							Region:          "ap-northeast-2",
-							Source:          "source1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     0,
@@ -479,7 +465,6 @@ func Test_getBarItems(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group0",
 							Region:          "ap-northeast-1",
-							Source:          "source0",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     3000,
@@ -496,7 +481,6 @@ func Test_getBarItems(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group1",
 							Region:          "ap-northeast-2",
-							Source:          "source1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     3000,
@@ -539,7 +523,6 @@ func Test_getBarItems(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group0",
 							Region:          "ap-northeast-1",
-							Source:          "source0",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     3000,
@@ -556,7 +539,6 @@ func Test_getBarItems(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group1",
 							Region:          "ap-northeast-2",
-							Source:          "source1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     3000,
@@ -593,7 +575,6 @@ func Test_getBarItems(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group0",
 							Region:          "ap-northeast-1",
-							Source:          "source0",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     3000,
@@ -610,7 +591,6 @@ func Test_getBarItems(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group1",
 							Region:          "ap-northeast-2",
-							Source:          "source1",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     3000,
@@ -627,7 +607,6 @@ func Test_getBarItems(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group2",
 							Region:          "us-east-1",
-							Source:          "source2",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     3000,
@@ -644,7 +623,6 @@ func Test_getBarItems(t *testing.T) {
 						entry: &entry{
 							LogGroupName:    "group3",
 							Region:          "us-east-1",
-							Source:          "source3",
 							Class:           types.LogGroupClassStandard,
 							CreatedAt:       time.Now(),
 							ElapsedDays:     3000,

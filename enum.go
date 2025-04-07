@@ -231,7 +231,6 @@ type FilterKey int
 const (
 	FilterKeyNone      FilterKey = iota // The key meaning none.
 	FilterKeyName                       // The key meaning "name" corresponding LogGroupName.
-	FilterKeySource                     // The key meaning "source" corresponding Source.
 	FilterKeyClass                      // The key meaning "class" corresponding Class.
 	FilterKeyElapsed                    // The key meaning "elapsed" corresponding ElapsedDays.
 	FilterKeyRetention                  // The key meaning "retention" corresponding RetentionInDays.
@@ -245,8 +244,6 @@ func (t FilterKey) String() string {
 		return "none"
 	case FilterKeyName:
 		return "name"
-	case FilterKeySource:
-		return "source"
 	case FilterKeyClass:
 		return "class"
 	case FilterKeyElapsed:
@@ -270,8 +267,6 @@ func parseFilterKey(s string) (FilterKey, error) {
 	switch s {
 	case FilterKeyName.String():
 		return FilterKeyName, nil
-	case FilterKeySource.String():
-		return FilterKeySource, nil
 	case FilterKeyClass.String():
 		return FilterKeyClass, nil
 	case FilterKeyElapsed.String():

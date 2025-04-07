@@ -809,11 +809,6 @@ func TestFilterKey_String(t *testing.T) {
 			want: "name",
 		},
 		{
-			name: "source",
-			tr:   FilterKeySource,
-			want: "source",
-		},
-		{
 			name: "class",
 			tr:   FilterKeyClass,
 			want: "class",
@@ -859,11 +854,6 @@ func TestFilterKey_MarshalJSON(t *testing.T) {
 			name: "name",
 			tr:   FilterKeyName,
 			want: []byte(`"name"`),
-		},
-		{
-			name: "source",
-			tr:   FilterKeySource,
-			want: []byte(`"source"`),
 		},
 		{
 			name: "class",
@@ -921,14 +911,6 @@ func TestParseFilterKey(t *testing.T) {
 				s: "name",
 			},
 			want:    FilterKeyName,
-			wantErr: false,
-		},
-		{
-			name: "source",
-			args: args{
-				s: "source",
-			},
-			want:    FilterKeySource,
 			wantErr: false,
 		},
 		{

@@ -63,14 +63,6 @@ func (man *Manager) setFilter(filters []Filter) error {
 			fn = func(e *entry) bool {
 				return f(e.LogGroupName)
 			}
-		case FilterKeySource:
-			f, err := stringFilterFunc(filter)
-			if err != nil {
-				return err
-			}
-			fn = func(e *entry) bool {
-				return f(e.Source)
-			}
 		case FilterKeyClass:
 			f, err := stringFilterFunc(filter)
 			if err != nil {

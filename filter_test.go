@@ -474,23 +474,6 @@ func TestManager_setFilter(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "source == foo",
-			args: args{
-				filters: []Filter{
-					{
-						Key:      FilterKeySource,
-						Operator: FilterOperatorNEQ,
-						Value:    "foo",
-					},
-				},
-			},
-			want: want{
-				entry: &entry{Source: "foo"},
-				fns:   []bool{false},
-			},
-			wantErr: false,
-		},
-		{
 			name: "class == STANDARD",
 			args: args{
 				filters: []Filter{
