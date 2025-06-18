@@ -23,7 +23,6 @@ var (
 // Entry is an interface for log group entry.
 type Entry interface {
 	Name() string              // Name returns the name of the entry.
-	Bytes() int64              // Bytes returns the stored bytes of the entry.
 	DataSet() map[string]int64 // DataSet returns map for plotting the chart.
 	toInput() []any            // toInput returns the input of the entry for rendering.
 	toTSV() []string           // toTSV returns the TSV of the entry for rendering.
@@ -44,11 +43,6 @@ type entry struct {
 // Name returns the name of the entry.
 func (e *entry) Name() string {
 	return e.LogGroupName
-}
-
-// Bytes returns the stored bytes of the entry.
-func (e *entry) Bytes() int64 {
-	return e.StoredBytes
 }
 
 // ListEntry represents an entry to list log group.
