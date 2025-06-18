@@ -1,10 +1,10 @@
 module sample
 
-go 1.24.2
+go 1.24.4
 
 require (
 	github.com/aws/aws-lambda-go v1.47.0
-	github.com/nekrassov01/llcm v0.0.16
+	github.com/nekrassov01/llcm v0.0.17
 )
 
 require (
