@@ -1,47 +1,26 @@
 version: "2"
 linters:
+  default: fast
   enable:
-    - dogsled
-    - dupl
-    - errorlint
-    - gocritic
-    - gocyclo
+    - errcheck
     - gosec
-    - makezero
-    - misspell
-    - nakedret
-    - predeclared
     - revive
-    - staticcheck
-    - tagliatelle
-    - thelper
-    - tparallel
-    - unconvert
-    - unparam
-    - wastedassign
-    - whitespace
-  exclusions:
-    generated: lax
-    presets:
-      - comments
-      - common-false-positives
-      - legacy
-      - std-error-handling
-    rules:
-      - linters:
-          - dupl
-        path: _test\.go
-    paths:
-      - third_party$
-      - builtin$
-      - examples$
-formatters:
-  enable:
-    - gofmt
-    - gofumpt
-  exclusions:
-    generated: lax
-    paths:
-      - third_party$
-      - builtin$
-      - examples$
+  disable:
+    - copyloopvar
+    - cyclop
+    - depguard
+    - dupl
+    - funlen
+    - gocognit
+    - goconst
+    - lll
+    - maintidx
+    - mnd
+    - nlreturn
+    - testpackage
+    - wsl
+  settings:
+    revive:
+      rules:
+        - name: exported
+          disabled: true

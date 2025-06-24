@@ -20,17 +20,17 @@ func (man *Manager) Apply(ctx context.Context, w io.Writer) (int32, error) {
 			if err := man.deleteLogGroup(ctx, entry.name, entry.Region); err != nil {
 				return err
 			}
-			fmt.Fprintf(w, "deleted log group: %s\n", entry.LogGroupName)
+			_, _ = fmt.Fprintf(w, "deleted log group: %s\n", entry.LogGroupName)
 		case DesiredStateInfinite:
 			if err := man.deleteRetentionPolicy(ctx, entry.name, entry.Region); err != nil {
 				return err
 			}
-			fmt.Fprintf(w, "deleted retention policy: %s\n", entry.LogGroupName)
+			_, _ = fmt.Fprintf(w, "deleted retention policy: %s\n", entry.LogGroupName)
 		default:
 			if err := man.putRetentionPolicy(ctx, entry.name, entry.Region); err != nil {
 				return err
 			}
-			fmt.Fprintf(w, "updated retention policy: %s\n", entry.LogGroupName)
+			_, _ = fmt.Fprintf(w, "updated retention policy: %s\n", entry.LogGroupName)
 		}
 		atomic.AddInt32(&n, 1)
 		return nil

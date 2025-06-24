@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/components"
@@ -46,7 +47,7 @@ func render(chart components.Charter) error {
 		fname = fmt.Sprintf("%s%d.html", BaseName, i)
 		i++
 	}
-	f, err := os.Create(fname)
+	f, err := os.Create(filepath.Clean(fname))
 	if err != nil {
 		return err
 	}
@@ -56,7 +57,7 @@ func render(chart components.Charter) error {
 	if err := page.Render(io.MultiWriter(f)); err != nil {
 		return err
 	}
-	browser.OpenFile(fname) //nolint:errcheck
+	_ = browser.OpenFile(fname)
 	return nil
 }
 
