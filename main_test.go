@@ -1,6 +1,10 @@
 package llcm
 
 import (
+	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -23,8 +27,26 @@ func TestMain(m *testing.M) {
 		setMaxBarChartItems(originalMaxBarChartItems)
 		setTimeZone(localTimeZone)
 		nowFunc = time.Now
+		if err := removeChartFiles(); err != nil {
+			panic(err)
+		}
 	}()
 	m.Run()
+}
+
+func removeChartFiles() error {
+	files, err := filepath.Glob("llcm*.html")
+	if err != nil {
+		return err
+	}
+	for _, f := range files {
+		if strings.HasPrefix(filepath.Base(f), "llcm") && strings.HasSuffix(f, ".html") {
+			if err := os.Remove(f); err != nil {
+				fmt.Printf("failed to remove file %s: %v\n", f, err)
+			}
+		}
+	}
+	return nil
 }
 
 // setMaxPieChartItems is helper function to set MaxPieChartItems and return the original value.
