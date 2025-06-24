@@ -4,8 +4,10 @@ go 1.24.4
 
 require (
 	github.com/aws/aws-lambda-go v1.47.0
-	github.com/nekrassov01/llcm v0.0.17
+	github.com/nekrassov01/llcm v0.0.0
 )
+
+replace github.com/nekrassov01/llcm => ../../../../../../llcm
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.36.1 // indirect
