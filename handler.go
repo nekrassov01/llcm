@@ -14,12 +14,10 @@ var entriesSize = 8192
 
 // handle enumerates log groups for all regions to get targets for the process.
 // For each entry, the specified handler is executed.
-func (man *Manager) handle(handler func(*Manager, *entry) error) error {
-	var (
-		wg          sync.WaitGroup
-		ctx, cancel = context.WithCancel(man.ctx)
-		errorChan   = make(chan error, 1)
-	)
+func (man *Manager) handle(ctx context.Context, handler func(*Manager, *entry) error) error {
+	var wg sync.WaitGroup
+	ctx, cancel := context.WithCancel(ctx)
+	errorChan := make(chan error, 1)
 	defer cancel()
 	errorFunc := func(err error) {
 		select {

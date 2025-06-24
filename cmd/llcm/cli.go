@@ -155,13 +155,13 @@ func (a *app) list(ctx context.Context, cmd *cli.Command) error {
 	)
 
 	// create manager with common settings
-	man, err := a.new(ctx, cmd)
+	man, err := a.new(cmd)
 	if err != nil {
 		return err
 	}
 
 	// run list operation
-	data, err := man.List()
+	data, err := man.List(ctx)
 	if err != nil {
 		return err
 	}
@@ -208,7 +208,7 @@ func (a *app) preview(ctx context.Context, cmd *cli.Command) error {
 	)
 
 	// create manager with common settings
-	man, err := a.new(ctx, cmd)
+	man, err := a.new(cmd)
 	if err != nil {
 		return err
 	}
@@ -219,7 +219,7 @@ func (a *app) preview(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	// run preview operation
-	data, err := man.Preview()
+	data, err := man.Preview(ctx)
 	if err != nil {
 		return err
 	}
@@ -261,7 +261,7 @@ func (a *app) apply(ctx context.Context, cmd *cli.Command) error {
 	)
 
 	// create manager with common settings
-	man, err := a.new(ctx, cmd)
+	man, err := a.new(cmd)
 	if err != nil {
 		return err
 	}
@@ -272,7 +272,7 @@ func (a *app) apply(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	// run apply operation
-	n, err := man.Apply(a.Writer)
+	n, err := man.Apply(ctx, a.Writer)
 	if err != nil {
 		return err
 	}
@@ -287,7 +287,7 @@ func (a *app) apply(ctx context.Context, cmd *cli.Command) error {
 	return nil
 }
 
-func (a *app) new(ctx context.Context, cmd *cli.Command) (*llcm.Manager, error) {
+func (a *app) new(cmd *cli.Command) (*llcm.Manager, error) {
 	// evaluate filter expressions passed as string
 	filter, err := llcm.EvaluateFilter(cmd.StringSlice(a.filter.Name))
 	if err != nil {
@@ -301,7 +301,7 @@ func (a *app) new(ctx context.Context, cmd *cli.Command) (*llcm.Manager, error) 
 	client := llcm.NewClient(cfg)
 
 	// initialize the manager
-	man := llcm.NewManager(ctx, client)
+	man := llcm.NewManager(client)
 
 	// set regions to the manager
 	if err := man.SetRegion(cmd.StringSlice(a.region.Name)); err != nil {

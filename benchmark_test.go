@@ -58,14 +58,13 @@ func prepare(n int, regions []string) *Manager {
 		regions:      regions,
 		desiredState: 365,
 		sem:          semaphore.NewWeighted(NumWorker),
-		ctx:          context.Background(),
 	}
 }
 
 func BenchmarkList(b *testing.B) {
 	man := prepare(benchN, benchR)
 	for b.Loop() {
-		_, err := man.List()
+		_, err := man.List(context.Background())
 		if err != nil {
 			b.Fatal(err)
 		}
@@ -75,7 +74,7 @@ func BenchmarkList(b *testing.B) {
 func BenchmarkPreview(b *testing.B) {
 	man := prepare(benchN, benchR)
 	for b.Loop() {
-		_, err := man.Preview()
+		_, err := man.Preview(context.Background())
 		if err != nil {
 			b.Fatal(err)
 		}
@@ -85,7 +84,7 @@ func BenchmarkPreview(b *testing.B) {
 func BenchmarkApply(b *testing.B) {
 	man := prepare(benchN, benchR)
 	for b.Loop() {
-		_, err := man.Apply(io.Discard)
+		_, err := man.Apply(context.Background(), io.Discard)
 		if err != nil {
 			b.Fatal(err)
 		}

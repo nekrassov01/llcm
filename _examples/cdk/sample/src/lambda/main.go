@@ -41,7 +41,7 @@ func handleRequest(ctx context.Context) error {
 	}
 
 	// initialize the manager
-	man := llcm.NewManager(ctx, client)
+	man := llcm.NewManager(client)
 
 	// set filter to the manager
 	if err := man.SetFilter(filter); err != nil {
@@ -54,7 +54,7 @@ func handleRequest(ctx context.Context) error {
 	}
 
 	// run apply operation
-	n, err := man.Apply(w)
+	n, err := man.Apply(ctx, w)
 	if err != nil {
 		return err
 	}

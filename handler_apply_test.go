@@ -21,11 +21,15 @@ func TestManager_Apply(t *testing.T) {
 		filters            []Filter
 		filterFns          []func(*entry) bool
 		sem                *semaphore.Weighted
-		ctx                context.Context
+	}
+	type args struct {
+		ctx context.Context
+		w   io.Writer
 	}
 	tests := []struct {
 		name    string
 		fields  fields
+		args    args
 		want    int32
 		wantErr bool
 	}{
@@ -53,7 +57,10 @@ func TestManager_Apply(t *testing.T) {
 				desiredState: DesiredStateNone,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
+				w:   io.Discard,
 			},
 			want:    0,
 			wantErr: true,
@@ -85,7 +92,10 @@ func TestManager_Apply(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
+				w:   io.Discard,
 			},
 			want:    1,
 			wantErr: false,
@@ -117,7 +127,10 @@ func TestManager_Apply(t *testing.T) {
 				desiredState: DesiredStateInfinite,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
+				w:   io.Discard,
 			},
 			want:    1,
 			wantErr: false,
@@ -149,7 +162,10 @@ func TestManager_Apply(t *testing.T) {
 				desiredState: DesiredStateOneDay,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
+				w:   io.Discard,
 			},
 			want:    1,
 			wantErr: false,
@@ -181,7 +197,10 @@ func TestManager_Apply(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
+				w:   io.Discard,
 			},
 			want:    0,
 			wantErr: true,
@@ -213,7 +232,10 @@ func TestManager_Apply(t *testing.T) {
 				desiredState: DesiredStateInfinite,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
+				w:   io.Discard,
 			},
 			want:    0,
 			wantErr: true,
@@ -245,7 +267,10 @@ func TestManager_Apply(t *testing.T) {
 				desiredState: DesiredStateOneDay,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
+				w:   io.Discard,
 			},
 			want:    0,
 			wantErr: true,
@@ -285,7 +310,10 @@ func TestManager_Apply(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
+				w:   io.Discard,
 			},
 			want:    2,
 			wantErr: false,
@@ -301,9 +329,8 @@ func TestManager_Apply(t *testing.T) {
 				filters:            tt.fields.filters,
 				filterFns:          tt.fields.filterFns,
 				sem:                tt.fields.sem,
-				ctx:                tt.fields.ctx,
 			}
-			got, err := man.Apply(io.Discard)
+			got, err := man.Apply(tt.args.ctx, tt.args.w)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Manager.Apply() error = %v, wantErr %v", err, tt.wantErr)
 				return

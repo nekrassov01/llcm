@@ -1,6 +1,7 @@
 package llcm
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"sync/atomic"
@@ -9,24 +10,24 @@ import (
 )
 
 // Apply applies the desired state to the log groups.
-func (man *Manager) Apply(w io.Writer) (int32, error) {
+func (man *Manager) Apply(ctx context.Context, w io.Writer) (int32, error) {
 	var n int32
-	err := man.handle(func(man *Manager, entry *entry) error {
+	err := man.handle(ctx, func(man *Manager, entry *entry) error {
 		switch man.desiredState {
 		case DesiredStateNone:
 			return fmt.Errorf("invalid desired state: %q", man.desiredState)
 		case DesiredStateZero:
-			if err := man.deleteLogGroup(entry.name, entry.Region); err != nil {
+			if err := man.deleteLogGroup(ctx, entry.name, entry.Region); err != nil {
 				return err
 			}
 			fmt.Fprintf(w, "deleted log group: %s\n", entry.LogGroupName)
 		case DesiredStateInfinite:
-			if err := man.deleteRetentionPolicy(entry.name, entry.Region); err != nil {
+			if err := man.deleteRetentionPolicy(ctx, entry.name, entry.Region); err != nil {
 				return err
 			}
 			fmt.Fprintf(w, "deleted retention policy: %s\n", entry.LogGroupName)
 		default:
-			if err := man.putRetentionPolicy(entry.name, entry.Region); err != nil {
+			if err := man.putRetentionPolicy(ctx, entry.name, entry.Region); err != nil {
 				return err
 			}
 			fmt.Fprintf(w, "updated retention policy: %s\n", entry.LogGroupName)
@@ -38,7 +39,7 @@ func (man *Manager) Apply(w io.Writer) (int32, error) {
 }
 
 // deleteLogGroup deletes the log group.
-func (man *Manager) deleteLogGroup(name *string, region string) error {
+func (man *Manager) deleteLogGroup(ctx context.Context, name *string, region string) error {
 	opt := func(o *cloudwatchlogs.Options) {
 		o.Region = region
 		o.Retryer = retryer
@@ -46,7 +47,7 @@ func (man *Manager) deleteLogGroup(name *string, region string) error {
 	in := &cloudwatchlogs.DeleteLogGroupInput{
 		LogGroupName: name,
 	}
-	_, err := man.client.DeleteLogGroup(man.ctx, in, opt)
+	_, err := man.client.DeleteLogGroup(ctx, in, opt)
 	if err != nil {
 		return err
 	}
@@ -54,7 +55,7 @@ func (man *Manager) deleteLogGroup(name *string, region string) error {
 }
 
 // deleteRetentionPolicy deletes the retention policy.
-func (man *Manager) deleteRetentionPolicy(name *string, region string) error {
+func (man *Manager) deleteRetentionPolicy(ctx context.Context, name *string, region string) error {
 	opt := func(o *cloudwatchlogs.Options) {
 		o.Region = region
 		o.Retryer = retryer
@@ -62,7 +63,7 @@ func (man *Manager) deleteRetentionPolicy(name *string, region string) error {
 	in := &cloudwatchlogs.DeleteRetentionPolicyInput{
 		LogGroupName: name,
 	}
-	_, err := man.client.DeleteRetentionPolicy(man.ctx, in, opt)
+	_, err := man.client.DeleteRetentionPolicy(ctx, in, opt)
 	if err != nil {
 		return err
 	}
@@ -70,7 +71,7 @@ func (man *Manager) deleteRetentionPolicy(name *string, region string) error {
 }
 
 // putRetentionPolicy puts the retention policy.
-func (man *Manager) putRetentionPolicy(name *string, region string) error {
+func (man *Manager) putRetentionPolicy(ctx context.Context, name *string, region string) error {
 	opt := func(o *cloudwatchlogs.Options) {
 		o.Region = region
 		o.Retryer = retryer
@@ -79,7 +80,7 @@ func (man *Manager) putRetentionPolicy(name *string, region string) error {
 		LogGroupName:    name,
 		RetentionInDays: man.desiredStateNative,
 	}
-	_, err := man.client.PutRetentionPolicy(man.ctx, in, opt)
+	_, err := man.client.PutRetentionPolicy(ctx, in, opt)
 	if err != nil {
 		return err
 	}

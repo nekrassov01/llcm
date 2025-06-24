@@ -1,11 +1,12 @@
 package llcm
 
 import (
+	"context"
 	"sync"
 )
 
 // List lists the log group entries.
-func (man *Manager) List() (*ListEntryData, error) {
+func (man *Manager) List(ctx context.Context) (*ListEntryData, error) {
 	var (
 		total int64
 		mu    sync.Mutex
@@ -14,7 +15,7 @@ func (man *Manager) List() (*ListEntryData, error) {
 		header:  listEntryDataHeader,
 		entries: make([]*ListEntry, 0, entriesSize),
 	}
-	err := man.handle(func(_ *Manager, entry *entry) error {
+	err := man.handle(ctx, func(_ *Manager, entry *entry) error {
 		e := &ListEntry{
 			entry: entry,
 		}

@@ -1,7 +1,6 @@
 package llcm
 
 import (
-	"context"
 	"reflect"
 	"testing"
 
@@ -12,7 +11,6 @@ import (
 
 func TestNewManager(t *testing.T) {
 	type args struct {
-		ctx    context.Context
 		client *Client
 	}
 	tests := []struct {
@@ -23,7 +21,6 @@ func TestNewManager(t *testing.T) {
 		{
 			name: "empty client",
 			args: args{
-				ctx:    context.Background(),
 				client: &Client{},
 			},
 			want: &Manager{
@@ -32,13 +29,11 @@ func TestNewManager(t *testing.T) {
 				desiredState: -9999,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 		},
 		{
 			name: "nil client",
 			args: args{
-				ctx:    context.Background(),
 				client: nil,
 			},
 			want: &Manager{
@@ -47,13 +42,12 @@ func TestNewManager(t *testing.T) {
 				desiredState: -9999,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewManager(tt.args.ctx, tt.args.client); !reflect.DeepEqual(got, tt.want) {
+			if got := NewManager(tt.args.client); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewManager() = %v, want %v", got, tt.want)
 			}
 		})
@@ -69,7 +63,6 @@ func TestManager_SetRegion(t *testing.T) {
 		filters            []Filter
 		filterFns          []func(*entry) bool
 		sem                *semaphore.Weighted
-		ctx                context.Context
 	}
 	type args struct {
 		regions []string
@@ -88,7 +81,6 @@ func TestManager_SetRegion(t *testing.T) {
 				desiredState: 1,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				regions: []string{"us-west-1", "eu-central-1"},
@@ -103,7 +95,6 @@ func TestManager_SetRegion(t *testing.T) {
 				desiredState: 1,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				regions: []string{},
@@ -118,7 +109,6 @@ func TestManager_SetRegion(t *testing.T) {
 				desiredState: 1,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				regions: nil,
@@ -133,7 +123,6 @@ func TestManager_SetRegion(t *testing.T) {
 				desiredState: 1,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				regions: []string{"us-west-1", "invalid-region"},
@@ -148,7 +137,6 @@ func TestManager_SetRegion(t *testing.T) {
 				desiredState: 1,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				regions: []string{"us-west-1", "us-west-1"},
@@ -163,7 +151,6 @@ func TestManager_SetRegion(t *testing.T) {
 				desiredState: 1,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				regions: []string{"US-WEST-1", "eu-central-1"},
@@ -178,7 +165,6 @@ func TestManager_SetRegion(t *testing.T) {
 				desiredState: 1,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				regions: DefaultRegions,
@@ -193,7 +179,6 @@ func TestManager_SetRegion(t *testing.T) {
 				desiredState: 1,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				regions: []string{"us-east-1"},
@@ -211,7 +196,6 @@ func TestManager_SetRegion(t *testing.T) {
 				filters:            tt.fields.filters,
 				filterFns:          tt.fields.filterFns,
 				sem:                tt.fields.sem,
-				ctx:                tt.fields.ctx,
 			}
 			if err := man.SetRegion(tt.args.regions); (err != nil) != tt.wantErr {
 				t.Errorf("Manager.SetRegion() error = %v, wantErr %v", err, tt.wantErr)
@@ -229,7 +213,6 @@ func TestManager_SetDesiredState(t *testing.T) {
 		filters            []Filter
 		filterFns          []func(*entry) bool
 		sem                *semaphore.Weighted
-		ctx                context.Context
 	}
 	type args struct {
 		desired DesiredState
@@ -248,7 +231,6 @@ func TestManager_SetDesiredState(t *testing.T) {
 				desiredState: 0,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				desired: 1,
@@ -263,7 +245,6 @@ func TestManager_SetDesiredState(t *testing.T) {
 				desiredState: 0,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				desired: -9999,
@@ -279,7 +260,6 @@ func TestManager_SetDesiredState(t *testing.T) {
 				desiredStateNative: aws.Int32(1),
 				filters:            nil,
 				sem:                semaphore.NewWeighted(NumWorker),
-				ctx:                context.Background(),
 			},
 			args: args{
 				desired: 2,
@@ -295,7 +275,6 @@ func TestManager_SetDesiredState(t *testing.T) {
 				desiredStateNative: aws.Int32(2),
 				filters:            nil,
 				sem:                semaphore.NewWeighted(NumWorker),
-				ctx:                context.Background(),
 			},
 			args: args{
 				desired: 2,
@@ -310,7 +289,6 @@ func TestManager_SetDesiredState(t *testing.T) {
 				desiredState: 1,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				desired: -9999,
@@ -325,7 +303,6 @@ func TestManager_SetDesiredState(t *testing.T) {
 				desiredState: 0,
 				filters:      nil,
 				sem:          nil,
-				ctx:          context.Background(),
 			},
 			args: args{
 				desired: 1,
@@ -340,7 +317,6 @@ func TestManager_SetDesiredState(t *testing.T) {
 				desiredState: 0,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				desired: 2147483647,
@@ -355,7 +331,6 @@ func TestManager_SetDesiredState(t *testing.T) {
 				desiredState: 0,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				desired: -2147483648,
@@ -373,7 +348,6 @@ func TestManager_SetDesiredState(t *testing.T) {
 				filters:            tt.fields.filters,
 				filterFns:          tt.fields.filterFns,
 				sem:                tt.fields.sem,
-				ctx:                tt.fields.ctx,
 			}
 			if err := man.SetDesiredState(tt.args.desired); (err != nil) != tt.wantErr {
 				t.Errorf("Manager.SetRetentionInDays() error = %v, wantErr %v", err, tt.wantErr)
@@ -391,7 +365,6 @@ func TestManager_SetFilter(t *testing.T) {
 		filters            []Filter
 		filterFns          []func(*entry) bool
 		sem                *semaphore.Weighted
-		ctx                context.Context
 	}
 	type args struct {
 		filters []Filter
@@ -410,7 +383,6 @@ func TestManager_SetFilter(t *testing.T) {
 				desiredState: 1,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				filters: []Filter{
@@ -431,7 +403,6 @@ func TestManager_SetFilter(t *testing.T) {
 				desiredState: 30,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				filters: []Filter{
@@ -452,7 +423,6 @@ func TestManager_SetFilter(t *testing.T) {
 				desiredState: 1,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				filters: []Filter{
@@ -473,7 +443,6 @@ func TestManager_SetFilter(t *testing.T) {
 				desiredState: 1,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				filters: []Filter{
@@ -494,7 +463,6 @@ func TestManager_SetFilter(t *testing.T) {
 				desiredState: 0,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				filters: []Filter{
@@ -515,7 +483,6 @@ func TestManager_SetFilter(t *testing.T) {
 				desiredState: 3,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				filters: []Filter{
@@ -536,7 +503,6 @@ func TestManager_SetFilter(t *testing.T) {
 				desiredState: 5,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				filters: []Filter{
@@ -557,7 +523,6 @@ func TestManager_SetFilter(t *testing.T) {
 				desiredState: 10,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				filters: []Filter{
@@ -578,7 +543,6 @@ func TestManager_SetFilter(t *testing.T) {
 				desiredState: 1,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				filters: []Filter{
@@ -599,7 +563,6 @@ func TestManager_SetFilter(t *testing.T) {
 				desiredState: 10,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				filters: []Filter{
@@ -620,7 +583,6 @@ func TestManager_SetFilter(t *testing.T) {
 				desiredState: 1,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				filters: []Filter{
@@ -641,7 +603,6 @@ func TestManager_SetFilter(t *testing.T) {
 				desiredState: 0,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				filters: []Filter{
@@ -662,7 +623,6 @@ func TestManager_SetFilter(t *testing.T) {
 				desiredState: 0,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(NumWorker),
-				ctx:          context.Background(),
 			},
 			args: args{
 				filters: nil,
@@ -680,7 +640,6 @@ func TestManager_SetFilter(t *testing.T) {
 				filters:            tt.fields.filters,
 				filterFns:          tt.fields.filterFns,
 				sem:                tt.fields.sem,
-				ctx:                tt.fields.ctx,
 			}
 			err := man.SetFilter(tt.args.filters)
 			if (err != nil) != tt.wantErr {
@@ -699,7 +658,6 @@ func TestManager_String(t *testing.T) {
 		desiredState *int32
 		filterFns    []func(*entry) bool
 		sem          *semaphore.Weighted
-		ctx          context.Context
 	}
 	tests := []struct {
 		name   string
@@ -722,7 +680,6 @@ func TestManager_String(t *testing.T) {
 				desiredState: aws.Int32(1),
 				filterFns:    nil,
 				sem:          nil,
-				ctx:          context.Background(),
 			},
 			want: `{
   "regions": [
@@ -764,7 +721,6 @@ func TestManager_String(t *testing.T) {
 				desiredState: nil,
 				filterFns:    nil,
 				sem:          nil,
-				ctx:          context.Background(),
 			},
 			want: `{
   "regions": null,
@@ -783,7 +739,6 @@ func TestManager_String(t *testing.T) {
 				filters:            tt.fields.Filters,
 				filterFns:          tt.fields.filterFns,
 				sem:                tt.fields.sem,
-				ctx:                tt.fields.ctx,
 			}
 			if got := man.String(); got != tt.want {
 				t.Errorf("Manager.String() = %v, want %v", got, tt.want)

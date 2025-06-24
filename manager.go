@@ -1,7 +1,6 @@
 package llcm
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -23,18 +22,16 @@ type Manager struct {
 	filters            []Filter            // The expressions for filtering log groups.
 	filterFns          []func(*entry) bool // The list of functions for filtering log groups.
 	sem                *semaphore.Weighted // The weighted semaphore for concurrent processing.
-	ctx                context.Context     // The context for concurrent processing.
 }
 
 // NewManager creates a new manager for log group lifecycle management.
-func NewManager(ctx context.Context, client *Client) *Manager {
+func NewManager(client *Client) *Manager {
 	return &Manager{
 		client:       client,
 		regions:      DefaultRegions,
 		desiredState: DesiredStateNone,
 		filters:      nil,
 		sem:          semaphore.NewWeighted(NumWorker),
-		ctx:          ctx,
 	}
 }
 

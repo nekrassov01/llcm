@@ -1,11 +1,12 @@
 package llcm
 
 import (
+	"context"
 	"sync"
 )
 
 // Preview returns the log group entries with the desired state and its simulated results.
-func (man *Manager) Preview() (*PreviewEntryData, error) {
+func (man *Manager) Preview(ctx context.Context) (*PreviewEntryData, error) {
 	var (
 		totalStoredBytes    int64
 		totalReducibleBytes int64
@@ -16,7 +17,7 @@ func (man *Manager) Preview() (*PreviewEntryData, error) {
 		header:  previewEntryDataHeader,
 		entries: make([]*PreviewEntry, 0, entriesSize),
 	}
-	err := man.handle(func(man *Manager, entry *entry) error {
+	err := man.handle(ctx, func(man *Manager, entry *entry) error {
 		e := &PreviewEntry{
 			entry: entry,
 		}

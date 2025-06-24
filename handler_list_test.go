@@ -21,11 +21,14 @@ func TestManager_List(t *testing.T) {
 		filters            []Filter
 		filterFns          []func(*entry) bool
 		sem                *semaphore.Weighted
-		ctx                context.Context
+	}
+	type args struct {
+		ctx context.Context
 	}
 	tests := []struct {
 		name    string
 		fields  fields
+		args    args
 		want    *ListEntryData
 		wantErr bool
 	}{
@@ -44,7 +47,9 @@ func TestManager_List(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &ListEntryData{
 				header:  listEntryDataHeader,
@@ -67,7 +72,9 @@ func TestManager_List(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &ListEntryData{
 				header:  listEntryDataHeader,
@@ -87,7 +94,9 @@ func TestManager_List(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &ListEntryData{
 				header:  listEntryDataHeader,
@@ -119,7 +128,9 @@ func TestManager_List(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &ListEntryData{
 				header: listEntryDataHeader,
@@ -173,7 +184,9 @@ func TestManager_List(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &ListEntryData{
 				header: listEntryDataHeader,
@@ -264,7 +277,9 @@ func TestManager_List(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &ListEntryData{
 				header: listEntryDataHeader,
@@ -354,7 +369,9 @@ func TestManager_List(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &ListEntryData{
 				header: listEntryDataHeader,
@@ -436,7 +453,9 @@ func TestManager_List(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &ListEntryData{
 				header: listEntryDataHeader,
@@ -501,6 +520,8 @@ func TestManager_List(t *testing.T) {
 					},
 				},
 				sem: semaphore.NewWeighted(10),
+			},
+			args: args{
 				ctx: context.Background(),
 			},
 			want: &ListEntryData{
@@ -578,6 +599,8 @@ func TestManager_List(t *testing.T) {
 					},
 				},
 				sem: semaphore.NewWeighted(10),
+			},
+			args: args{
 				ctx: context.Background(),
 			},
 			want: &ListEntryData{
@@ -655,6 +678,8 @@ func TestManager_List(t *testing.T) {
 					},
 				},
 				sem: semaphore.NewWeighted(10),
+			},
+			args: args{
 				ctx: context.Background(),
 			},
 			want: &ListEntryData{
@@ -732,6 +757,8 @@ func TestManager_List(t *testing.T) {
 					},
 				},
 				sem: semaphore.NewWeighted(10),
+			},
+			args: args{
 				ctx: context.Background(),
 			},
 			want: &ListEntryData{
@@ -809,6 +836,8 @@ func TestManager_List(t *testing.T) {
 					},
 				},
 				sem: semaphore.NewWeighted(10),
+			},
+			args: args{
 				ctx: context.Background(),
 			},
 			want: &ListEntryData{
@@ -886,6 +915,8 @@ func TestManager_List(t *testing.T) {
 					},
 				},
 				sem: semaphore.NewWeighted(10),
+			},
+			args: args{
 				ctx: context.Background(),
 			},
 			want: &ListEntryData{
@@ -963,6 +994,8 @@ func TestManager_List(t *testing.T) {
 					},
 				},
 				sem: semaphore.NewWeighted(10),
+			},
+			args: args{
 				ctx: context.Background(),
 			},
 			want: &ListEntryData{
@@ -983,7 +1016,9 @@ func TestManager_List(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want:    nil,
 			wantErr: true,
@@ -1016,7 +1051,9 @@ func TestManager_List(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want:    nil,
 			wantErr: true,
@@ -1034,6 +1071,8 @@ func TestManager_List(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
+			},
+			args: args{
 				ctx: func() context.Context {
 					ctx, cancel := context.WithCancel(context.Background())
 					cancel()
@@ -1054,9 +1093,8 @@ func TestManager_List(t *testing.T) {
 				filters:            tt.fields.filters,
 				filterFns:          tt.fields.filterFns,
 				sem:                tt.fields.sem,
-				ctx:                tt.fields.ctx,
 			}
-			got, err := man.List()
+			got, err := man.List(tt.args.ctx)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Manager.List() error = %v, wantErr %v", err, tt.wantErr)
 				return

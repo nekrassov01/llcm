@@ -20,11 +20,14 @@ func TestManager_Preview(t *testing.T) {
 		filters            []Filter
 		filterFns          []func(*entry) bool
 		sem                *semaphore.Weighted
-		ctx                context.Context
+	}
+	type args struct {
+		ctx context.Context
 	}
 	tests := []struct {
 		name    string
 		fields  fields
+		args    args
 		want    *PreviewEntryData
 		wantErr bool
 	}{
@@ -52,7 +55,9 @@ func TestManager_Preview(t *testing.T) {
 				desiredState: DesiredStateOneMonth,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &PreviewEntryData{
 				TotalStoredBytes:    900,
@@ -113,7 +118,9 @@ func TestManager_Preview(t *testing.T) {
 				desiredState: DesiredStateOneMonth,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &PreviewEntryData{
 				TotalStoredBytes:    2100,
@@ -183,7 +190,9 @@ func TestManager_Preview(t *testing.T) {
 				desiredState: DesiredStateOneMonth,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &PreviewEntryData{
 				TotalStoredBytes:    0,
@@ -236,7 +245,9 @@ func TestManager_Preview(t *testing.T) {
 				desiredState: DesiredStateOneMonth,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &PreviewEntryData{
 				TotalStoredBytes:    900,
@@ -289,7 +300,9 @@ func TestManager_Preview(t *testing.T) {
 				desiredState: DesiredStateOneMonth,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &PreviewEntryData{
 				TotalStoredBytes:    900,
@@ -342,7 +355,9 @@ func TestManager_Preview(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &PreviewEntryData{
 				TotalStoredBytes:    900,
@@ -395,7 +410,9 @@ func TestManager_Preview(t *testing.T) {
 				desiredState: DesiredStateOneMonth,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &PreviewEntryData{
 				TotalStoredBytes:    900,
@@ -448,7 +465,9 @@ func TestManager_Preview(t *testing.T) {
 				desiredState: DesiredStateInfinite,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &PreviewEntryData{
 				TotalStoredBytes:    900,
@@ -501,7 +520,9 @@ func TestManager_Preview(t *testing.T) {
 				desiredState: DesiredStateInfinite,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &PreviewEntryData{
 				TotalStoredBytes:    900,
@@ -554,7 +575,9 @@ func TestManager_Preview(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &PreviewEntryData{
 				TotalStoredBytes:    900,
@@ -607,7 +630,9 @@ func TestManager_Preview(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &PreviewEntryData{
 				TotalStoredBytes:    900,
@@ -660,7 +685,9 @@ func TestManager_Preview(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &PreviewEntryData{
 				TotalStoredBytes:    100,
@@ -712,7 +739,9 @@ func TestManager_Preview(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &PreviewEntryData{
 				TotalStoredBytes:    100,
@@ -764,7 +793,9 @@ func TestManager_Preview(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &PreviewEntryData{
 				TotalStoredBytes:    10,
@@ -816,7 +847,9 @@ func TestManager_Preview(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
-				ctx:          context.Background(),
+			},
+			args: args{
+				ctx: context.Background(),
 			},
 			want: &PreviewEntryData{
 				TotalStoredBytes:    90,
@@ -858,6 +891,8 @@ func TestManager_Preview(t *testing.T) {
 				desiredState: DesiredStateZero,
 				filters:      nil,
 				sem:          semaphore.NewWeighted(10),
+			},
+			args: args{
 				ctx: func() context.Context {
 					ctx, cancel := context.WithCancel(context.Background())
 					cancel()
@@ -878,9 +913,8 @@ func TestManager_Preview(t *testing.T) {
 				filters:            tt.fields.filters,
 				filterFns:          tt.fields.filterFns,
 				sem:                tt.fields.sem,
-				ctx:                tt.fields.ctx,
 			}
-			got, err := man.Preview()
+			got, err := man.Preview(tt.args.ctx)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Manager.Preview() error = %v, wantErr %v", err, tt.wantErr)
 				return
