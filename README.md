@@ -4,6 +4,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/nekrassov01/llcm)](https://goreportcard.com/report/github.com/nekrassov01/llcm)
 ![GitHub](https://img.shields.io/github/license/nekrassov01/llcm)
 ![GitHub](https://img.shields.io/github/v/release/nekrassov01/llcm)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/nekrassov01/llcm)
 
 llcm is a CLI tool to manage the lifecycle of Amazon CloudWatch Logs log groups. List, update, and delete log groups to manage their lifecycle. It handles multiple regions at high speed while avoiding throttling errors. It can also return simulation results based on desired states.
 
