@@ -111,10 +111,10 @@ func stringFilterFunc(filter Filter) (func(string) bool, error) {
 		operator = filter.Operator
 		value    = filter.Value
 	)
+	if operator == FilterOperatorREQI || operator == FilterOperatorNREQI {
+		value = "(?i)" + value
+	}
 	if operator == FilterOperatorREQ || operator == FilterOperatorREQI || operator == FilterOperatorNREQ || operator == FilterOperatorNREQI {
-		if operator == FilterOperatorREQI || operator == FilterOperatorNREQI {
-			value = "(?i)" + value
-		}
 		re, err = regexp.Compile(value)
 		if err != nil {
 			return nil, err
@@ -159,15 +159,14 @@ func numberFilterFunc(filter Filter) (func(int64) bool, error) {
 	)
 	n, err := strconv.ParseInt(value, 0, 64)
 	if err != nil {
-		if key == FilterKeyElapsed || key == FilterKeyRetention {
-			d, err2 := ParseDesiredState(value)
-			if err2 != nil || d <= 0 {
-				return nil, fmt.Errorf("invalid value: %q", value)
-			}
-			n = int64(d)
-		} else {
+		if key != FilterKeyElapsed && key != FilterKeyRetention {
 			return nil, err
 		}
+		d, err := ParseDesiredState(value)
+		if err != nil || d <= 0 {
+			return nil, fmt.Errorf("invalid value: %q", value)
+		}
+		n = int64(d)
 	}
 	var fn func(int64) bool
 	switch operator {
