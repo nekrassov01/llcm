@@ -11,8 +11,8 @@ import (
 
 // Apply applies the desired state to the log groups.
 func (man *Manager) Apply(ctx context.Context, w io.Writer) (int32, error) {
-	var n int32
-	err := man.handle(ctx, func(man *Manager, entry *entry) error {
+	var n atomic.Int32
+	fn := func(entry *entry) error {
 		switch man.desiredState {
 		case DesiredStateNone:
 			return fmt.Errorf("invalid desired state: %q", man.desiredState)
@@ -32,10 +32,11 @@ func (man *Manager) Apply(ctx context.Context, w io.Writer) (int32, error) {
 			}
 			_, _ = fmt.Fprintf(w, "updated retention policy: %s\n", entry.LogGroupName)
 		}
-		atomic.AddInt32(&n, 1)
+		n.Add(1)
 		return nil
-	})
-	return n, err
+	}
+	err := man.handle(ctx, fn)
+	return n.Load(), err
 }
 
 // deleteLogGroup deletes the log group.

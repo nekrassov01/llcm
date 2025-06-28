@@ -15,7 +15,7 @@ func (man *Manager) List(ctx context.Context) (*ListEntryData, error) {
 		header:  listEntryDataHeader,
 		entries: make([]*ListEntry, 0, entriesSize),
 	}
-	err := man.handle(ctx, func(_ *Manager, entry *entry) error {
+	fn := func(entry *entry) error {
 		e := &ListEntry{
 			entry: entry,
 		}
@@ -24,8 +24,8 @@ func (man *Manager) List(ctx context.Context) (*ListEntryData, error) {
 		total += e.StoredBytes
 		mu.Unlock()
 		return nil
-	})
-	if err != nil {
+	}
+	if err := man.handle(ctx, fn); err != nil {
 		return nil, err
 	}
 	data.TotalStoredBytes = total

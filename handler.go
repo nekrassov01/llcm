@@ -10,11 +10,11 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs/types"
 )
 
-var entriesSize = 8192
+var entriesSize = 1024
 
 // handle enumerates log groups for all regions to get targets for the process.
 // For each entry, the specified handler is executed.
-func (man *Manager) handle(ctx context.Context, handler func(*Manager, *entry) error) error {
+func (man *Manager) handle(ctx context.Context, handleFunc func(*entry) error) error {
 	var wg sync.WaitGroup
 	ctx, cancel := context.WithCancel(ctx)
 	errorChan := make(chan error, 1)
@@ -27,7 +27,6 @@ func (man *Manager) handle(ctx context.Context, handler func(*Manager, *entry) e
 		}
 	}
 	for _, region := range man.regions {
-		region := region
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -44,7 +43,6 @@ func (man *Manager) handle(ctx context.Context, handler func(*Manager, *entry) e
 					return
 				}
 				for _, logGroup := range out.LogGroups {
-					logGroup := logGroup
 					if err := man.sem.Acquire(ctx, 1); err != nil {
 						errorFunc(err)
 						return
@@ -57,7 +55,7 @@ func (man *Manager) handle(ctx context.Context, handler func(*Manager, *entry) e
 						if !man.applyFilter(entry) {
 							return // skip if false
 						}
-						if err := handler(man, entry); err != nil {
+						if err := handleFunc(entry); err != nil {
 							errorFunc(err)
 							return
 						}

@@ -17,7 +17,7 @@ func (man *Manager) Preview(ctx context.Context) (*PreviewEntryData, error) {
 		header:  previewEntryDataHeader,
 		entries: make([]*PreviewEntry, 0, entriesSize),
 	}
-	err := man.handle(ctx, func(man *Manager, entry *entry) error {
+	fn := func(entry *entry) error {
 		e := &PreviewEntry{
 			entry: entry,
 		}
@@ -29,8 +29,8 @@ func (man *Manager) Preview(ctx context.Context) (*PreviewEntryData, error) {
 		totalRemainingBytes += e.RemainingBytes
 		mu.Unlock()
 		return nil
-	})
-	if err != nil {
+	}
+	if err := man.handle(ctx, fn); err != nil {
 		return nil, err
 	}
 	data.TotalStoredBytes = totalStoredBytes
