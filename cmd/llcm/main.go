@@ -7,8 +7,8 @@ import (
 
 func main() {
 	ctx := context.Background()
-	app := newApp(os.Stdout, os.Stderr)
-	if err := app.Run(ctx, os.Args); err != nil {
+	cmd := newCmd(os.Stdout, os.Stderr)
+	if err := cmd.Run(ctx, os.Args); err != nil {
 		logger.Error(err)
 		os.Exit(1)
 	}
