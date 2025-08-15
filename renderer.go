@@ -16,12 +16,25 @@ type Renderer[E Entry, D EntryData[E]] struct {
 }
 
 // NewRenderer creates a new renderer with the specified parameters.
-func NewRenderer[E Entry, D EntryData[E]](w io.Writer, data D, outputType OutputType) *Renderer[E, D] {
+func NewRenderer[E Entry, D EntryData[E]](w io.Writer, data D) *Renderer[E, D] {
 	return &Renderer[E, D]{
 		Data:       data,
-		OutputType: outputType,
+		OutputType: OutputTypeJSON,
 		w:          w,
 	}
+}
+
+// SetOutputType sets the output type for rendering.
+func (ren *Renderer[E, D]) SetOutputType(outputType string) error {
+	if outputType == "" {
+		return nil
+	}
+	t, err := ParseOutputType(outputType)
+	if err != nil {
+		return err
+	}
+	ren.OutputType = t
+	return nil
 }
 
 // String returns the string representation of the renderer.

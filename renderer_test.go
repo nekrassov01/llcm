@@ -34,9 +34,60 @@ func TestNewRenderer(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			w := &bytes.Buffer{}
-			got := NewRenderer(w, &tt.args.data, tt.args.outputType)
+			got := NewRenderer(w, &tt.args.data)
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewRenderer() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRenderer_SetOutputType(t *testing.T) {
+	type fields struct {
+		Data       ListEntryData
+		OutputType OutputType
+	}
+	type args struct {
+		outputType string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "basic",
+			fields: fields{
+				Data:       listEntryData,
+				OutputType: OutputTypeJSON,
+			},
+			args: args{
+				outputType: OutputTypeText.String(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "empty",
+			fields: fields{
+				Data:       listEntryData,
+				OutputType: OutputTypeJSON,
+			},
+			args: args{
+				outputType: "",
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ren := &Renderer[*ListEntry, *ListEntryData]{
+				Data:       &tt.fields.Data,
+				OutputType: tt.fields.OutputType,
+			}
+			err := ren.SetOutputType(tt.args.outputType)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Renderer.SetOutputType() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
