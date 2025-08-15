@@ -1,8 +1,9 @@
-FROM golang:1.24.2-alpine3.21 as build
-WORKDIR /llcm
+FROM --platform=arm64 golang:1.24.6-alpine AS build
+WORKDIR /build
 COPY go.mod go.sum ./
 COPY main.go .
-RUN go build -o main main.go
-FROM alpine:3.21
-COPY --from=build /llcm/main /main
-ENTRYPOINT [ "/main" ]
+RUN go mod download && go build -trimpath -o main main.go
+
+FROM --platform=arm64 alpine
+COPY --from=build /build/main /var/task/main
+ENTRYPOINT [ "/var/task/main" ]
