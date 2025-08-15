@@ -1,6 +1,6 @@
 module sample
 
-go 1.24.4
+go 1.24.6
 
 require (
 	github.com/aws/aws-lambda-go v1.47.0
