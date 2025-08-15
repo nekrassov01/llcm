@@ -23,10 +23,10 @@ NAME:
    llcm - AWS Log groups lifecycle manager
 
 USAGE:
-   llcm [global options] command [command options]
+   llcm [global options] [command [command options]]
 
 VERSION:
-   0.0.0
+   0.0.0 (revision: XXXXXXX)
 
 DESCRIPTION:
    A listing, updating, and deleting tool to manage the lifecycle of Amazon CloudWatch Logs.
@@ -34,9 +34,9 @@ DESCRIPTION:
    results based on the desired state.
 
 COMMANDS:
-   list        List log group entries with specified format
-   preview     Preview simulation results based on desired state
-   apply       Apply desired state to log group entries
+   list     List log group entries with specified format
+   preview  Preview simulation results based on desired state
+   apply    Apply desired state to log group entries
 
 GLOBAL OPTIONS:
    --help, -h     show help
@@ -50,19 +50,19 @@ NAME:
    llcm list - List log group entries with specified format
 
 USAGE:
-   llcm list [command options]
+   llcm list [command [command options]]
 
 DESCRIPTION:
    List collects basic information about log groups from multiple specified regions and
    returns it in a specified format.
 
 OPTIONS:
-   --profile value, -p value                              set aws profile [$AWS_PROFILE]
-   --log-level value, -l value                            set log level (default: "info") [$LLCM_LOG_LEVEL]
-   --region value, -r value [ --region value, -r value ]  set target regions (default: all regions with no opt-in)
-   --filter value, -f value [ --filter value, -f value ]  set expressions to filter log groups
-   --output value, -o value                               set output type (default: "compressedtext") [$LLCM_OUTPUT_TYPE]
-   --help, -h                                             show help
+   --profile string, -p string                                set aws profile [$AWS_PROFILE]
+   --log-level string, -l string                              set log level (default: "info") [$LLCM_LOG_LEVEL]
+   --region string, -r string [ --region string, -r string ]  set target regions (default: all regions with no opt-in)
+   --filter string, -f string                                 set expressions to filter log groups
+   --output string, -o string                                 set output type (default: "compressedtext") [$LLCM_OUTPUT_TYPE]
+   --help, -h                                                 show help
 ```
 
 ### Preview
@@ -72,20 +72,20 @@ NAME:
    llcm preview - Preview simulation results based on desired state
 
 USAGE:
-   llcm preview [command options]
+   llcm preview [command [command options]]
 
 DESCRIPTION:
    Preview performs a simple calculation based on `DesiredState` specified in the argument
    and returns a simulated list including `ReducibleBytes`, `RemainingBytes`, etc.
 
 OPTIONS:
-   --profile value, -p value                              set aws profile [$AWS_PROFILE]
-   --log-level value, -l value                            set log level (default: "info") [$LLCM_LOG_LEVEL]
-   --region value, -r value [ --region value, -r value ]  set target regions (default: all regions with no opt-in)
-   --filter value, -f value [ --filter value, -f value ]  set expressions to filter log groups
-   --desired value, -d value                              set the desired state
-   --output value, -o value                               set output type (default: "compressedtext") [$LLCM_OUTPUT_TYPE]
-   --help, -h                                             show help
+   --profile string, -p string                                set aws profile [$AWS_PROFILE]
+   --log-level string, -l string                              set log level (default: "info") [$LLCM_LOG_LEVEL]
+   --region string, -r string [ --region string, -r string ]  set target regions (default: all regions with no opt-in)
+   --filter string, -f string                                 set expressions to filter log groups
+   --desired string, -d string                                set the desired state
+   --output string, -o string                                 set output type (default: "compressedtext") [$LLCM_OUTPUT_TYPE]
+   --help, -h                                                 show help
 ```
 
 ### Apply
@@ -95,19 +95,19 @@ NAME:
    llcm apply - Apply desired state to log group entries
 
 USAGE:
-   llcm apply [command options]
+   llcm apply [command [command options]]
 
 DESCRIPTION:
    Apply deletes and updates target log groups in batches based on `DesiredState`.
    It is fast across multiple regions, but cleverly avoids throttling.
 
 OPTIONS:
-   --profile value, -p value                              set aws profile [$AWS_PROFILE]
-   --log-level value, -l value                            set log level (default: "info") [$LLCM_LOG_LEVEL]
-   --region value, -r value [ --region value, -r value ]  set target regions (default: all regions with no opt-in)
-   --filter value, -f value [ --filter value, -f value ]  set expressions to filter log groups
-   --desired value, -d value                              set the desired state
-   --help, -h                                             show help
+   --profile string, -p string                                set aws profile [$AWS_PROFILE]
+   --log-level string, -l string                              set log level (default: "info") [$LLCM_LOG_LEVEL]
+   --region string, -r string [ --region string, -r string ]  set target regions (default: all regions with no opt-in)
+   --filter string, -f string                                 set expressions to filter log groups
+   --desired string, -d string                                set the desired state
+   --help, -h                                                 show help
 ```
 
 ## Options
@@ -119,7 +119,7 @@ The following values can be passed for each option.
 | `--profile value` `-p value`                      | -                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | -                                                                                                                                         | `AWS_PROFILE`        |
 | `--log-level value` `-l value`                    | `debug` `info` `warn` `error`                                                                                                                                                                                                                                                                                                                                                                                                                                         | `info`                                                                                                                                    | `LLCM_LOG_LEVEL`     |
 | `--region value1,value2...` `-r value1,value2...` | `af-south-1` `ap-east-1` `ap-northeast-1` `ap-northeast-2` `ap-northeast-3` `ap-south-1` `ap-south-2` `ap-southeast-1` `ap-southeast-2` `ap-southeast-3` `ap-southeast-4` `ap-southeast-5` `ap-southeast-7` `ca-central-1` `ca-west-1` `eu-central-1` `eu-central-2` `eu-north-1` `eu-south-1` `eu-south-2` `eu-west-1` `eu-west-2` `eu-west-3` `il-central-1` `me-central-1` `me-south-1` `mx-central-1` `sa-east-1` `us-east-1` `us-east-2` `us-west-1` `us-west-2` | [All regions with no opt-in](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-regionsz) | -                    |
-| `--filter value1,value2...` `-f value1,value2...` | key, operator, and value separated by spaces, as in `bytes != 0`<br>key: `name` `class` `elapsed` `retention` `bytes`<br>operator: `>` `>=` `<` `<=` `==` `==*` `!=` `!=*` `=~` `=~*` `!~` `!~*`                                                                                                                                                                                                                                                                      | -                                                                                                                                         | -                    |
+| `--filter value` `-f value`                       | Evaluating filter expressions with [minimum DSL](https://github.com/nekrassov01/filter/blob/main/README.md); <br>key: `name` `class` `elapsed` `retention` `bytes`<br>operator: `>` `>=` `<` `<=` `==` `==*` `!=` `!=*` `=~` `!~`                                                                                                                                                                                                                                     | -                                                                                                                                         | -                    |
 | `--desired value` `-d value`                      | `delete` `1day` `3days` `5days` `1week` `2weeks` `1month` `2months` `3months` `4months` `5months` `6months` `1year` `13months` `18months` `2years` `3years` `5years` `6years` `7years` `8years` `9years` `10years` `infinite`                                                                                                                                                                                                                                         | -                                                                                                                                         | -                    |
 | `--output value` `-o value`                       | `json` `prettyjson` `text` `compressedtext` `markdown` `backlog` `tsv`                                                                                                                                                                                                                                                                                                                                                                                                | `compressedtext`                                                                                                                          | `LLCM_OUTPUT_TYPE`   |
 | `--help` `-h`                                     | -                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | -                                                                                                                                         | -                    |
@@ -135,7 +135,7 @@ The following values can be passed for each option.
 > Note that this simulation is simply a pro-rata calculation of the log bytes.
 
 ```sh
-llcm preview --desired 1year --filter 'name =~ ^/aws/lambda/.*','bytes != 0','retention > 1year' --output markdown
+llcm preview --desired 1year --filter 'name =~ "^/aws/lambda/.*" && bytes != 0 && retention > 365' --output markdown
 
 # The following outputs are obtained
 | Name                 | Region         | Class    | CreatedAt                 | ElapsedDays | RetentionInDays | StoredBytes  | BytesPerDay | DesiredState | ReductionInDays | ReducibleBytes | RemainingBytes |
@@ -150,7 +150,7 @@ llcm preview --desired 1year --filter 'name =~ ^/aws/lambda/.*','bytes != 0','re
 - Apply the desired retention period to the log groups identified above.
 
 ```sh
-llcm apply --desired 1year --filter 'name =~ ^/aws/lambda/.*','bytes != 0','retention > 1year'
+llcm apply --desired 1year --filter 'name =~ "^/aws/lambda/.*" && bytes != 0 && retention > 365'
 ```
 
 ### Case 2
@@ -158,7 +158,7 @@ llcm apply --desired 1year --filter 'name =~ ^/aws/lambda/.*','bytes != 0','rete
 - List log groups for Tokyo and Oregon that are empty and have been created more than one year ago in the backlog table format.
 
 ```sh
-llcm list --filter 'bytes == 0','elapsed > 365' --region ap-northeast-1,us-west-2 --output backlog
+llcm list --filter 'bytes == 0 && elapsed > 365' --region ap-northeast-1,us-west-2 --output backlog
 
 # The following outputs are obtained
 | Name   | Region         | Class    | CreatedAt                 | ElapsedDays | RetentionInDays | StoredBytes |h
@@ -172,7 +172,7 @@ llcm list --filter 'bytes == 0','elapsed > 365' --region ap-northeast-1,us-west-
 - Delete the log groups identified above in a batch.
 
 ```sh
-llcm apply --desired delete --filter 'bytes == 0','elapsed > 365' --region ap-northeast-1,us-west-2
+llcm apply --desired delete --filter 'bytes == 0 && elapsed > 365' --region ap-northeast-1,us-west-2
 ```
 
 ### Case 3
@@ -241,16 +241,17 @@ Supported Shells are as follows:
 
 - bash
 - zsh
+- fish
 - pwsh
 
 ```sh
-llcm completion bash|zsh|pwsh
+llcm completion bash|zsh|fish|pwsh
 ```
 
 ## Todo
 
 - [x] Add to readme an example of implementing as a lambda function
-- [ ] Implement logical operators: `&&` `||`
+- [x] Implement logical operators: `&&` `||` (in `github.com/nekrassov01/filter`)
 - [x] Implement visualization of simulation results
 - [ ] Support streaming output (in `github.com/nekrassov01/mintab`)
 
