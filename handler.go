@@ -52,8 +52,15 @@ func (man *Manager) handle(ctx context.Context, handleFunc func(*entry) error) e
 						defer wg.Done()
 						defer man.sem.Release(1)
 						entry := newEntry(logGroup, region)
-						if !man.applyFilter(entry) {
-							return // skip if false
+						if man.filterExpr != nil {
+							ok, err := man.filterExpr.Eval(entry)
+							if err != nil {
+								errorFunc(err)
+								return
+							}
+							if !ok {
+								return
+							}
 						}
 						if err := handleFunc(entry); err != nil {
 							errorFunc(err)
@@ -76,19 +83,6 @@ func (man *Manager) handle(ctx context.Context, handleFunc func(*entry) error) e
 	case <-ctx.Done():
 		return ctx.Err()
 	}
-}
-
-// applyFilter applies the filter to the entry.
-func (man *Manager) applyFilter(entry *entry) bool {
-	if len(man.filters) == 0 {
-		return true
-	}
-	for _, fn := range man.filterFns {
-		if !fn(entry) {
-			return false
-		}
-	}
-	return true
 }
 
 // newEntry creates a new entry from the log group and specified region.

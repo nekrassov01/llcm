@@ -2,16 +2,21 @@ package llcm
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"runtime"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/nekrassov01/filter"
 	"golang.org/x/sync/semaphore"
 )
 
 // NumWorker is the number of workers for concurrent processing.
 var NumWorker = int64(runtime.NumCPU()*2 + 1)
+
+type (
+	filterExpr   = filter.Expr   // filterExpr is a type alias for filter.Expr.
+	filterTarget = filter.Target // filterTarget is a type alias for filter.Target.
+)
 
 // Manager represents a log group lifecycle manager.
 type Manager struct {
@@ -19,8 +24,8 @@ type Manager struct {
 	regions            []string            // The list of target regions.
 	desiredState       DesiredState        // The desired state of the log group.
 	desiredStateNative *int32              // The desired state with the native type.
-	filters            []Filter            // The expressions for filtering log groups.
-	filterFns          []func(*entry) bool // The list of functions for filtering log groups.
+	filterExpr         filterExpr          // The expressions for filtering log groups.
+	filterRaw          string              // The raw filter string.
 	sem                *semaphore.Weighted // The weighted semaphore for concurrent processing.
 }
 
@@ -30,7 +35,6 @@ func NewManager(client *Client) *Manager {
 		client:       client,
 		regions:      DefaultRegions,
 		desiredState: DesiredStateNone,
-		filters:      nil,
 		sem:          semaphore.NewWeighted(NumWorker),
 	}
 }
@@ -50,23 +54,27 @@ func (man *Manager) SetRegion(regions []string) error {
 }
 
 // SetDesiredState sets the desired state.
-func (man *Manager) SetDesiredState(desired DesiredState) error {
-	if desired == DesiredStateNone {
-		return errors.New("invalid desired state")
+func (man *Manager) SetDesiredState(desired string) error {
+	d, err := ParseDesiredState(desired)
+	if err != nil {
+		return err
 	}
-	man.desiredState = desired
+	man.desiredState = d
 	man.desiredStateNative = aws.Int32(int32(man.desiredState))
 	return nil
 }
 
 // SetFilter sets the filter expressions.
-func (man *Manager) SetFilter(filters []Filter) error {
-	if len(filters) == 0 {
+func (man *Manager) SetFilter(raw string) error {
+	if raw == "" {
 		return nil
 	}
-	if err := man.setFilter(filters); err != nil {
-		return err
+	expr, err := filter.Parse(raw)
+	if err != nil {
+		return fmt.Errorf("failed to parse filter: %w", err)
 	}
+	man.filterExpr = expr
+	man.filterRaw = raw
 	return nil
 }
 
@@ -75,11 +83,11 @@ func (man *Manager) String() string {
 	s := struct {
 		Regions      []string `json:"regions"`
 		DesiredState string   `json:"desiredState"`
-		Filters      []Filter `json:"filters"`
+		Filter       string   `json:"filter"`
 	}{
 		Regions:      man.regions,
 		DesiredState: man.desiredState.String(),
-		Filters:      man.filters,
+		Filter:       man.filterRaw,
 	}
 	b, _ := json.MarshalIndent(s, "", "  ")
 	return string(b)

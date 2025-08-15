@@ -17,8 +17,7 @@ func TestManager_Preview(t *testing.T) {
 		regions            []string
 		desiredState       DesiredState
 		desiredStateNative *int32
-		filters            []Filter
-		filterFns          []func(*entry) bool
+		filterExpr         filterExpr
 		sem                *semaphore.Weighted
 	}
 	type args struct {
@@ -53,7 +52,7 @@ func TestManager_Preview(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateOneMonth,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -116,7 +115,7 @@ func TestManager_Preview(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateOneMonth,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -188,7 +187,7 @@ func TestManager_Preview(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateOneMonth,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -243,7 +242,7 @@ func TestManager_Preview(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateOneMonth,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -298,7 +297,7 @@ func TestManager_Preview(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateOneMonth,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -353,7 +352,7 @@ func TestManager_Preview(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -408,7 +407,7 @@ func TestManager_Preview(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateOneMonth,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -463,7 +462,7 @@ func TestManager_Preview(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateInfinite,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -518,7 +517,7 @@ func TestManager_Preview(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateInfinite,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -573,7 +572,7 @@ func TestManager_Preview(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -628,7 +627,7 @@ func TestManager_Preview(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -683,7 +682,7 @@ func TestManager_Preview(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -737,7 +736,7 @@ func TestManager_Preview(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -791,7 +790,7 @@ func TestManager_Preview(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -845,7 +844,7 @@ func TestManager_Preview(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -889,7 +888,7 @@ func TestManager_Preview(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -910,8 +909,7 @@ func TestManager_Preview(t *testing.T) {
 				regions:            tt.fields.regions,
 				desiredState:       tt.fields.desiredState,
 				desiredStateNative: tt.fields.desiredStateNative,
-				filters:            tt.fields.filters,
-				filterFns:          tt.fields.filterFns,
+				filterExpr:         tt.fields.filterExpr,
 				sem:                tt.fields.sem,
 			}
 			got, err := man.Preview(tt.args.ctx)

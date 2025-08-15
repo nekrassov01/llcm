@@ -4,7 +4,6 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/google/go-cmp/cmp"
 	"golang.org/x/sync/semaphore"
 )
@@ -27,7 +26,7 @@ func TestNewManager(t *testing.T) {
 				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: -9999,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(NumWorker),
 			},
 		},
@@ -40,7 +39,7 @@ func TestNewManager(t *testing.T) {
 				client:       nil,
 				regions:      DefaultRegions,
 				desiredState: -9999,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(NumWorker),
 			},
 		},
@@ -60,8 +59,7 @@ func TestManager_SetRegion(t *testing.T) {
 		regions            []string
 		desiredState       DesiredState
 		desiredStateNative *int32
-		filters            []Filter
-		filterFns          []func(*entry) bool
+		filterExpr         filterExpr
 		sem                *semaphore.Weighted
 	}
 	type args struct {
@@ -79,7 +77,7 @@ func TestManager_SetRegion(t *testing.T) {
 				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
@@ -93,7 +91,7 @@ func TestManager_SetRegion(t *testing.T) {
 				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
@@ -107,7 +105,7 @@ func TestManager_SetRegion(t *testing.T) {
 				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
@@ -121,7 +119,7 @@ func TestManager_SetRegion(t *testing.T) {
 				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
@@ -135,7 +133,7 @@ func TestManager_SetRegion(t *testing.T) {
 				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
@@ -149,7 +147,7 @@ func TestManager_SetRegion(t *testing.T) {
 				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
@@ -163,7 +161,7 @@ func TestManager_SetRegion(t *testing.T) {
 				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
@@ -177,7 +175,7 @@ func TestManager_SetRegion(t *testing.T) {
 				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
@@ -193,8 +191,7 @@ func TestManager_SetRegion(t *testing.T) {
 				regions:            tt.fields.regions,
 				desiredState:       tt.fields.desiredState,
 				desiredStateNative: tt.fields.desiredStateNative,
-				filters:            tt.fields.filters,
-				filterFns:          tt.fields.filterFns,
+				filterExpr:         tt.fields.filterExpr,
 				sem:                tt.fields.sem,
 			}
 			if err := man.SetRegion(tt.args.regions); (err != nil) != tt.wantErr {
@@ -210,12 +207,11 @@ func TestManager_SetDesiredState(t *testing.T) {
 		regions            []string
 		desiredState       DesiredState
 		desiredStateNative *int32
-		filters            []Filter
-		filterFns          []func(*entry) bool
+		filterExpr         filterExpr
 		sem                *semaphore.Weighted
 	}
 	type args struct {
-		desired DesiredState
+		desired string
 	}
 	tests := []struct {
 		name    string
@@ -229,11 +225,11 @@ func TestManager_SetDesiredState(t *testing.T) {
 				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 0,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
-				desired: 1,
+				desired: DesiredStateOneDay.String(),
 			},
 			wantErr: false,
 		},
@@ -243,99 +239,13 @@ func TestManager_SetDesiredState(t *testing.T) {
 				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 0,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
-				desired: -9999,
+				desired: DesiredStateNone.String(),
 			},
 			wantErr: true,
-		},
-		{
-			name: "multiple valid desired states 1",
-			fields: fields{
-				client:             &Client{},
-				regions:            DefaultRegions,
-				desiredState:       1,
-				desiredStateNative: aws.Int32(1),
-				filters:            nil,
-				sem:                semaphore.NewWeighted(NumWorker),
-			},
-			args: args{
-				desired: 2,
-			},
-			wantErr: false,
-		},
-		{
-			name: "multiple valid desired states 2",
-			fields: fields{
-				client:             &Client{},
-				regions:            DefaultRegions,
-				desiredState:       2,
-				desiredStateNative: aws.Int32(2),
-				filters:            nil,
-				sem:                semaphore.NewWeighted(NumWorker),
-			},
-			args: args{
-				desired: 2,
-			},
-			wantErr: false,
-		},
-		{
-			name: "multiple valid desired states 3",
-			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 1,
-				filters:      nil,
-				sem:          semaphore.NewWeighted(NumWorker),
-			},
-			args: args{
-				desired: -9999,
-			},
-			wantErr: true,
-		},
-		{
-			name: "desired state with nil manager",
-			fields: fields{
-				client:       nil,
-				regions:      nil,
-				desiredState: 0,
-				filters:      nil,
-				sem:          nil,
-			},
-			args: args{
-				desired: 1,
-			},
-			wantErr: false,
-		},
-		{
-			name: "desired state with max value",
-			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 0,
-				filters:      nil,
-				sem:          semaphore.NewWeighted(NumWorker),
-			},
-			args: args{
-				desired: 2147483647,
-			},
-			wantErr: false,
-		},
-		{
-			name: "desired state with min value",
-			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 0,
-				filters:      nil,
-				sem:          semaphore.NewWeighted(NumWorker),
-			},
-			args: args{
-				desired: -2147483648,
-			},
-			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
@@ -345,8 +255,7 @@ func TestManager_SetDesiredState(t *testing.T) {
 				regions:            tt.fields.regions,
 				desiredState:       tt.fields.desiredState,
 				desiredStateNative: tt.fields.desiredStateNative,
-				filters:            tt.fields.filters,
-				filterFns:          tt.fields.filterFns,
+				filterExpr:         tt.fields.filterExpr,
 				sem:                tt.fields.sem,
 			}
 			if err := man.SetDesiredState(tt.args.desired); (err != nil) != tt.wantErr {
@@ -362,12 +271,12 @@ func TestManager_SetFilter(t *testing.T) {
 		regions            []string
 		desiredState       DesiredState
 		desiredStateNative *int32
-		filters            []Filter
-		filterFns          []func(*entry) bool
+		filterExpr         filterExpr
+		filterRaw          string
 		sem                *semaphore.Weighted
 	}
 	type args struct {
-		filters []Filter
+		filter string
 	}
 	tests := []struct {
 		name    string
@@ -376,256 +285,30 @@ func TestManager_SetFilter(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "valid string filter",
+			name: "basic",
 			fields: fields{
 				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
-				filters: []Filter{
-					{
-						Key:      FilterKeyName,
-						Operator: FilterOperatorEQ,
-						Value:    "error-log",
-					},
-				},
+				filter: `name == "error-log"`,
 			},
 			wantErr: false,
 		},
 		{
-			name: "valid number filter",
-			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 30,
-				filters:      nil,
-				sem:          semaphore.NewWeighted(NumWorker),
-			},
-			args: args{
-				filters: []Filter{
-					{
-						Key:      FilterKeyRetention,
-						Operator: FilterOperatorGT,
-						Value:    "60",
-					},
-				},
-			},
-			wantErr: false,
-		},
-		{
-			name: "valid regex filter",
+			name: "empty",
 			fields: fields{
 				client:       &Client{},
 				regions:      DefaultRegions,
 				desiredState: 1,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
-				filters: []Filter{
-					{
-						Key:      FilterKeyName,
-						Operator: FilterOperatorREQ,
-						Value:    "^error-.*",
-					},
-				},
-			},
-			wantErr: false,
-		},
-		{
-			name: "invalid regex filter",
-			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 1,
-				filters:      nil,
-				sem:          semaphore.NewWeighted(NumWorker),
-			},
-			args: args{
-				filters: []Filter{
-					{
-						Key:      FilterKeyName,
-						Operator: FilterOperatorREQ,
-						Value:    "[",
-					},
-				},
-			},
-			wantErr: true,
-		},
-		{
-			name: "valid delete value",
-			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 0,
-				filters:      nil,
-				sem:          semaphore.NewWeighted(NumWorker),
-			},
-			args: args{
-				filters: []Filter{
-					{
-						Key:      FilterKeyRetention,
-						Operator: FilterOperatorEQ,
-						Value:    "0",
-					},
-				},
-			},
-			wantErr: false,
-		},
-		{
-			name: "valid retention value",
-			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 3,
-				filters:      nil,
-				sem:          semaphore.NewWeighted(NumWorker),
-			},
-			args: args{
-				filters: []Filter{
-					{
-						Key:      FilterKeyRetention,
-						Operator: FilterOperatorEQ,
-						Value:    "3days", // expected to be converted to 3
-					},
-				},
-			},
-			wantErr: false,
-		},
-		{
-			name: "numeric value for string key",
-			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 5,
-				filters:      nil,
-				sem:          semaphore.NewWeighted(NumWorker),
-			},
-			args: args{
-				filters: []Filter{
-					{
-						Key:      FilterKeyName,
-						Operator: FilterOperatorEQ,
-						Value:    "12345",
-					},
-				},
-			},
-			wantErr: false,
-		},
-		{
-			name: "boolean value for number key",
-			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 10,
-				filters:      nil,
-				sem:          semaphore.NewWeighted(NumWorker),
-			},
-			args: args{
-				filters: []Filter{
-					{
-						Key:      FilterKeyRetention,
-						Operator: FilterOperatorEQ,
-						Value:    "true",
-					},
-				},
-			},
-			wantErr: true,
-		},
-		{
-			name: "empty value",
-			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 1,
-				filters:      nil,
-				sem:          semaphore.NewWeighted(NumWorker),
-			},
-			args: args{
-				filters: []Filter{
-					{
-						Key:      FilterKeyClass,
-						Operator: FilterOperatorEQ,
-						Value:    "",
-					},
-				},
-			},
-			wantErr: false,
-		},
-		{
-			name: "unsupported key type",
-			fields: fields{
-				client:       &Client{},
-				regions:      []string{"us-west-1"},
-				desiredState: 10,
-				filters:      nil,
-				sem:          semaphore.NewWeighted(NumWorker),
-			},
-			args: args{
-				filters: []Filter{
-					{
-						Key:      FilterKey(12345),
-						Operator: FilterOperatorGT,
-						Value:    "100",
-					},
-				},
-			},
-			wantErr: true,
-		},
-		{
-			name: "unsupported operator type",
-			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 1,
-				filters:      nil,
-				sem:          semaphore.NewWeighted(NumWorker),
-			},
-			args: args{
-				filters: []Filter{
-					{
-						Key:      FilterKeyName,
-						Operator: FilterOperator(12345),
-						Value:    "value",
-					},
-				},
-			},
-			wantErr: true,
-		},
-		{
-			name: "zero retention value",
-			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 0,
-				filters:      nil,
-				sem:          semaphore.NewWeighted(NumWorker),
-			},
-			args: args{
-				filters: []Filter{
-					{
-						Key:      FilterKeyRetention,
-						Operator: FilterOperatorEQ,
-						Value:    "0",
-					},
-				},
-			},
-			wantErr: false,
-		},
-		{
-			name: "nil filter",
-			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 0,
-				filters:      nil,
-				sem:          semaphore.NewWeighted(NumWorker),
-			},
-			args: args{
-				filters: nil,
+				filter: ``,
 			},
 			wantErr: false,
 		},
@@ -637,11 +320,11 @@ func TestManager_SetFilter(t *testing.T) {
 				regions:            tt.fields.regions,
 				desiredState:       tt.fields.desiredState,
 				desiredStateNative: tt.fields.desiredStateNative,
-				filters:            tt.fields.filters,
-				filterFns:          tt.fields.filterFns,
+				filterExpr:         tt.fields.filterExpr,
+				filterRaw:          tt.fields.filterRaw,
 				sem:                tt.fields.sem,
 			}
-			err := man.SetFilter(tt.args.filters)
+			err := man.SetFilter(tt.args.filter)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Manager.SetFilter() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -651,13 +334,9 @@ func TestManager_SetFilter(t *testing.T) {
 
 func TestManager_String(t *testing.T) {
 	type fields struct {
-		client       *Client
-		DesiredState DesiredState
-		Filters      []Filter
-		Regions      []string
-		desiredState *int32
-		filterFns    []func(*entry) bool
-		sem          *semaphore.Weighted
+		regions      []string
+		desiredState DesiredState
+		filterRaw    string
 	}
 	tests := []struct {
 		name   string
@@ -667,19 +346,9 @@ func TestManager_String(t *testing.T) {
 		{
 			name: "basic manager",
 			fields: fields{
-				client:       &Client{},
-				DesiredState: 7,
-				Filters: []Filter{
-					{
-						Key:      FilterKeyName,
-						Operator: FilterOperatorEQ,
-						Value:    "logname",
-					},
-				},
-				Regions:      DefaultRegions,
-				desiredState: aws.Int32(1),
-				filterFns:    nil,
-				sem:          nil,
+				regions:      DefaultRegions,
+				desiredState: 7,
+				filterRaw:    `name == "logname"`,
 			},
 			want: `{
   "regions": [
@@ -702,43 +371,29 @@ func TestManager_String(t *testing.T) {
     "us-west-2"
   ],
   "desiredState": "1week",
-  "filters": [
-    {
-      "Key": "name",
-      "Operator": "==",
-      "Value": "logname"
-    }
-  ]
+  "filter": "name == \"logname\""
 }`,
 		},
 		{
 			name: "empty manager",
 			fields: fields{
-				client:       nil,
-				DesiredState: 0,
-				Filters:      nil,
-				Regions:      nil,
-				desiredState: nil,
-				filterFns:    nil,
-				sem:          nil,
+				regions:      nil,
+				desiredState: 0,
+				filterRaw:    "",
 			},
 			want: `{
   "regions": null,
   "desiredState": "delete",
-  "filters": null
+  "filter": ""
 }`,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			man := &Manager{
-				client:             tt.fields.client,
-				regions:            tt.fields.Regions,
-				desiredState:       tt.fields.DesiredState,
-				desiredStateNative: tt.fields.desiredState,
-				filters:            tt.fields.Filters,
-				filterFns:          tt.fields.filterFns,
-				sem:                tt.fields.sem,
+				regions:      tt.fields.regions,
+				desiredState: tt.fields.desiredState,
+				filterRaw:    tt.fields.filterRaw,
 			}
 			if got := man.String(); got != tt.want {
 				t.Errorf("Manager.String() = %v, want %v", got, tt.want)

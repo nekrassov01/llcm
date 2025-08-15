@@ -1,6 +1,7 @@
 package llcm
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -16,8 +17,9 @@ var (
 )
 
 var (
-	_ Entry = (*ListEntry)(nil)
-	_ Entry = (*PreviewEntry)(nil)
+	_ Entry        = (*ListEntry)(nil)
+	_ Entry        = (*PreviewEntry)(nil)
+	_ filterTarget = (*entry)(nil)
 )
 
 // Entry is an interface for log group entry.
@@ -43,6 +45,25 @@ type entry struct {
 // Name returns the name of the entry.
 func (e *entry) Name() string {
 	return e.LogGroupName
+}
+
+// GetField returns the value of the specified field.
+// This implements the filer.Target interface.
+func (e *entry) GetField(key string) (any, error) {
+	switch key {
+	case "name":
+		return e.LogGroupName, nil
+	case "class":
+		return string(e.Class), nil
+	case "elapsed":
+		return e.ElapsedDays, nil
+	case "retention":
+		return e.RetentionInDays, nil
+	case "bytes":
+		return e.StoredBytes, nil
+	default:
+		return 0, fmt.Errorf("field not found: %q", key)
+	}
 }
 
 // ListEntry represents an entry to list log group.
@@ -87,6 +108,7 @@ func (e *ListEntry) toTSV() []string {
 // PreviewEntry is an extended representation of entry with the desired state and its simulated results.
 type PreviewEntry struct {
 	*entry
+
 	BytesPerDay     int64 // The bytes per day of the log group.
 	DesiredState    int64 // The desired state of the log group.
 	ReductionInDays int64 // The number of days to be reduced after the action.

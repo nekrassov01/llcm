@@ -52,7 +52,7 @@ export class Function extends Construct {
       },
       timeout: cdk.Duration.minutes(5),
       environment: {
-        FILTERS: "retention == infinite",
+        FILTER: "retention == infinite",
         DESIRED_STATE: "3months",
       },
     });

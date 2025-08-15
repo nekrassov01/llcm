@@ -3,12 +3,14 @@ package llcm
 import (
 	"context"
 	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs"
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs/types"
 	"github.com/google/go-cmp/cmp"
+	"github.com/nekrassov01/filter"
 	"golang.org/x/sync/semaphore"
 )
 
@@ -18,8 +20,7 @@ func TestManager_List(t *testing.T) {
 		regions            []string
 		desiredState       DesiredState
 		desiredStateNative *int32
-		filters            []Filter
-		filterFns          []func(*entry) bool
+		filterExpr         filterExpr
 		sem                *semaphore.Weighted
 	}
 	type args struct {
@@ -45,7 +46,7 @@ func TestManager_List(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -70,7 +71,7 @@ func TestManager_List(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -92,7 +93,7 @@ func TestManager_List(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -126,7 +127,7 @@ func TestManager_List(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -182,7 +183,7 @@ func TestManager_List(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -275,7 +276,7 @@ func TestManager_List(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -367,7 +368,7 @@ func TestManager_List(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1", "us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -451,7 +452,7 @@ func TestManager_List(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -507,19 +508,8 @@ func TestManager_List(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1", "us-east-1"},
 				desiredState: DesiredStateZero,
-				filters: []Filter{
-					{
-						Key:      FilterKeyName,
-						Operator: FilterOperatorEQ,
-						Value:    "test-log-group-1",
-					},
-				},
-				filterFns: []func(e *entry) bool{
-					func(e *entry) bool {
-						return e.LogGroupName == "test-log-group-1"
-					},
-				},
-				sem: semaphore.NewWeighted(10),
+				filterExpr:   func() filterExpr { expr, _ := filter.Parse(`name == "test-log-group-1"`); return expr }(),
+				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
 				ctx: context.Background(),
@@ -586,19 +576,8 @@ func TestManager_List(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1", "us-east-1"},
 				desiredState: DesiredStateZero,
-				filters: []Filter{
-					{
-						Key:      FilterKeyClass,
-						Operator: FilterOperatorEQ,
-						Value:    string(types.LogGroupClassStandard),
-					},
-				},
-				filterFns: []func(e *entry) bool{
-					func(e *entry) bool {
-						return e.Class == types.LogGroupClassStandard
-					},
-				},
-				sem: semaphore.NewWeighted(10),
+				filterExpr:   func() filterExpr { expr, _ := filter.Parse(`class ==* "standard"`); return expr }(),
+				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
 				ctx: context.Background(),
@@ -665,19 +644,8 @@ func TestManager_List(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1", "us-east-1"},
 				desiredState: DesiredStateZero,
-				filters: []Filter{
-					{
-						Key:      FilterKeyElapsed,
-						Operator: FilterOperatorGTE,
-						Value:    "90",
-					},
-				},
-				filterFns: []func(e *entry) bool{
-					func(e *entry) bool {
-						return e.ElapsedDays >= 90
-					},
-				},
-				sem: semaphore.NewWeighted(10),
+				filterExpr:   func() filterExpr { expr, _ := filter.Parse(`elapsed >= 90`); return expr }(),
+				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
 				ctx: context.Background(),
@@ -744,19 +712,8 @@ func TestManager_List(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1", "us-east-1"},
 				desiredState: DesiredStateZero,
-				filters: []Filter{
-					{
-						Key:      FilterKeyRetention,
-						Operator: FilterOperatorEQ,
-						Value:    "7",
-					},
-				},
-				filterFns: []func(e *entry) bool{
-					func(e *entry) bool {
-						return e.RetentionInDays == 7
-					},
-				},
-				sem: semaphore.NewWeighted(10),
+				filterExpr:   func() filterExpr { expr, _ := filter.Parse(`retention == 7`); return expr }(),
+				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
 				ctx: context.Background(),
@@ -823,18 +780,10 @@ func TestManager_List(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1", "us-east-1"},
 				desiredState: DesiredStateZero,
-				filters: []Filter{
-					{
-						Key:      FilterKeyRetention,
-						Operator: FilterOperatorEQ,
-						Value:    "1week",
-					},
-				},
-				filterFns: []func(e *entry) bool{
-					func(e *entry) bool {
-						return e.RetentionInDays == 7
-					},
-				},
+				filterExpr: func() filterExpr {
+					expr, _ := filter.Parse(fmt.Sprintf(`retention == %d`, func() int32 { n, _ := ParseDesiredState("1week"); return int32(n) }()))
+					return expr
+				}(),
 				sem: semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -902,19 +851,8 @@ func TestManager_List(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1", "us-east-1"},
 				desiredState: DesiredStateZero,
-				filters: []Filter{
-					{
-						Key:      FilterKeyBytes,
-						Operator: FilterOperatorGTE,
-						Value:    "2048",
-					},
-				},
-				filterFns: []func(e *entry) bool{
-					func(e *entry) bool {
-						return e.StoredBytes >= 2048
-					},
-				},
-				sem: semaphore.NewWeighted(10),
+				filterExpr:   func() filterExpr { expr, _ := filter.Parse(`bytes >= 2048`); return expr }(),
+				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
 				ctx: context.Background(),
@@ -981,28 +919,14 @@ func TestManager_List(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1", "us-east-1"},
 				desiredState: DesiredStateZero,
-				filters: []Filter{
-					{
-						Key:      FilterKeyNone,
-						Operator: FilterOperatorEQ,
-						Value:    "",
-					},
-				},
-				filterFns: []func(_ *entry) bool{
-					func(_ *entry) bool {
-						return false
-					},
-				},
-				sem: semaphore.NewWeighted(10),
+				filterExpr:   func() filterExpr { expr, _ := filter.Parse(`none == ""`); return expr }(),
+				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
 				ctx: context.Background(),
 			},
-			want: &ListEntryData{
-				header:  listEntryDataHeader,
-				entries: []*ListEntry{},
-			},
-			wantErr: false,
+			want:    nil,
+			wantErr: true,
 		},
 		{
 			name: "error",
@@ -1014,7 +938,7 @@ func TestManager_List(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -1049,7 +973,7 @@ func TestManager_List(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -1069,7 +993,7 @@ func TestManager_List(t *testing.T) {
 				}),
 				regions:      []string{"us-east-1"},
 				desiredState: DesiredStateZero,
-				filters:      nil,
+				filterExpr:   nil,
 				sem:          semaphore.NewWeighted(10),
 			},
 			args: args{
@@ -1090,8 +1014,7 @@ func TestManager_List(t *testing.T) {
 				regions:            tt.fields.regions,
 				desiredState:       tt.fields.desiredState,
 				desiredStateNative: tt.fields.desiredStateNative,
-				filters:            tt.fields.filters,
-				filterFns:          tt.fields.filterFns,
+				filterExpr:         tt.fields.filterExpr,
 				sem:                tt.fields.sem,
 			}
 			got, err := man.List(tt.args.ctx)

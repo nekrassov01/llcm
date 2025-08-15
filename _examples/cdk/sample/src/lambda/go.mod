@@ -26,7 +26,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.33.14 // indirect
 	github.com/aws/smithy-go v1.22.2 // indirect
 	github.com/go-echarts/go-echarts/v2 v2.5.0 // indirect
-	github.com/mattn/go-runewidth v0.0.15 // indirect
+	github.com/mattn/go-runewidth v0.0.16 // indirect
+	github.com/nekrassov01/filter v0.0.3 // indirect
 	github.com/nekrassov01/mintab v0.0.57 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect

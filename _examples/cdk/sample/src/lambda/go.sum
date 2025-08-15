@@ -36,8 +36,10 @@ github.com/go-echarts/go-echarts/v2 v2.5.0 h1:P/JGanoIrpOOC4K9sRFeKSIUTIpPQwGHQJ
 github.com/go-echarts/go-echarts/v2 v2.5.0/go.mod h1:56YlvzhW/a+du15f3S2qUGNDfKnFOeJSThBIrVFHDtI=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
-github.com/mattn/go-runewidth v0.0.15 h1:UNAjwbU9l54TA3KzvqLGxwWjHmMgBUVhBiTjelZgg3U=
-github.com/mattn/go-runewidth v0.0.15/go.mod h1:Jdepj2loyihRzMpdS35Xk/zdY8IAYHsh153qUoGf23w=
+github.com/mattn/go-runewidth v0.0.16 h1:E5ScNMtiwvlvB5paMFdw9p4kSQzbXFikJ5SQO6TULQc=
+github.com/mattn/go-runewidth v0.0.16/go.mod h1:Jdepj2loyihRzMpdS35Xk/zdY8IAYHsh153qUoGf23w=
+github.com/nekrassov01/filter v0.0.3 h1:5+rEIJYm0bYJSbTX2SZTu2sQezlJOufkSj+qKbsmdEI=
+github.com/nekrassov01/filter v0.0.3/go.mod h1:Q3pogXTprcGfc5A8aANGy0rCcNE4rNqlFuNxk/bVnXs=
 github.com/nekrassov01/mintab v0.0.57 h1:nerSHtmxMDu1gnyUlUD0ZB3hu6n0ce18O/9xyAQI7ZA=
 github.com/nekrassov01/mintab v0.0.57/go.mod h1:jIZGBd3fLAf3v/8TG66HDJ3hPiYQ+HFuyg7+OV6GRoQ=
 github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c h1:+mdjkGKdHQG3305AYmdv1U2eRNDiU2ErMBj1gwrq8eQ=
