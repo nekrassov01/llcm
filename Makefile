@@ -11,7 +11,7 @@ HAS_LINT := $(shell command -v $(GOBIN)/golangci-lint 2> /dev/null)
 HAS_VULN := $(shell command -v $(GOBIN)/govulncheck 2> /dev/null)
 HAS_BUMP := $(shell command -v $(GOBIN)/gobump 2> /dev/null)
 
-BIN_LINT := github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+BIN_LINT := github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
 BIN_VULN := golang.org/x/vuln/cmd/govulncheck@latest
 BIN_BUMP := github.com/x-motemen/gobump/cmd/gobump@latest
 
