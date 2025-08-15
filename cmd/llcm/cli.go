@@ -49,7 +49,7 @@ func newCmd(w, ew io.Writer) *cli.Command {
 		DefaultText: "all regions with no opt-in",
 	}
 
-	filter := &cli.StringSliceFlag{
+	filter := &cli.StringFlag{
 		Name:    "filter",
 		Aliases: []string{"f"},
 		Usage:   "set expressions to filter log groups",
@@ -75,12 +75,6 @@ func newCmd(w, ew io.Writer) *cli.Command {
 	}
 
 	newManager := func(cmd *cli.Command) (*llcm.Manager, error) {
-		// evaluate filter expressions passed as string
-		filter, err := llcm.EvaluateFilter(cmd.StringSlice(filter.Name))
-		if err != nil {
-			return nil, err
-		}
-
 		// get aws config from the metadata
 		cfg := cmd.Metadata["config"].(aws.Config)
 
@@ -96,7 +90,7 @@ func newCmd(w, ew io.Writer) *cli.Command {
 		}
 
 		// set filter to the manager
-		if err := man.SetFilter(filter); err != nil {
+		if err := man.SetFilter(cmd.String(filter.Name)); err != nil {
 			return nil, err
 		}
 
@@ -130,17 +124,10 @@ func newCmd(w, ew io.Writer) *cli.Command {
 	}
 
 	list := func(ctx context.Context, cmd *cli.Command) error {
-		// parse output type passed as string
-		outputType, err := llcm.ParseOutputType(cmd.String(output.Name))
-		if err != nil {
-			return err
-		}
-
 		// logging at process start
 		logger.Info(
 			"started",
 			"at", time.Now().Format(time.RFC3339),
-			"output", outputType,
 		)
 
 		// create manager with common settings
@@ -159,8 +146,15 @@ func newCmd(w, ew io.Writer) *cli.Command {
 		// sort result
 		llcm.SortEntries(data)
 
+		// create renderer with data
+		ren := llcm.NewRenderer(w, data)
+
+		// set output type passed as string
+		if err := ren.SetOutputType(cmd.String(output.Name)); err != nil {
+			return err
+		}
+
 		// render result
-		ren := llcm.NewRenderer(w, data, outputType)
 		if err := ren.Render(); err != nil {
 			return err
 		}
@@ -176,24 +170,10 @@ func newCmd(w, ew io.Writer) *cli.Command {
 	}
 
 	preview := func(ctx context.Context, cmd *cli.Command) error {
-		// parse output type passed as string
-		outputType, err := llcm.ParseOutputType(cmd.String(output.Name))
-		if err != nil {
-			return err
-		}
-
-		// parse desired state passed as string
-		desiredState, err := llcm.ParseDesiredState(cmd.String(desired.Name))
-		if err != nil {
-			return err
-		}
-
 		// logging at process start
 		logger.Info(
 			"started",
 			"at", time.Now().Format(time.RFC3339),
-			"desired", cmd.String(desired.Name),
-			"output", outputType,
 		)
 
 		// create manager with common settings
@@ -203,7 +183,7 @@ func newCmd(w, ew io.Writer) *cli.Command {
 		}
 
 		// set desired state to the manager
-		if err := man.SetDesiredState(desiredState); err != nil {
+		if err := man.SetDesiredState(cmd.String(desired.Name)); err != nil {
 			return err
 		}
 
@@ -217,8 +197,15 @@ func newCmd(w, ew io.Writer) *cli.Command {
 		// sort result
 		llcm.SortEntries(data)
 
+		// create renderer with data
+		ren := llcm.NewRenderer(w, data)
+
+		// set output type passed as string
+		if err := ren.SetOutputType(cmd.String(output.Name)); err != nil {
+			return err
+		}
+
 		// render result
-		ren := llcm.NewRenderer(w, data, outputType)
 		if err := ren.Render(); err != nil {
 			return err
 		}
@@ -236,17 +223,10 @@ func newCmd(w, ew io.Writer) *cli.Command {
 	}
 
 	apply := func(ctx context.Context, cmd *cli.Command) error {
-		// parse desired state passed as string
-		desiredState, err := llcm.ParseDesiredState(cmd.String(desired.Name))
-		if err != nil {
-			return err
-		}
-
 		// logging at process start
 		logger.Info(
 			"started",
 			"at", time.Now().Format(time.RFC3339),
-			"desired", cmd.String(desired.Name),
 		)
 
 		// create manager with common settings
@@ -256,7 +236,7 @@ func newCmd(w, ew io.Writer) *cli.Command {
 		}
 
 		// set desired state to the manager
-		if err := man.SetDesiredState(desiredState); err != nil {
+		if err := man.SetDesiredState(cmd.String(desired.Name)); err != nil {
 			return err
 		}
 
@@ -290,7 +270,7 @@ func newCmd(w, ew io.Writer) *cli.Command {
 			{
 				Name:        "list",
 				Usage:       "List log group entries with specified format",
-				Description: "List collects basic information about log groups from multiple specified regions and\nreturns it in a specified format. ",
+				Description: "List collects basic information about log groups from multiple specified regions and\nreturns it in a specified format.",
 				Before:      before,
 				Action:      list,
 				Flags:       []cli.Flag{profile, loglevel, region, filter, output},
