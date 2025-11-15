@@ -66,13 +66,13 @@ cover:
 	go tool cover -html=cover.out -o cover.html
 
 bench:
-	go test -run=^$$ -bench=. -benchmem -count 10 -benchtime=10000x -cpuprofile=cpu.prof -memprofile=mem.prof
+	go test -bench=. -benchmem -count 5 -benchtime=10000x -cpuprofile=cpu.prof -memprofile=mem.prof
 
 lint: deps-lint
 	golangci-lint run ./... -v
 
 vuln: deps-vuln
-	$(GOBIN)/govulncheck -test ./...
+	govulncheck -test -show verbose ./...
 
 # ----------
 #  release
