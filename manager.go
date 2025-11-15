@@ -14,7 +14,7 @@ import (
 var NumWorker = int64(runtime.NumCPU()*2 + 1)
 
 type (
-	filterExpr   = filter.Expr   // filterExpr is a type alias for filter.Expr.
+	filterExpr   = *filter.Expr  // filterExpr is a type alias for filter.Expr.
 	filterTarget = filter.Target // filterTarget is a type alias for filter.Target.
 )
 

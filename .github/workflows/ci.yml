@@ -23,31 +23,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup go
-        uses: actions/setup-go@v5
-        with:
-          go-version: 1.24
-          cache: false
+        uses: actions/checkout@v5
 
       - name: Unshallow
         run: git fetch --prune --unshallow --tags
+
+      - name: Setup go
+        uses: actions/setup-go@v6
+        with:
+          go-version: 1.25
+          cache: false
 
       - name: Build
         run: make build
 
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v7
+        uses: golangci/golangci-lint-action@v8
         with:
-          version: v2.0
+          version: latest
           args: --timeout=10m
           skip-cache: true
 
       - name: Run govulncheck
         uses: golang/govulncheck-action@v1
         with:
-          go-version-input: 1.24
+          go-version-input: 1.25
           go-package: ./...
           cache: false
 
