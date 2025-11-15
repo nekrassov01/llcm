@@ -8,7 +8,7 @@ import (
 	"github.com/nekrassov01/mintab"
 )
 
-// OutputType represents the type of the output.
+// Renderer is a renderer for entries and entry data.
 type Renderer[E Entry, D EntryData[E]] struct {
 	Data       D
 	OutputType OutputType

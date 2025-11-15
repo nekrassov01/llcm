@@ -28,7 +28,7 @@ var (
 	// PieChartTitle is the title of the pie chart.
 	PieChartTitle = "Stored bytes of log groups"
 
-	// barChartTitle is the title of the bar chart.
+	// BarChartTitle is the title of the bar chart.
 	BarChartTitle = "The simulation of reductions in log groups"
 )
 
