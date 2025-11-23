@@ -69,7 +69,7 @@ bench:
 	go test -bench=. -benchmem -count 5 -benchtime=10000x -cpuprofile=cpu.prof -memprofile=mem.prof
 
 lint: deps-lint
-	golangci-lint run ./... -v
+	golangci-lint run --verbose ./...
 
 vuln: deps-vuln
 	govulncheck -test -show verbose ./...
@@ -79,7 +79,7 @@ vuln: deps-vuln
 # ----------
 
 show-version: deps-bump
-	$(GOBIN)/gobump show -r $(CMD_PATH)
+	gobump show -r $(CMD_PATH)
 
 check-git:
 ifneq ($(shell git status --porcelain),)
@@ -90,7 +90,7 @@ ifneq ($(shell git rev-parse --abbrev-ref HEAD),main)
 endif
 
 publish: check-git deps-bump
-	$(GOBIN)/gobump up -w $(CMD_PATH)
+	gobump up -w $(CMD_PATH)
 	git commit -am "bump up version to $(VERSION)"
 	git push origin main
 
