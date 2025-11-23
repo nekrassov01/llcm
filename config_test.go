@@ -19,6 +19,7 @@ func TestLoadConfig(t *testing.T) {
 		{
 			name: "success",
 			args: args{
+				ctx:     context.Background(),
 				profile: "",
 			},
 			wantErr: false,
@@ -26,6 +27,7 @@ func TestLoadConfig(t *testing.T) {
 		{
 			name: "error",
 			args: args{
+				ctx:     context.Background(),
 				profile: "invalid-profile",
 			},
 			wantErr: true,
