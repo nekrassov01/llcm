@@ -10,8 +10,8 @@ builds:
     binary: llcm
     ldflags:
       - -s -w
-      - -X main.Version={{ .Version }}
-      - -X main.Revision={{ .ShortCommit }}
+      - -X main.version={{ .Version }}
+      - -X main.revision={{ .ShortCommit }}
     env:
       - CGO_ENABLED=0
     goos:
