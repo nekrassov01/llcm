@@ -10,10 +10,11 @@ var _ API = (*mockClient)(nil)
 
 // mockClient represents a mock client for CloudWatch Logs.
 type mockClient struct {
-	DescribeLogGroupsFunc     func(ctx context.Context, params *cloudwatchlogs.DescribeLogGroupsInput, optFns ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error)
-	PutRetentionPolicyFunc    func(ctx context.Context, params *cloudwatchlogs.PutRetentionPolicyInput, optFns ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.PutRetentionPolicyOutput, error)
-	DeleteRetentionPolicyFunc func(ctx context.Context, params *cloudwatchlogs.DeleteRetentionPolicyInput, optFns ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DeleteRetentionPolicyOutput, error)
-	DeleteLogGroupFunc        func(ctx context.Context, params *cloudwatchlogs.DeleteLogGroupInput, optFns ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DeleteLogGroupOutput, error)
+	DescribeLogGroupsFunc             func(ctx context.Context, params *cloudwatchlogs.DescribeLogGroupsInput, optFns ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error)
+	PutRetentionPolicyFunc            func(ctx context.Context, params *cloudwatchlogs.PutRetentionPolicyInput, optFns ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.PutRetentionPolicyOutput, error)
+	DeleteRetentionPolicyFunc         func(ctx context.Context, params *cloudwatchlogs.DeleteRetentionPolicyInput, optFns ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DeleteRetentionPolicyOutput, error)
+	DeleteLogGroupFunc                func(ctx context.Context, params *cloudwatchlogs.DeleteLogGroupInput, optFns ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DeleteLogGroupOutput, error)
+	PutLogGroupDeletionProtectionFunc func(ctx context.Context, params *cloudwatchlogs.PutLogGroupDeletionProtectionInput, optFns ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.PutLogGroupDeletionProtectionOutput, error)
 }
 
 // DescribeLogGroups describes the specified log groups.
@@ -34,6 +35,11 @@ func (m *mockClient) DeleteRetentionPolicy(ctx context.Context, params *cloudwat
 // DeleteLogGroup deletes the specified log group.
 func (m *mockClient) DeleteLogGroup(ctx context.Context, params *cloudwatchlogs.DeleteLogGroupInput, optFns ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DeleteLogGroupOutput, error) {
 	return m.DeleteLogGroupFunc(ctx, params, optFns...)
+}
+
+// PutLogGroupDeletionProtection puts the log group deletion protection.
+func (m *mockClient) PutLogGroupDeletionProtection(ctx context.Context, params *cloudwatchlogs.PutLogGroupDeletionProtectionInput, optFns ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.PutLogGroupDeletionProtectionOutput, error) {
+	return m.PutLogGroupDeletionProtectionFunc(ctx, params, optFns...)
 }
 
 // newMockClient creates a new mock client.

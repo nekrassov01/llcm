@@ -119,9 +119,9 @@ The following values can be passed for each option.
 | `--profile value` `-p value`                      | -                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | -                                                                                                                                         | `AWS_PROFILE`        |
 | `--log-level value` `-l value`                    | `debug` `info` `warn` `error`                                                                                                                                                                                                                                                                                                                                                                                                                                         | `info`                                                                                                                                    | `LLCM_LOG_LEVEL`     |
 | `--region value1,value2...` `-r value1,value2...` | `af-south-1` `ap-east-1` `ap-northeast-1` `ap-northeast-2` `ap-northeast-3` `ap-south-1` `ap-south-2` `ap-southeast-1` `ap-southeast-2` `ap-southeast-3` `ap-southeast-4` `ap-southeast-5` `ap-southeast-7` `ca-central-1` `ca-west-1` `eu-central-1` `eu-central-2` `eu-north-1` `eu-south-1` `eu-south-2` `eu-west-1` `eu-west-2` `eu-west-3` `il-central-1` `me-central-1` `me-south-1` `mx-central-1` `sa-east-1` `us-east-1` `us-east-2` `us-west-1` `us-west-2` | [All regions with no opt-in](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-regionsz) | -                    |
-| `--filter value` `-f value`                       | Evaluating filter expressions with [minimum DSL](https://github.com/nekrassov01/filter/blob/main/README.md); <br>key: `name` `class` `elapsed` `retention` `bytes`<br>operator: `>` `>=` `<` `<=` `==` `==*` `!=` `!=*` `=~` `!~`                                                                                                                                                                                                                                     | -                                                                                                                                         | -                    |
-| `--desired value` `-d value`                      | `delete` `1day` `3days` `5days` `1week` `2weeks` `1month` `2months` `3months` `4months` `5months` `6months` `1year` `13months` `18months` `2years` `3years` `5years` `6years` `7years` `8years` `9years` `10years` `infinite`                                                                                                                                                                                                                                         | -                                                                                                                                         | -                    |
-| `--output value` `-o value`                       | `json` `prettyjson` `text` `compressedtext` `markdown` `backlog` `tsv`                                                                                                                                                                                                                                                                                                                                                                                                | `compressedtext`                                                                                                                          | `LLCM_OUTPUT_TYPE`   |
+| `--filter value` `-f value`                       | Evaluating filter expressions with [minimum DSL](https://github.com/nekrassov01/filter/blob/main/README.md); <br>key: `name` `class` `protected` `elapsed` `retention` `bytes`<br>operator: `>` `>=` `<` `<=` `==` `==*` `!=` `!=*` `=~` `!~`                                                                                                                                                                                                                         | -                                                                                                                                         | -                    |
+| `--desired value` `-d value`                      | `delete` `1day` `3days` `5days` `1week` `2weeks` `1month` `2months` `3months` `4months` `5months` `6months` `1year` `13months` `18months` `2years` `3years` `5years` `6years` `7years` `8years` `9years` `10years` `infinite` `protect` `unprotect`                                                                                                                                                                                                                   | -                                                                                                                                         | -                    |
+| `--output value` `-o value`                       | `json` `prettyjson` `text` `compressedtext` `markdown` `backlog` `tsv` `chart`                                                                                                                                                                                                                                                                                                                                                                                        | `compressedtext`                                                                                                                          | `LLCM_OUTPUT_TYPE`   |
 | `--help` `-h`                                     | -                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | -                                                                                                                                         | -                    |
 | `--version` `-v`                                  | -                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | -                                                                                                                                         | -                    |
 
@@ -138,12 +138,12 @@ The following values can be passed for each option.
 llcm preview --desired 1year --filter 'name =~ "^/aws/lambda/.*" && bytes != 0 && retention > 365' --output markdown
 
 # The following outputs are obtained
-| Name                 | Region         | Class    | CreatedAt                 | ElapsedDays | RetentionInDays | StoredBytes  | BytesPerDay | DesiredState | ReductionInDays | ReducibleBytes | RemainingBytes |
-| -------------------- | -------------- | -------- | ------------------------- | ----------- | --------------- | ------------ | ----------- | ------------ | --------------- | -------------- | -------------- |
-| /aws/lambda/tokyo-1  | ap-northeast-1 | STANDARD | 2019-04-15T21:50:12+09:00 | 2107        | 731             | 161094000389 | 220374829   | 365          | 366             | 80657187414    | 80436812975    |
-| /aws/lambda/tokyo-2  | ap-northeast-1 | STANDARD | 2020-08-26T23:45:50+09:00 | 1608        | 731             | 30273686566  | 41414071    | 365          | 366             | 15157549986    | 15116136580    |
-| /aws/lambda/oregon-1 | us-west-2      | STANDARD | 2020-08-27T14:34:54+09:00 | 1607        | 731             | 28578246408  | 39094728    | 365          | 366             | 14308670448    | 14269575960    |
-| /aws/lambda/oregon-2 | us-west-2      | STANDARD | 2020-08-26T23:48:51+09:00 | 1608        | 731             | 22822519036  | 31220956    | 365          | 366             | 11426869896    | 11395649140    |
+| Name                 | Region         | Class    | CreatedAt                 | DeletionProtection | ElapsedDays | RetentionInDays | StoredBytes  | BytesPerDay | DesiredState | ReductionInDays | ReducibleBytes | RemainingBytes |
+| -------------------- | -------------- | -------- | ------------------------- | ------------------ | ----------- | --------------- | ------------ | ----------- | ------------ | --------------- | -------------- | -------------- |
+| /aws/lambda/tokyo-1  | ap-northeast-1 | STANDARD | 2019-04-15T21:50:12+09:00 | false              | 2107        | 731             | 161094000389 | 220374829   | 365          | 366             | 80657187414    | 80436812975    |
+| /aws/lambda/tokyo-2  | ap-northeast-1 | STANDARD | 2020-08-26T23:45:50+09:00 | false              | 1608        | 731             | 30273686566  | 41414071    | 365          | 366             | 15157549986    | 15116136580    |
+| /aws/lambda/oregon-1 | us-west-2      | STANDARD | 2020-08-27T14:34:54+09:00 | false              | 1607        | 731             | 28578246408  | 39094728    | 365          | 366             | 14308670448    | 14269575960    |
+| /aws/lambda/oregon-2 | us-west-2      | STANDARD | 2020-08-26T23:48:51+09:00 | false              | 1608        | 731             | 22822519036  | 31220956    | 365          | 366             | 11426869896    | 11395649140    |
 ...
 ```
 
@@ -161,11 +161,11 @@ llcm apply --desired 1year --filter 'name =~ "^/aws/lambda/.*" && bytes != 0 && 
 llcm list --filter 'bytes == 0 && elapsed > 365' --region ap-northeast-1,us-west-2 --output backlog
 
 # The following outputs are obtained
-| Name   | Region         | Class    | CreatedAt                 | ElapsedDays | RetentionInDays | StoredBytes |h
-| test-1 | ap-northeast-1 | STANDARD | 2017-12-07T13:16:02+09:00 |        2601 |             731 |           0 |
-| test-2 | us-west-2      | STANDARD | 2017-12-07T12:44:45+09:00 |        2601 |             731 |           0 |
-| test-3 | ap-northeast-1 | STANDARD | 2017-12-07T13:21:09+09:00 |        2601 |             731 |           0 |
-| test-4 | us-west-2      | STANDARD | 2017-12-07T12:50:11+09:00 |        2601 |             731 |           0 |
+| Name   | Region         | Class    | CreatedAt                 | DeletionProtection | ElapsedDays | RetentionInDays | StoredBytes |h
+| test-1 | ap-northeast-1 | STANDARD | 2017-12-07T13:16:02+09:00 | false              |        2601 |             731 |           0 |
+| test-2 | us-west-2      | STANDARD | 2017-12-07T12:44:45+09:00 | false              |        2601 |             731 |           0 |
+| test-3 | ap-northeast-1 | STANDARD | 2017-12-07T13:21:09+09:00 | false              |        2601 |             731 |           0 |
+| test-4 | us-west-2      | STANDARD | 2017-12-07T12:50:11+09:00 | false              |        2601 |             731 |           0 |
 ...
 ```
 
@@ -204,6 +204,61 @@ llcm list --output chart
 ```
 
 ![chart](_assets/list.png)
+
+### Case 5
+
+- Apply deletion protection in bulk to all log groups where deletion protection is not enabled.
+
+```sh
+llcm apply --desired protect --filter 'protected == false'
+```
+
+## Desired states
+
+List of desired states and their assigned values. These values are used for preview command.
+
+| Name        | Assigned Value | Description                                               |
+| ----------- | -------------- | --------------------------------------------------------- |
+| `none`      | -1             | A value meaning none.                                     |
+| `delete`    | 0              | A value meaning delete the log group.                     |
+| `1day`      | 1              | A value meaning retain the log group for one day.         |
+| `3days`     | 3              | A value meaning retain the log group for three days.      |
+| `5days`     | 5              | A value meaning retain the log group for five days.       |
+| `1week`     | 7              | A value meaning retain the log group for one week.        |
+| `2weeks`    | 14             | A value meaning retain the log group for two weeks.       |
+| `1month`    | 30             | A value meaning retain the log group for one month.       |
+| `2months`   | 60             | A value meaning retain the log group for two months.      |
+| `3months`   | 90             | A value meaning retain the log group for three months.    |
+| `4months`   | 120            | A value meaning retain the log group for four months.     |
+| `5months`   | 150            | A value meaning retain the log group for five months.     |
+| `6months`   | 180            | A value meaning retain the log group for six months.      |
+| `1years`    | 365            | A value meaning retain the log group for one year.        |
+| `13months`  | 400            | A value meaning retain the log group for thirteen months. |
+| `18months`  | 545            | A value meaning retain the log group for eighteen months. |
+| `2years`    | 731            | A value meaning retain the log group for two years.       |
+| `3years`    | 1096           | A value meaning retain the log group for three years.     |
+| `5years`    | 1827           | A value meaning retain the log group for five years.      |
+| `6years`    | 2192           | A value meaning retain the log group for six years.       |
+| `7years`    | 255            | A value meaning retain the log group for seven years.     |
+| `8years`    | 2922           | A value meaning retain the log group for eight years.     |
+| `9years`    | 3288           | A value meaning retain the log group for nine years.      |
+| `10years`   | 3653           | A value meaning retain the log group for ten years.       |
+| `infinite`  | 9999           | A value meaning retain the log group infinity.            |
+| `protect`   | 10000          | A value meaning to enable deletion protection.            |
+| `unprotect` | 10001          | A value meaning to disable deletion protection.           |
+
+## Filter keys
+
+List of keys that can be used with the filter method.
+
+| Key       | Value Type | Description                                      | Example                                                                    |
+| --------- | ---------- | ------------------------------------------------ | -------------------------------------------------------------------------- |
+| name      | string     | Log group name                                   | `name == "name1"` `name =~ '^/aws/lambda/.*'`                              |
+| class     | literal    | Log group class                                  | `class == "STANDARD"` `class != "INFREQUENT_ACCESS"` `class == "DELIVERY"` |
+| protected | bool       | Whether log group deletion protection is enabled | `protected == true` `protected == false`                                   |
+| elapsed   | int        | Number of days since the log group was created   | `elapsed > 365` `elapsed  >= 14`                                           |
+| retention | int        | Log group retention period                       | `retention == 90` `retention < 365`                                        |
+| bytes     | int        | Stored capacity of the log group                 | `bytes >= 1024` `bytes == 0`                                               |
 
 ## Moreover
 

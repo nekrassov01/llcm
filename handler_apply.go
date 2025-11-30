@@ -26,6 +26,11 @@ func (man *Manager) Apply(ctx context.Context, w io.Writer) (int32, error) {
 				return err
 			}
 			_, _ = fmt.Fprintf(w, "deleted retention policy: %s\n", entry.LogGroupName)
+		case DesiredStateProtected, DesiredStateUnprotected:
+			if err := man.putLogGroupDeletionProtection(ctx, entry.name, entry.Region); err != nil {
+				return err
+			}
+			_, _ = fmt.Fprintf(w, "%s log group: %s\n", man.desiredState.String(), entry.LogGroupName)
 		default:
 			if err := man.putRetentionPolicy(ctx, entry.name, entry.Region); err != nil {
 				return err
@@ -65,6 +70,23 @@ func (man *Manager) deleteRetentionPolicy(ctx context.Context, name *string, reg
 		LogGroupName: name,
 	}
 	_, err := man.client.DeleteRetentionPolicy(ctx, in, opt)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// putLogGroupDeletionProtection puts the log group deletion protection.
+func (man *Manager) putLogGroupDeletionProtection(ctx context.Context, name *string, region string) error {
+	opt := func(o *cloudwatchlogs.Options) {
+		o.Region = region
+		o.Retryer = retryer
+	}
+	in := &cloudwatchlogs.PutLogGroupDeletionProtectionInput{
+		LogGroupIdentifier:        name,
+		DeletionProtectionEnabled: man.deletionProtection,
+	}
+	_, err := man.client.PutLogGroupDeletionProtection(ctx, in, opt)
 	if err != nil {
 		return err
 	}

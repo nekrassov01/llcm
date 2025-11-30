@@ -15,6 +15,7 @@ type API interface {
 	PutRetentionPolicy(ctx context.Context, params *cloudwatchlogs.PutRetentionPolicyInput, optFns ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.PutRetentionPolicyOutput, error)
 	DeleteRetentionPolicy(ctx context.Context, params *cloudwatchlogs.DeleteRetentionPolicyInput, optFns ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DeleteRetentionPolicyOutput, error)
 	DeleteLogGroup(ctx context.Context, params *cloudwatchlogs.DeleteLogGroupInput, optFns ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DeleteLogGroupOutput, error)
+	PutLogGroupDeletionProtection(ctx context.Context, params *cloudwatchlogs.PutLogGroupDeletionProtectionInput, optFns ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.PutLogGroupDeletionProtectionOutput, error)
 }
 
 // Client represents a client for CloudWatch Logs.

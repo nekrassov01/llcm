@@ -615,6 +615,56 @@ func TestManager_List(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "deletion protection enabled",
+			fields: fields{
+				client: newMockClient(&mockClient{
+					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
+						out := &cloudwatchlogs.DescribeLogGroupsOutput{
+							LogGroups: []types.LogGroup{
+								{
+									LogGroupName:              aws.String("test-log-group"),
+									LogGroupArn:               aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
+									LogGroupClass:             types.LogGroupClassStandard,
+									CreationTime:              aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
+									RetentionInDays:           aws.Int32(365),
+									StoredBytes:               aws.Int64(1024),
+									DeletionProtectionEnabled: aws.Bool(true),
+								},
+							},
+						}
+						return out, nil
+					},
+				}),
+				regions:      []string{"us-east-1"},
+				desiredState: DesiredStateProtected,
+				filterExpr:   func() filterExpr { expr, _ := filter.Parse(`protected == true`); return expr }(),
+				sem:          semaphore.NewWeighted(10),
+			},
+			args: args{
+				ctx: context.Background(),
+			},
+			want: &ListEntryData{
+				header: listEntryDataHeader,
+				entries: []*ListEntry{
+					{
+						entry: &entry{
+							LogGroupName:       "test-log-group",
+							Region:             "us-east-1",
+							Class:              types.LogGroupClassStandard,
+							CreatedAt:          mustTime("2025-01-01T00:00:00Z"),
+							DeletionProtection: true,
+							ElapsedDays:        90,
+							RetentionInDays:    365,
+							StoredBytes:        1024,
+							name:               aws.String("test-log-group"),
+						},
+					},
+				},
+				TotalStoredBytes: 1024,
+			},
+			wantErr: false,
+		},
+		{
 			name: "with filter elepased days",
 			fields: fields{
 				client: newMockClient(&mockClient{

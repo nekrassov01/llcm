@@ -27,9 +27,7 @@ func (man *Manager) handle(ctx context.Context, handleFunc func(*entry) error) e
 		}
 	}
 	for _, region := range man.regions {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			opt := func(o *cloudwatchlogs.Options) {
 				o.Region = region
 			}
@@ -47,9 +45,7 @@ func (man *Manager) handle(ctx context.Context, handleFunc func(*entry) error) e
 						errorFunc(err)
 						return
 					}
-					wg.Add(1)
-					go func() {
-						defer wg.Done()
+					wg.Go(func() {
 						defer man.sem.Release(1)
 						entry := newEntry(logGroup, region)
 						if man.filterExpr != nil {
@@ -66,14 +62,14 @@ func (man *Manager) handle(ctx context.Context, handleFunc func(*entry) error) e
 							errorFunc(err)
 							return
 						}
-					}()
+					})
 				}
 				if out.NextToken == nil {
 					break
 				}
 				in.NextToken = out.NextToken
 			}
-		}()
+		})
 	}
 	wg.Wait()
 	close(errorChan)
@@ -92,6 +88,7 @@ func newEntry(logGroup types.LogGroup, region string) *entry {
 	e.Region = region
 	e.Class = logGroup.LogGroupClass
 	e.CreatedAt = createdAt(logGroup.CreationTime)
+	e.DeletionProtection = aws.ToBool(logGroup.DeletionProtectionEnabled)
 	e.ElapsedDays = elapsedDays(e.CreatedAt)
 	e.RetentionInDays = retentionInDays(logGroup.RetentionInDays)
 	e.StoredBytes = aws.ToInt64(logGroup.StoredBytes)

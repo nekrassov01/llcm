@@ -24,6 +24,7 @@ type Manager struct {
 	regions            []string            // The list of target regions.
 	desiredState       DesiredState        // The desired state of the log group.
 	desiredStateNative *int32              // The desired state with the native type.
+	deletionProtection *bool               // Whether to enable log group deletion protection.
 	filterExpr         filterExpr          // The expressions for filtering log groups.
 	filterRaw          string              // The raw filter string.
 	sem                *semaphore.Weighted // The weighted semaphore for concurrent processing.
@@ -32,10 +33,11 @@ type Manager struct {
 // NewManager creates a new manager for log group lifecycle management.
 func NewManager(client *Client) *Manager {
 	return &Manager{
-		client:       client,
-		regions:      DefaultRegions,
-		desiredState: DesiredStateNone,
-		sem:          semaphore.NewWeighted(NumWorker),
+		client:             client,
+		regions:            DefaultRegions,
+		desiredState:       DesiredStateNone,
+		deletionProtection: aws.Bool(false),
+		sem:                semaphore.NewWeighted(NumWorker),
 	}
 }
 
@@ -61,6 +63,9 @@ func (man *Manager) SetDesiredState(desired string) error {
 	}
 	man.desiredState = d
 	man.desiredStateNative = aws.Int32(int32(man.desiredState))
+	if d == DesiredStateProtected {
+		man.deletionProtection = aws.Bool(true)
+	}
 	return nil
 }
 

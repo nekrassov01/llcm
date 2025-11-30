@@ -18,6 +18,7 @@ func TestManager_Apply(t *testing.T) {
 		regions            []string
 		desiredState       DesiredState
 		desiredStateNative *int32
+		deletionProtection *bool
 		filterExpr         filterExpr
 		sem                *semaphore.Weighted
 	}
@@ -40,22 +41,24 @@ func TestManager_Apply(t *testing.T) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
 								{
-									LogGroupName:    aws.String("test-log-group"),
-									LogGroupArn:     aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
-									LogGroupClass:   types.LogGroupClassStandard,
-									CreationTime:    aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
-									RetentionInDays: aws.Int32(365),
-									StoredBytes:     aws.Int64(1024),
+									LogGroupName:              aws.String("test-log-group"),
+									LogGroupArn:               aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
+									LogGroupClass:             types.LogGroupClassStandard,
+									CreationTime:              aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
+									RetentionInDays:           aws.Int32(365),
+									StoredBytes:               aws.Int64(1024),
+									DeletionProtectionEnabled: aws.Bool(false),
 								},
 							},
 						}
 						return out, nil
 					},
 				}),
-				regions:      []string{"us-east-1"},
-				desiredState: DesiredStateNone,
-				filterExpr:   nil,
-				sem:          semaphore.NewWeighted(10),
+				regions:            []string{"us-east-1"},
+				desiredState:       DesiredStateNone,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(10),
 			},
 			args: args{
 				ctx: context.Background(),
@@ -72,12 +75,13 @@ func TestManager_Apply(t *testing.T) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
 								{
-									LogGroupName:    aws.String("test-log-group"),
-									LogGroupArn:     aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
-									LogGroupClass:   types.LogGroupClassStandard,
-									CreationTime:    aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
-									RetentionInDays: aws.Int32(365),
-									StoredBytes:     aws.Int64(1024),
+									LogGroupName:              aws.String("test-log-group"),
+									LogGroupArn:               aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
+									LogGroupClass:             types.LogGroupClassStandard,
+									CreationTime:              aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
+									RetentionInDays:           aws.Int32(365),
+									StoredBytes:               aws.Int64(1024),
+									DeletionProtectionEnabled: aws.Bool(false),
 								},
 							},
 						}
@@ -87,10 +91,11 @@ func TestManager_Apply(t *testing.T) {
 						return &cloudwatchlogs.DeleteLogGroupOutput{}, nil
 					},
 				}),
-				regions:      []string{"us-east-1"},
-				desiredState: DesiredStateZero,
-				filterExpr:   nil,
-				sem:          semaphore.NewWeighted(10),
+				regions:            []string{"us-east-1"},
+				desiredState:       DesiredStateZero,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(10),
 			},
 			args: args{
 				ctx: context.Background(),
@@ -107,12 +112,13 @@ func TestManager_Apply(t *testing.T) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
 								{
-									LogGroupName:    aws.String("test-log-group"),
-									LogGroupArn:     aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
-									LogGroupClass:   types.LogGroupClassStandard,
-									CreationTime:    aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
-									RetentionInDays: aws.Int32(365),
-									StoredBytes:     aws.Int64(1024),
+									LogGroupName:              aws.String("test-log-group"),
+									LogGroupArn:               aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
+									LogGroupClass:             types.LogGroupClassStandard,
+									CreationTime:              aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
+									RetentionInDays:           aws.Int32(365),
+									StoredBytes:               aws.Int64(1024),
+									DeletionProtectionEnabled: aws.Bool(false),
 								},
 							},
 						}
@@ -122,10 +128,85 @@ func TestManager_Apply(t *testing.T) {
 						return &cloudwatchlogs.DeleteRetentionPolicyOutput{}, nil
 					},
 				}),
-				regions:      []string{"us-east-1"},
-				desiredState: DesiredStateInfinite,
-				filterExpr:   nil,
-				sem:          semaphore.NewWeighted(10),
+				regions:            []string{"us-east-1"},
+				desiredState:       DesiredStateInfinite,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(10),
+			},
+			args: args{
+				ctx: context.Background(),
+				w:   io.Discard,
+			},
+			want:    1,
+			wantErr: false,
+		},
+		{
+			name: "put deletion protection enabled",
+			fields: fields{
+				client: newMockClient(&mockClient{
+					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
+						out := &cloudwatchlogs.DescribeLogGroupsOutput{
+							LogGroups: []types.LogGroup{
+								{
+									LogGroupName:              aws.String("test-log-group"),
+									LogGroupArn:               aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
+									LogGroupClass:             types.LogGroupClassStandard,
+									CreationTime:              aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
+									RetentionInDays:           aws.Int32(365),
+									StoredBytes:               aws.Int64(1024),
+									DeletionProtectionEnabled: aws.Bool(true),
+								},
+							},
+						}
+						return out, nil
+					},
+					PutLogGroupDeletionProtectionFunc: func(_ context.Context, _ *cloudwatchlogs.PutLogGroupDeletionProtectionInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.PutLogGroupDeletionProtectionOutput, error) {
+						return &cloudwatchlogs.PutLogGroupDeletionProtectionOutput{}, nil
+					},
+				}),
+				regions:            []string{"us-east-1"},
+				desiredState:       DesiredStateProtected,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(10),
+			},
+			args: args{
+				ctx: context.Background(),
+				w:   io.Discard,
+			},
+			want:    1,
+			wantErr: false,
+		},
+		{
+			name: "put deletion protection disabled",
+			fields: fields{
+				client: newMockClient(&mockClient{
+					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
+						out := &cloudwatchlogs.DescribeLogGroupsOutput{
+							LogGroups: []types.LogGroup{
+								{
+									LogGroupName:              aws.String("test-log-group"),
+									LogGroupArn:               aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
+									LogGroupClass:             types.LogGroupClassStandard,
+									CreationTime:              aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
+									RetentionInDays:           aws.Int32(365),
+									StoredBytes:               aws.Int64(1024),
+									DeletionProtectionEnabled: aws.Bool(true),
+								},
+							},
+						}
+						return out, nil
+					},
+					PutLogGroupDeletionProtectionFunc: func(_ context.Context, _ *cloudwatchlogs.PutLogGroupDeletionProtectionInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.PutLogGroupDeletionProtectionOutput, error) {
+						return &cloudwatchlogs.PutLogGroupDeletionProtectionOutput{}, nil
+					},
+				}),
+				regions:            []string{"us-east-1"},
+				desiredState:       DesiredStateUnprotected,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(10),
 			},
 			args: args{
 				ctx: context.Background(),
@@ -142,12 +223,13 @@ func TestManager_Apply(t *testing.T) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
 								{
-									LogGroupName:    aws.String("test-log-group"),
-									LogGroupArn:     aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
-									LogGroupClass:   types.LogGroupClassStandard,
-									CreationTime:    aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
-									RetentionInDays: aws.Int32(365),
-									StoredBytes:     aws.Int64(1024),
+									LogGroupName:              aws.String("test-log-group"),
+									LogGroupArn:               aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
+									LogGroupClass:             types.LogGroupClassStandard,
+									CreationTime:              aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
+									RetentionInDays:           aws.Int32(365),
+									StoredBytes:               aws.Int64(1024),
+									DeletionProtectionEnabled: aws.Bool(false),
 								},
 							},
 						}
@@ -157,10 +239,11 @@ func TestManager_Apply(t *testing.T) {
 						return &cloudwatchlogs.PutRetentionPolicyOutput{}, nil
 					},
 				}),
-				regions:      []string{"us-east-1"},
-				desiredState: DesiredStateOneDay,
-				filterExpr:   nil,
-				sem:          semaphore.NewWeighted(10),
+				regions:            []string{"us-east-1"},
+				desiredState:       DesiredStateOneDay,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(10),
 			},
 			args: args{
 				ctx: context.Background(),
@@ -177,12 +260,13 @@ func TestManager_Apply(t *testing.T) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
 								{
-									LogGroupName:    aws.String("test-log-group"),
-									LogGroupArn:     aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
-									LogGroupClass:   types.LogGroupClassStandard,
-									CreationTime:    aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
-									RetentionInDays: aws.Int32(365),
-									StoredBytes:     aws.Int64(1024),
+									LogGroupName:              aws.String("test-log-group"),
+									LogGroupArn:               aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
+									LogGroupClass:             types.LogGroupClassStandard,
+									CreationTime:              aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
+									RetentionInDays:           aws.Int32(365),
+									StoredBytes:               aws.Int64(1024),
+									DeletionProtectionEnabled: aws.Bool(false),
 								},
 							},
 						}
@@ -192,10 +276,11 @@ func TestManager_Apply(t *testing.T) {
 						return nil, errors.New("error")
 					},
 				}),
-				regions:      []string{"us-east-1"},
-				desiredState: DesiredStateZero,
-				filterExpr:   nil,
-				sem:          semaphore.NewWeighted(10),
+				regions:            []string{"us-east-1"},
+				desiredState:       DesiredStateZero,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(10),
 			},
 			args: args{
 				ctx: context.Background(),
@@ -212,12 +297,13 @@ func TestManager_Apply(t *testing.T) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
 								{
-									LogGroupName:    aws.String("test-log-group"),
-									LogGroupArn:     aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
-									LogGroupClass:   types.LogGroupClassStandard,
-									CreationTime:    aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
-									RetentionInDays: aws.Int32(365),
-									StoredBytes:     aws.Int64(1024),
+									LogGroupName:              aws.String("test-log-group"),
+									LogGroupArn:               aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
+									LogGroupClass:             types.LogGroupClassStandard,
+									CreationTime:              aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
+									RetentionInDays:           aws.Int32(365),
+									StoredBytes:               aws.Int64(1024),
+									DeletionProtectionEnabled: aws.Bool(false),
 								},
 							},
 						}
@@ -227,10 +313,85 @@ func TestManager_Apply(t *testing.T) {
 						return nil, errors.New("error")
 					},
 				}),
-				regions:      []string{"us-east-1"},
-				desiredState: DesiredStateInfinite,
-				filterExpr:   nil,
-				sem:          semaphore.NewWeighted(10),
+				regions:            []string{"us-east-1"},
+				desiredState:       DesiredStateInfinite,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(10),
+			},
+			args: args{
+				ctx: context.Background(),
+				w:   io.Discard,
+			},
+			want:    0,
+			wantErr: true,
+		},
+		{
+			name: "put deletion protection enabled returns error",
+			fields: fields{
+				client: newMockClient(&mockClient{
+					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
+						out := &cloudwatchlogs.DescribeLogGroupsOutput{
+							LogGroups: []types.LogGroup{
+								{
+									LogGroupName:              aws.String("test-log-group"),
+									LogGroupArn:               aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
+									LogGroupClass:             types.LogGroupClassStandard,
+									CreationTime:              aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
+									RetentionInDays:           aws.Int32(365),
+									StoredBytes:               aws.Int64(1024),
+									DeletionProtectionEnabled: aws.Bool(false),
+								},
+							},
+						}
+						return out, nil
+					},
+					PutLogGroupDeletionProtectionFunc: func(_ context.Context, _ *cloudwatchlogs.PutLogGroupDeletionProtectionInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.PutLogGroupDeletionProtectionOutput, error) {
+						return nil, errors.New("error")
+					},
+				}),
+				regions:            []string{"us-east-1"},
+				desiredState:       DesiredStateProtected,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(10),
+			},
+			args: args{
+				ctx: context.Background(),
+				w:   io.Discard,
+			},
+			want:    0,
+			wantErr: true,
+		},
+		{
+			name: "put deletion protection disabled returns error",
+			fields: fields{
+				client: newMockClient(&mockClient{
+					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
+						out := &cloudwatchlogs.DescribeLogGroupsOutput{
+							LogGroups: []types.LogGroup{
+								{
+									LogGroupName:              aws.String("test-log-group"),
+									LogGroupArn:               aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
+									LogGroupClass:             types.LogGroupClassStandard,
+									CreationTime:              aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
+									RetentionInDays:           aws.Int32(365),
+									StoredBytes:               aws.Int64(1024),
+									DeletionProtectionEnabled: aws.Bool(false),
+								},
+							},
+						}
+						return out, nil
+					},
+					PutLogGroupDeletionProtectionFunc: func(_ context.Context, _ *cloudwatchlogs.PutLogGroupDeletionProtectionInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.PutLogGroupDeletionProtectionOutput, error) {
+						return nil, errors.New("error")
+					},
+				}),
+				regions:            []string{"us-east-1"},
+				desiredState:       DesiredStateUnprotected,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(10),
 			},
 			args: args{
 				ctx: context.Background(),
@@ -247,12 +408,13 @@ func TestManager_Apply(t *testing.T) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
 								{
-									LogGroupName:    aws.String("test-log-group"),
-									LogGroupArn:     aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
-									LogGroupClass:   types.LogGroupClassStandard,
-									CreationTime:    aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
-									RetentionInDays: aws.Int32(365),
-									StoredBytes:     aws.Int64(1024),
+									LogGroupName:              aws.String("test-log-group"),
+									LogGroupArn:               aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
+									LogGroupClass:             types.LogGroupClassStandard,
+									CreationTime:              aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
+									RetentionInDays:           aws.Int32(365),
+									StoredBytes:               aws.Int64(1024),
+									DeletionProtectionEnabled: aws.Bool(false),
 								},
 							},
 						}
@@ -262,10 +424,11 @@ func TestManager_Apply(t *testing.T) {
 						return nil, errors.New("error")
 					},
 				}),
-				regions:      []string{"us-east-1"},
-				desiredState: DesiredStateOneDay,
-				filterExpr:   nil,
-				sem:          semaphore.NewWeighted(10),
+				regions:            []string{"us-east-1"},
+				desiredState:       DesiredStateOneDay,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(10),
 			},
 			args: args{
 				ctx: context.Background(),
@@ -282,20 +445,22 @@ func TestManager_Apply(t *testing.T) {
 						out := &cloudwatchlogs.DescribeLogGroupsOutput{
 							LogGroups: []types.LogGroup{
 								{
-									LogGroupName:    aws.String("test-log-group-1"),
-									LogGroupArn:     aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group-1"),
-									LogGroupClass:   types.LogGroupClassStandard,
-									CreationTime:    aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
-									RetentionInDays: aws.Int32(365),
-									StoredBytes:     aws.Int64(1024),
+									LogGroupName:              aws.String("test-log-group-1"),
+									LogGroupArn:               aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group-1"),
+									LogGroupClass:             types.LogGroupClassStandard,
+									CreationTime:              aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
+									RetentionInDays:           aws.Int32(365),
+									StoredBytes:               aws.Int64(1024),
+									DeletionProtectionEnabled: aws.Bool(false),
 								},
 								{
-									LogGroupName:    aws.String("test-log-group-2"),
-									LogGroupArn:     aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group-2"),
-									LogGroupClass:   types.LogGroupClassStandard,
-									CreationTime:    aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
-									RetentionInDays: aws.Int32(7),
-									StoredBytes:     aws.Int64(2048),
+									LogGroupName:              aws.String("test-log-group-2"),
+									LogGroupArn:               aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group-2"),
+									LogGroupClass:             types.LogGroupClassStandard,
+									CreationTime:              aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
+									RetentionInDays:           aws.Int32(7),
+									StoredBytes:               aws.Int64(2048),
+									DeletionProtectionEnabled: aws.Bool(false),
 								},
 							},
 						}
@@ -305,10 +470,11 @@ func TestManager_Apply(t *testing.T) {
 						return &cloudwatchlogs.DeleteLogGroupOutput{}, nil
 					},
 				}),
-				regions:      []string{"us-east-1"},
-				desiredState: DesiredStateZero,
-				filterExpr:   nil,
-				sem:          semaphore.NewWeighted(10),
+				regions:            []string{"us-east-1"},
+				desiredState:       DesiredStateZero,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(10),
 			},
 			args: args{
 				ctx: context.Background(),
@@ -325,6 +491,7 @@ func TestManager_Apply(t *testing.T) {
 				regions:            tt.fields.regions,
 				desiredState:       tt.fields.desiredState,
 				desiredStateNative: tt.fields.desiredStateNative,
+				deletionProtection: tt.fields.deletionProtection,
 				filterExpr:         tt.fields.filterExpr,
 				sem:                tt.fields.sem,
 			}

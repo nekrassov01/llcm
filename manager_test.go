@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/google/go-cmp/cmp"
 	"golang.org/x/sync/semaphore"
 )
@@ -23,11 +24,12 @@ func TestNewManager(t *testing.T) {
 				client: &Client{},
 			},
 			want: &Manager{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: -9999,
-				filterExpr:   nil,
-				sem:          semaphore.NewWeighted(NumWorker),
+				client:             &Client{},
+				regions:            DefaultRegions,
+				desiredState:       -1,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(NumWorker),
 			},
 		},
 		{
@@ -36,11 +38,12 @@ func TestNewManager(t *testing.T) {
 				client: nil,
 			},
 			want: &Manager{
-				client:       nil,
-				regions:      DefaultRegions,
-				desiredState: -9999,
-				filterExpr:   nil,
-				sem:          semaphore.NewWeighted(NumWorker),
+				client:             nil,
+				regions:            DefaultRegions,
+				desiredState:       -1,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(NumWorker),
 			},
 		},
 	}
@@ -59,6 +62,7 @@ func TestManager_SetRegion(t *testing.T) {
 		regions            []string
 		desiredState       DesiredState
 		desiredStateNative *int32
+		deletionProtection *bool
 		filterExpr         filterExpr
 		sem                *semaphore.Weighted
 	}
@@ -74,11 +78,12 @@ func TestManager_SetRegion(t *testing.T) {
 		{
 			name: "valid regions",
 			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 1,
-				filterExpr:   nil,
-				sem:          semaphore.NewWeighted(NumWorker),
+				client:             &Client{},
+				regions:            DefaultRegions,
+				desiredState:       1,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
 				regions: []string{"us-west-1", "eu-central-1"},
@@ -88,11 +93,12 @@ func TestManager_SetRegion(t *testing.T) {
 		{
 			name: "empty regions",
 			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 1,
-				filterExpr:   nil,
-				sem:          semaphore.NewWeighted(NumWorker),
+				client:             &Client{},
+				regions:            DefaultRegions,
+				desiredState:       1,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
 				regions: []string{},
@@ -102,11 +108,12 @@ func TestManager_SetRegion(t *testing.T) {
 		{
 			name: "nil regions",
 			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 1,
-				filterExpr:   nil,
-				sem:          semaphore.NewWeighted(NumWorker),
+				client:             &Client{},
+				regions:            DefaultRegions,
+				desiredState:       1,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
 				regions: nil,
@@ -116,11 +123,12 @@ func TestManager_SetRegion(t *testing.T) {
 		{
 			name: "with unsupported region",
 			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 1,
-				filterExpr:   nil,
-				sem:          semaphore.NewWeighted(NumWorker),
+				client:             &Client{},
+				regions:            DefaultRegions,
+				desiredState:       1,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
 				regions: []string{"us-west-1", "invalid-region"},
@@ -130,11 +138,12 @@ func TestManager_SetRegion(t *testing.T) {
 		{
 			name: "with duplicate regions",
 			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 1,
-				filterExpr:   nil,
-				sem:          semaphore.NewWeighted(NumWorker),
+				client:             &Client{},
+				regions:            DefaultRegions,
+				desiredState:       1,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
 				regions: []string{"us-west-1", "us-west-1"},
@@ -144,11 +153,12 @@ func TestManager_SetRegion(t *testing.T) {
 		{
 			name: "with uppercase regions",
 			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 1,
-				filterExpr:   nil,
-				sem:          semaphore.NewWeighted(NumWorker),
+				client:             &Client{},
+				regions:            DefaultRegions,
+				desiredState:       1,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
 				regions: []string{"US-WEST-1", "eu-central-1"},
@@ -158,11 +168,12 @@ func TestManager_SetRegion(t *testing.T) {
 		{
 			name: "default regions",
 			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 1,
-				filterExpr:   nil,
-				sem:          semaphore.NewWeighted(NumWorker),
+				client:             &Client{},
+				regions:            DefaultRegions,
+				desiredState:       1,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
 				regions: DefaultRegions,
@@ -172,11 +183,12 @@ func TestManager_SetRegion(t *testing.T) {
 		{
 			name: "one region",
 			fields: fields{
-				client:       &Client{},
-				regions:      DefaultRegions,
-				desiredState: 1,
-				filterExpr:   nil,
-				sem:          semaphore.NewWeighted(NumWorker),
+				client:             &Client{},
+				regions:            DefaultRegions,
+				desiredState:       1,
+				deletionProtection: aws.Bool(false),
+				filterExpr:         nil,
+				sem:                semaphore.NewWeighted(NumWorker),
 			},
 			args: args{
 				regions: []string{"us-east-1"},
@@ -230,6 +242,20 @@ func TestManager_SetDesiredState(t *testing.T) {
 			},
 			args: args{
 				desired: DesiredStateOneDay.String(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "deletion protection",
+			fields: fields{
+				client:       &Client{},
+				regions:      DefaultRegions,
+				desiredState: 0,
+				filterExpr:   nil,
+				sem:          semaphore.NewWeighted(NumWorker),
+			},
+			args: args{
+				desired: DesiredStateProtected.String(),
 			},
 			wantErr: false,
 		},
@@ -311,6 +337,20 @@ func TestManager_SetFilter(t *testing.T) {
 				filter: ``,
 			},
 			wantErr: false,
+		},
+		{
+			name: "error",
+			fields: fields{
+				client:       &Client{},
+				regions:      DefaultRegions,
+				desiredState: 1,
+				filterExpr:   nil,
+				sem:          semaphore.NewWeighted(NumWorker),
+			},
+			args: args{
+				filter: `[`,
+			},
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {

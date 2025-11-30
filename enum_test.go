@@ -367,6 +367,16 @@ func TestDesiredState_String(t *testing.T) {
 			want: "infinite",
 		},
 		{
+			name: "protect",
+			tr:   DesiredStateProtected,
+			want: "protect",
+		},
+		{
+			name: "unprotect",
+			tr:   DesiredStateUnprotected,
+			want: "unprotect",
+		},
+		{
 			name: "unknown",
 			tr:   DesiredState(12345),
 			want: "",
@@ -536,6 +546,18 @@ func TestDesiredState_MarshalJSON(t *testing.T) {
 			name:    "infinite",
 			tr:      DesiredStateInfinite,
 			want:    []byte(`"infinite"`),
+			wantErr: false,
+		},
+		{
+			name:    "protect",
+			tr:      DesiredStateProtected,
+			want:    []byte(`"protect"`),
+			wantErr: false,
+		},
+		{
+			name:    "unprotect",
+			tr:      DesiredStateUnprotected,
+			want:    []byte(`"unprotect"`),
 			wantErr: false,
 		},
 		{
@@ -759,6 +781,22 @@ func TestParseDesiredState(t *testing.T) {
 				s: "infinite",
 			},
 			want:    DesiredStateInfinite,
+			wantErr: false,
+		},
+		{
+			name: "protect",
+			args: args{
+				s: "protect",
+			},
+			want:    DesiredStateProtected,
+			wantErr: false,
+		},
+		{
+			name: "unprotect",
+			args: args{
+				s: "unprotect",
+			},
+			want:    DesiredStateUnprotected,
 			wantErr: false,
 		},
 		{

@@ -79,7 +79,7 @@ func ParseOutputType(s string) (OutputType, error) {
 type DesiredState int32
 
 const (
-	DesiredStateNone           DesiredState = -9999 // A value meaning none.
+	DesiredStateNone           DesiredState = -1    // A value meaning none.
 	DesiredStateZero           DesiredState = 0     // A value meaning delete the log group.
 	DesiredStateOneDay         DesiredState = 1     // A value meaning retain the log group for one day.
 	DesiredStateThreeDays      DesiredState = 3     // A value meaning retain the log group for three days.
@@ -104,6 +104,8 @@ const (
 	DesiredStateNineYears      DesiredState = 3288  // A value meaning retain the log group for nine years.
 	DesiredStateTenYears       DesiredState = 3653  // A value meaning retain the log group for ten years.
 	DesiredStateInfinite       DesiredState = 9999  // A value meaning retain the log group infinity.
+	DesiredStateProtected      DesiredState = 10000 // A value meaning protect the log group.
+	DesiredStateUnprotected    DesiredState = 10001 // A value meaning unprotect the log group.
 )
 
 // String returns the string representation of the DesiredState.
@@ -159,6 +161,10 @@ func (t DesiredState) String() string {
 		return "10years"
 	case DesiredStateInfinite:
 		return "infinite"
+	case DesiredStateProtected:
+		return "protect"
+	case DesiredStateUnprotected:
+		return "unprotect"
 	default:
 		return ""
 	}
@@ -220,6 +226,10 @@ func ParseDesiredState(s string) (DesiredState, error) {
 		return DesiredStateTenYears, nil
 	case DesiredStateInfinite.String():
 		return DesiredStateInfinite, nil
+	case DesiredStateProtected.String():
+		return DesiredStateProtected, nil
+	case DesiredStateUnprotected.String():
+		return DesiredStateUnprotected, nil
 	default:
 		return DesiredStateNone, fmt.Errorf("unsupported desired state: %q", s)
 	}

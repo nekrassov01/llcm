@@ -90,42 +90,34 @@ func mustUnixMilli(s string) int64 {
 	return t.UnixMilli()
 }
 
-// errData is a test data for ListEntryData of error case.
-var errData = ListEntryData{
-	header: previewEntryDataHeader,
-	entries: []*ListEntry{
-		{
-			entry: &entry{},
-		},
-	},
-}
-
 // listEntryData is a test data for ListEntryData.
 var listEntryData = ListEntryData{
 	header: listEntryDataHeader,
 	entries: []*ListEntry{
 		{
 			entry: &entry{
-				LogGroupName:    "group0",
-				Region:          "ap-northeast-1",
-				Class:           types.LogGroupClassStandard,
-				CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
-				ElapsedDays:     90,
-				RetentionInDays: 30,
-				StoredBytes:     1024,
-				name:            aws.String("group0"),
+				LogGroupName:       "group0",
+				Region:             "ap-northeast-1",
+				Class:              types.LogGroupClassStandard,
+				CreatedAt:          mustTime("2025-01-01T00:00:00Z"),
+				DeletionProtection: false,
+				ElapsedDays:        90,
+				RetentionInDays:    30,
+				StoredBytes:        1024,
+				name:               aws.String("group0"),
 			},
 		},
 		{
 			entry: &entry{
-				LogGroupName:    "group1",
-				Region:          "ap-northeast-2",
-				Class:           types.LogGroupClassInfrequentAccess,
-				CreatedAt:       mustTime("2024-04-01T00:00:00Z"),
-				ElapsedDays:     365,
-				RetentionInDays: 30,
-				StoredBytes:     2048,
-				name:            aws.String("group1"),
+				LogGroupName:       "group1",
+				Region:             "ap-northeast-2",
+				Class:              types.LogGroupClassInfrequentAccess,
+				CreatedAt:          mustTime("2024-04-01T00:00:00Z"),
+				DeletionProtection: true,
+				ElapsedDays:        365,
+				RetentionInDays:    30,
+				StoredBytes:        2048,
+				name:               aws.String("group1"),
 			},
 		},
 	},
@@ -142,14 +134,15 @@ var previewEntryData = PreviewEntryData{
 			ReducibleBytes:  0,
 			RemainingBytes:  0,
 			entry: &entry{
-				LogGroupName:    "group0",
-				Region:          "ap-northeast-1",
-				Class:           types.LogGroupClassStandard,
-				CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
-				ElapsedDays:     90,
-				RetentionInDays: 30,
-				StoredBytes:     1024,
-				name:            aws.String("group0"),
+				LogGroupName:       "group0",
+				Region:             "ap-northeast-1",
+				Class:              types.LogGroupClassStandard,
+				CreatedAt:          mustTime("2025-01-01T00:00:00Z"),
+				DeletionProtection: false,
+				ElapsedDays:        90,
+				RetentionInDays:    30,
+				StoredBytes:        1024,
+				name:               aws.String("group0"),
 			},
 		},
 		{
@@ -159,15 +152,36 @@ var previewEntryData = PreviewEntryData{
 			ReducibleBytes:  100,
 			RemainingBytes:  100,
 			entry: &entry{
-				LogGroupName:    "group1",
-				Region:          "ap-northeast-2",
-				Class:           types.LogGroupClassInfrequentAccess,
-				CreatedAt:       mustTime("2024-04-01T00:00:00Z"),
-				ElapsedDays:     365,
-				RetentionInDays: 30,
-				StoredBytes:     2048,
-				name:            aws.String("group1"),
+				LogGroupName:       "group1",
+				Region:             "ap-northeast-2",
+				Class:              types.LogGroupClassInfrequentAccess,
+				CreatedAt:          mustTime("2024-04-01T00:00:00Z"),
+				DeletionProtection: true,
+				ElapsedDays:        365,
+				RetentionInDays:    30,
+				StoredBytes:        2048,
+				name:               aws.String("group1"),
 			},
+		},
+	},
+}
+
+// errListEntryData is a test data for ListEntryData of error case.
+var errListEntryData = ListEntryData{
+	header: previewEntryDataHeader,
+	entries: []*ListEntry{
+		{
+			entry: &entry{},
+		},
+	},
+}
+
+// errPreviewEntryData is a test data for PreviewEntryData of error case.
+var errPreviewEntryData = PreviewEntryData{
+	header: listEntryDataHeader,
+	entries: []*PreviewEntry{
+		{
+			entry: &entry{},
 		},
 	},
 }

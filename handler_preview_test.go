@@ -551,6 +551,116 @@ func TestManager_Preview(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "deletion protection enabled",
+			fields: fields{
+				client: newMockClient(&mockClient{
+					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
+						out := &cloudwatchlogs.DescribeLogGroupsOutput{
+							LogGroups: []types.LogGroup{
+								{
+									LogGroupName:    aws.String("test-log-group"),
+									LogGroupArn:     aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
+									LogGroupClass:   types.LogGroupClassStandard,
+									CreationTime:    aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
+									RetentionInDays: aws.Int32(int32(DesiredStateThreeMonths)),
+									StoredBytes:     aws.Int64(900),
+								},
+							},
+						}
+						return out, nil
+					},
+				}),
+				regions:      []string{"us-east-1"},
+				desiredState: DesiredStateProtected,
+				filterExpr:   nil,
+				sem:          semaphore.NewWeighted(10),
+			},
+			args: args{
+				ctx: context.Background(),
+			},
+			want: &PreviewEntryData{
+				TotalStoredBytes:    900,
+				TotalReducibleBytes: 0,
+				TotalRemainingBytes: 900,
+				header:              previewEntryDataHeader,
+				entries: []*PreviewEntry{
+					{
+						entry: &entry{
+							LogGroupName:    "test-log-group",
+							Region:          "us-east-1",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
+							ElapsedDays:     90,
+							RetentionInDays: int64(DesiredStateThreeMonths),
+							StoredBytes:     900,
+							name:            aws.String("test-log-group"),
+						},
+						BytesPerDay:     10,
+						DesiredState:    int64(DesiredStateProtected),
+						ReductionInDays: 0,
+						ReducibleBytes:  0,
+						RemainingBytes:  900,
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "deletion protection disabled",
+			fields: fields{
+				client: newMockClient(&mockClient{
+					DescribeLogGroupsFunc: func(_ context.Context, _ *cloudwatchlogs.DescribeLogGroupsInput, _ ...func(*cloudwatchlogs.Options)) (*cloudwatchlogs.DescribeLogGroupsOutput, error) {
+						out := &cloudwatchlogs.DescribeLogGroupsOutput{
+							LogGroups: []types.LogGroup{
+								{
+									LogGroupName:    aws.String("test-log-group"),
+									LogGroupArn:     aws.String("arn:aws:logs:us-east-1:123456789012:log-group:test-log-group"),
+									LogGroupClass:   types.LogGroupClassStandard,
+									CreationTime:    aws.Int64(mustUnixMilli("2025-01-01T00:00:00Z")),
+									RetentionInDays: aws.Int32(int32(DesiredStateThreeMonths)),
+									StoredBytes:     aws.Int64(900),
+								},
+							},
+						}
+						return out, nil
+					},
+				}),
+				regions:      []string{"us-east-1"},
+				desiredState: DesiredStateUnprotected,
+				filterExpr:   nil,
+				sem:          semaphore.NewWeighted(10),
+			},
+			args: args{
+				ctx: context.Background(),
+			},
+			want: &PreviewEntryData{
+				TotalStoredBytes:    900,
+				TotalReducibleBytes: 0,
+				TotalRemainingBytes: 900,
+				header:              previewEntryDataHeader,
+				entries: []*PreviewEntry{
+					{
+						entry: &entry{
+							LogGroupName:    "test-log-group",
+							Region:          "us-east-1",
+							Class:           types.LogGroupClassStandard,
+							CreatedAt:       mustTime("2025-01-01T00:00:00Z"),
+							ElapsedDays:     90,
+							RetentionInDays: int64(DesiredStateThreeMonths),
+							StoredBytes:     900,
+							name:            aws.String("test-log-group"),
+						},
+						BytesPerDay:     10,
+						DesiredState:    int64(DesiredStateUnprotected),
+						ReductionInDays: 0,
+						ReducibleBytes:  0,
+						RemainingBytes:  900,
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
 			name: "desired zero retention",
 			fields: fields{
 				client: newMockClient(&mockClient{

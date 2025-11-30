@@ -32,14 +32,15 @@ type Entry interface {
 
 // entry represents the base entry for log group.
 type entry struct {
-	LogGroupName    string              // The name of the log group.
-	Region          string              // The region that the log group belongs to.
-	Class           types.LogGroupClass // The class of the log group.
-	CreatedAt       time.Time           // The time when the log group was created.
-	ElapsedDays     int64               // The number of days elapsed since the log group was created.
-	RetentionInDays int64               // The retention days of the log group.
-	StoredBytes     int64               // The stored bytes of the log group.
-	name            *string             // The native type of LogGroupName.
+	LogGroupName       string              // The name of the log group.
+	Region             string              // The region that the log group belongs to.
+	Class              types.LogGroupClass // The class of the log group.
+	CreatedAt          time.Time           // The time when the log group was created.
+	DeletionProtection bool                // Whether the log group is protected to deletion.
+	ElapsedDays        int64               // The number of days elapsed since the log group was created.
+	RetentionInDays    int64               // The retention days of the log group.
+	StoredBytes        int64               // The stored bytes of the log group.
+	name               *string             // The native type of LogGroupName.
 }
 
 // Name returns the name of the entry.
@@ -55,6 +56,8 @@ func (e *entry) GetField(key string) (any, error) {
 		return e.LogGroupName, nil
 	case "class":
 		return string(e.Class), nil
+	case "protected":
+		return e.DeletionProtection, nil
 	case "elapsed":
 		return e.ElapsedDays, nil
 	case "retention":
@@ -86,6 +89,7 @@ func (e *ListEntry) toInput() []any {
 		e.Region,
 		e.Class,
 		e.CreatedAt.Format(time.RFC3339),
+		e.DeletionProtection,
 		e.ElapsedDays,
 		e.RetentionInDays,
 		e.StoredBytes,
@@ -99,6 +103,7 @@ func (e *ListEntry) toTSV() []string {
 		e.Region,
 		string(e.Class),
 		e.CreatedAt.Format(time.RFC3339),
+		strconv.FormatBool(e.DeletionProtection),
 		strconv.FormatInt(e.ElapsedDays, 10),
 		strconv.FormatInt(e.RetentionInDays, 10),
 		strconv.FormatInt(e.StoredBytes, 10),
@@ -134,6 +139,7 @@ func (e *PreviewEntry) toInput() []any {
 		e.Region,
 		e.Class,
 		e.CreatedAt.Format(time.RFC3339),
+		e.DeletionProtection,
 		e.ElapsedDays,
 		e.RetentionInDays,
 		e.StoredBytes,
@@ -152,6 +158,7 @@ func (e *PreviewEntry) toTSV() []string {
 		e.Region,
 		string(e.Class),
 		e.CreatedAt.Format(time.RFC3339),
+		strconv.FormatBool(e.DeletionProtection),
 		strconv.FormatInt(e.ElapsedDays, 10),
 		strconv.FormatInt(e.RetentionInDays, 10),
 		strconv.FormatInt(e.StoredBytes, 10),
@@ -201,6 +208,10 @@ func (e *PreviewEntry) setBytesPerDay() {
 
 // setReductionInDays sets the expected reduction in days after action.
 func (e *PreviewEntry) setReductionInDays() {
+	if e.DesiredState > 9999 {
+		e.ReductionInDays = 0
+		return
+	}
 	if e.StoredBytes <= 0 || e.BytesPerDay <= 0 {
 		e.ReductionInDays = 0
 		return
@@ -232,6 +243,10 @@ func (e *PreviewEntry) setReductionInDays() {
 
 // setReducibleBytes sets the expected reducible bytes after action.
 func (e *PreviewEntry) setReducibleBytes() {
+	if e.DesiredState > 9999 {
+		e.ReducibleBytes = 0
+		return
+	}
 	if e.StoredBytes <= 0 || e.BytesPerDay <= 0 || e.ReductionInDays <= 0 || e.DesiredState == int64(DesiredStateInfinite) {
 		e.ReducibleBytes = 0
 		return
