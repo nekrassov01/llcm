@@ -140,10 +140,10 @@ llcm preview --desired 1year --filter 'name =~ "^/aws/lambda/.*" && bytes != 0 &
 # The following outputs are obtained
 | Name                 | Region         | Class    | CreatedAt                 | DeletionProtection | ElapsedDays | RetentionInDays | StoredBytes  | BytesPerDay | DesiredState | ReductionInDays | ReducibleBytes | RemainingBytes |
 | -------------------- | -------------- | -------- | ------------------------- | ------------------ | ----------- | --------------- | ------------ | ----------- | ------------ | --------------- | -------------- | -------------- |
-| /aws/lambda/tokyo-1  | ap-northeast-1 | STANDARD | 2019-04-15T21:50:12+09:00 | false              | 2107        | 731             | 161094000389 | 220374829   | 365          | 366             | 80657187414    | 80436812975    |
-| /aws/lambda/tokyo-2  | ap-northeast-1 | STANDARD | 2020-08-26T23:45:50+09:00 | false              | 1608        | 731             | 30273686566  | 41414071    | 365          | 366             | 15157549986    | 15116136580    |
-| /aws/lambda/oregon-1 | us-west-2      | STANDARD | 2020-08-27T14:34:54+09:00 | false              | 1607        | 731             | 28578246408  | 39094728    | 365          | 366             | 14308670448    | 14269575960    |
-| /aws/lambda/oregon-2 | us-west-2      | STANDARD | 2020-08-26T23:48:51+09:00 | false              | 1608        | 731             | 22822519036  | 31220956    | 365          | 366             | 11426869896    | 11395649140    |
+| /aws/lambda/tokyo-1  | ap-northeast-1 | STANDARD | 2019-04-15T21:50:12+09:00 | false              | 2107        | 731             | 161094000389 | 220374829   | 1year        | 366             | 80657187414    | 80436812975    |
+| /aws/lambda/tokyo-2  | ap-northeast-1 | STANDARD | 2020-08-26T23:45:50+09:00 | false              | 1608        | 731             | 30273686566  | 41414071    | 1year        | 366             | 15157549986    | 15116136580    |
+| /aws/lambda/oregon-1 | us-west-2      | STANDARD | 2020-08-27T14:34:54+09:00 | false              | 1607        | 731             | 28578246408  | 39094728    | 1year        | 366             | 14308670448    | 14269575960    |
+| /aws/lambda/oregon-2 | us-west-2      | STANDARD | 2020-08-26T23:48:51+09:00 | false              | 1608        | 731             | 22822519036  | 31220956    | 1year        | 366             | 11426869896    | 11395649140    |
 ...
 ```
 
