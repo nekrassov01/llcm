@@ -114,11 +114,11 @@ func (e *ListEntry) toTSV() []string {
 type PreviewEntry struct {
 	*entry
 
-	BytesPerDay     int64 // The bytes per day of the log group.
-	DesiredState    int64 // The desired state of the log group.
-	ReductionInDays int64 // The number of days to be reduced after the action.
-	ReducibleBytes  int64 // The number of bytes that can be reduced after the action.
-	RemainingBytes  int64 // The number of bytes that remain after the action.
+	BytesPerDay     int64        // The bytes per day of the log group.
+	DesiredState    DesiredState // The desired state of the log group.
+	ReductionInDays int64        // The number of days to be reduced after the action.
+	ReducibleBytes  int64        // The number of bytes that can be reduced after the action.
+	RemainingBytes  int64        // The number of bytes that remain after the action.
 }
 
 // DataSet returns map for plotting the chart.
@@ -126,7 +126,7 @@ func (e *PreviewEntry) DataSet() map[string]int64 {
 	return map[string]int64{
 		retentionInDaysLabel: e.RetentionInDays,
 		storedBytesLabel:     e.StoredBytes,
-		desiredStateLabel:    e.DesiredState,
+		desiredStateLabel:    int64(e.DesiredState),
 		reducibleBytesLabel:  e.ReducibleBytes,
 		remainingBytesLabel:  e.RemainingBytes,
 	}
@@ -144,7 +144,7 @@ func (e *PreviewEntry) toInput() []any {
 		e.RetentionInDays,
 		e.StoredBytes,
 		e.BytesPerDay,
-		e.DesiredState,
+		DesiredState(e.DesiredState).String(),
 		e.ReductionInDays,
 		e.ReducibleBytes,
 		e.RemainingBytes,
@@ -163,7 +163,7 @@ func (e *PreviewEntry) toTSV() []string {
 		strconv.FormatInt(e.RetentionInDays, 10),
 		strconv.FormatInt(e.StoredBytes, 10),
 		strconv.FormatInt(e.BytesPerDay, 10),
-		strconv.FormatInt(e.DesiredState, 10),
+		DesiredState(e.DesiredState).String(),
 		strconv.FormatInt(e.ReductionInDays, 10),
 		strconv.FormatInt(e.ReducibleBytes, 10),
 		strconv.FormatInt(e.RemainingBytes, 10),
@@ -181,7 +181,7 @@ func (e *PreviewEntry) simulate(desired DesiredState) {
 
 // setDesiredState sets the desired state for the log group.
 func (e *PreviewEntry) setDesiredState(desired DesiredState) {
-	e.DesiredState = int64(desired)
+	e.DesiredState = desired
 }
 
 // setBytesPerDay sets the bytes per day for the log group.
@@ -216,11 +216,11 @@ func (e *PreviewEntry) setReductionInDays() {
 		e.ReductionInDays = 0
 		return
 	}
-	if e.DesiredState == int64(DesiredStateInfinite) {
+	if e.DesiredState == DesiredStateInfinite {
 		e.ReductionInDays = 0
 		return
 	}
-	if e.DesiredState == int64(DesiredStateZero) {
+	if e.DesiredState == DesiredStateZero {
 		if e.RetentionInDays > int64(DesiredStateZero) && e.RetentionInDays < int64(DesiredStateInfinite) {
 			e.ReductionInDays = e.RetentionInDays
 		} else {
@@ -234,8 +234,8 @@ func (e *PreviewEntry) setReductionInDays() {
 		return
 	}
 	retentionInDays := min(e.RetentionInDays, e.ElapsedDays)
-	if retentionInDays > e.DesiredState {
-		e.ReductionInDays = retentionInDays - e.DesiredState
+	if retentionInDays > int64(e.DesiredState) {
+		e.ReductionInDays = retentionInDays - int64(e.DesiredState)
 		return
 	}
 	e.ReductionInDays = 0
@@ -247,11 +247,11 @@ func (e *PreviewEntry) setReducibleBytes() {
 		e.ReducibleBytes = 0
 		return
 	}
-	if e.StoredBytes <= 0 || e.BytesPerDay <= 0 || e.ReductionInDays <= 0 || e.DesiredState == int64(DesiredStateInfinite) {
+	if e.StoredBytes <= 0 || e.BytesPerDay <= 0 || e.ReductionInDays <= 0 || e.DesiredState == DesiredStateInfinite {
 		e.ReducibleBytes = 0
 		return
 	}
-	if e.DesiredState == int64(DesiredStateZero) {
+	if e.DesiredState == DesiredStateZero {
 		e.ReducibleBytes = e.StoredBytes
 		return
 	}

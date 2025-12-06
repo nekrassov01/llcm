@@ -147,7 +147,7 @@ var previewEntryData = PreviewEntryData{
 		},
 		{
 			BytesPerDay:     100,
-			DesiredState:    100,
+			DesiredState:    9999,
 			ReductionInDays: 100,
 			ReducibleBytes:  100,
 			RemainingBytes:  100,
