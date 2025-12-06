@@ -145,6 +145,10 @@ func getBarSubtitle[E Entry](entries []E) string {
 			subtitle = "Desired state: Delete log groups"
 		case 9999:
 			subtitle = "Desired state: Delete retention policy"
+		case 10000:
+			subtitle = "Desired state: Enable deletion protection - Keeping current retention"
+		case 10001:
+			subtitle = "Desired state: Disable deletion protection - Keeping current retention"
 		default:
 			subtitle = fmt.Sprintf("Desired state: Change retention to %d days", d)
 		}
