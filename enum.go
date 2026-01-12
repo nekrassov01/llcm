@@ -99,7 +99,7 @@ const (
 	DesiredStateThreeYears     DesiredState = 1096  // A value meaning retain the log group for three years.
 	DesiredStateFiveYears      DesiredState = 1827  // A value meaning retain the log group for five years.
 	DesiredStateSixYears       DesiredState = 2192  // A value meaning retain the log group for six years.
-	DesiredStateSevenYears     DesiredState = 255   // A value meaning retain the log group for seven years.
+	DesiredStateSevenYears     DesiredState = 2557  // A value meaning retain the log group for seven years.
 	DesiredStateEightYears     DesiredState = 2922  // A value meaning retain the log group for eight years.
 	DesiredStateNineYears      DesiredState = 3288  // A value meaning retain the log group for nine years.
 	DesiredStateTenYears       DesiredState = 3653  // A value meaning retain the log group for ten years.
