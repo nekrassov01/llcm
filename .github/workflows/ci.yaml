@@ -6,7 +6,9 @@ on:
       - master
     paths-ignore:
       - "README.md"
-      - ".github/**"
+      - .vscode/**"
+      - "_assets/**"
+      - "_examples/**"
     tags-ignore:
       - "v[0-9]+.[0-9]+.[0-9]+"
   pull_request:
@@ -15,11 +17,13 @@ on:
       - master
     paths-ignore:
       - "README.md"
-      - ".github/**"
+      - .vscode/**"
+      - "_assets/**"
+      - "_examples/**"
 permissions:
   contents: read
 jobs:
-  test:
+  ci:
     runs-on: ubuntu-slim
     steps:
       - name: Checkout
@@ -31,8 +35,6 @@ jobs:
         with:
           go-version: 1.25.4
           cache: false
-      - name: Build
-        run: go test -race -cover -v ./...
       - name: Run lint
         uses: golangci/golangci-lint-action@v8
         with:
@@ -42,10 +44,14 @@ jobs:
       - name: Run vulnerability check
         uses: golang/govulncheck-action@v1
         with:
-          go-version-input: 1.25.4
+          go-version-input: 1.25.5
           go-package: ./...
           cache: false
       - name: Run tests
         run: |
           git diff --cached --exit-code
-          go test -race -cover -v ./...
+          go test -race -cover -v ./... -coverprofile="cover.out" -covermode=atomic
+      - name: Upload coverage
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
