@@ -22,21 +22,18 @@ var logger = &log.Logger{}
 
 func newCmd(w, ew io.Writer) *cli.Command {
 	var (
-		withLevel  = log.WithLevel(slog.LevelInfo)
-		withLabel  = log.WithLabel("LLCM:")
-		withTime   = log.WithTime(true)
-		withStyle  = log.WithStyle(log.Style1())
-		withCaller = log.WithCaller(false)
+		withTime  = log.WithTime(true)
+		withStyle = log.WithStyle(log.Style1())
+		withLabel = log.WithLabel("LLCM:")
 	)
 
-	handler := log.NewCLIHandler(ew,
-		withLevel,
-		withLabel,
+	logger = log.NewLogger(log.NewCLIHandler(ew,
+		log.WithLevel(slog.LevelInfo),
+		log.WithCaller(false),
 		withTime,
 		withStyle,
-		withCaller,
-	)
-	logger = log.NewLogger(handler)
+		withLabel,
+	))
 
 	profile := &cli.StringFlag{
 		Name:    "profile",
@@ -123,23 +120,22 @@ func newCmd(w, ew io.Writer) *cli.Command {
 		}
 
 		// set logger options based on the log level
-		withLevel = log.WithLevel(level)
-		withCaller = log.WithCaller(level <= slog.LevelDebug)
-		handler = log.NewCLIHandler(ew,
-			withLevel,
-			withLabel,
-			withTime,
-			withStyle,
-			withCaller,
-		)
+		withLevel := log.WithLevel(level)
+		withCaller := log.WithCaller(level <= slog.LevelDebug)
 		logger = log.NewLogger(log.NewCLIHandler(ew,
 			withLevel,
-			log.WithLabel("SDK:"),
+			withCaller,
 			withTime,
 			withStyle,
-			withCaller,
+			withLabel,
 		))
-		cfg.Logger = sdk.NewLogger(handler)
+		cfg.Logger = sdk.NewLogger(log.NewCLIHandler(ew,
+			withLevel,
+			withCaller,
+			withTime,
+			withStyle,
+			log.WithLabel("SDK:"),
+		))
 		cfg.ClientLogMode = aws.LogRequest | aws.LogResponse | aws.LogRetries | aws.LogSigning | aws.LogDeprecatedUsage
 
 		// set aws config to the metadata
