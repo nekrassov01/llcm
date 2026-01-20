@@ -239,7 +239,7 @@ List of desired states and their assigned values. These values are used for prev
 | `3years`    | 1096           | A value meaning retain the log group for three years.     |
 | `5years`    | 1827           | A value meaning retain the log group for five years.      |
 | `6years`    | 2192           | A value meaning retain the log group for six years.       |
-| `7years`    | 255            | A value meaning retain the log group for seven years.     |
+| `7years`    | 2557           | A value meaning retain the log group for seven years.     |
 | `8years`    | 2922           | A value meaning retain the log group for eight years.     |
 | `9years`    | 3288           | A value meaning retain the log group for nine years.      |
 | `10years`   | 3653           | A value meaning retain the log group for ten years.       |
@@ -251,14 +251,14 @@ List of desired states and their assigned values. These values are used for prev
 
 List of keys that can be used with the filter method.
 
-| Key       | Value Type | Description                                      | Example                                                                    |
-| --------- | ---------- | ------------------------------------------------ | -------------------------------------------------------------------------- |
-| name      | string     | Log group name                                   | `name == "name1"` `name =~ '^/aws/lambda/.*'`                              |
-| class     | literal    | Log group class                                  | `class == "STANDARD"` `class != "INFREQUENT_ACCESS"` `class == "DELIVERY"` |
-| protected | bool       | Whether log group deletion protection is enabled | `protected == true` `protected == false`                                   |
-| elapsed   | int        | Number of days since the log group was created   | `elapsed > 365` `elapsed  >= 14`                                           |
-| retention | int        | Log group retention period                       | `retention == 90` `retention < 365`                                        |
-| bytes     | int        | Stored capacity of the log group                 | `bytes >= 1024` `bytes == 0`                                               |
+| Key                                          | Value Type | Description                                      | Example                                                                    |
+| -------------------------------------------- | ---------- | ------------------------------------------------ | -------------------------------------------------------------------------- |
+| `name` `Name` `LogGroupName`                 | string     | Log group name                                   | `name == "name1"` `name =~ '^/aws/lambda/.*'`                              |
+| `class` `Class` `LogGroupClass`              | literal    | Log group class                                  | `class == "STANDARD"` `class != "INFREQUENT_ACCESS"` `class == "DELIVERY"` |
+| `protected` `Protected` `DeletionProtection` | bool       | Whether log group deletion protection is enabled | `protected == true` `protected == false`                                   |
+| `elapsed` `Elapsed` `ElapsedDays`            | int        | Number of days since the log group was created   | `elapsed > 365` `elapsed  >= 14`                                           |
+| `retention` `Retention` `RetentionInDays`    | int        | Log group retention period                       | `retention == 90` `retention < 365`                                        |
+| `bytes` `Bytes` `StoredBytes`                | int        | Stored capacity of the log group                 | `bytes >= 1024` `bytes == 0`                                               |
 
 ## Moreover
 
