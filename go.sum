@@ -46,10 +46,10 @@ github.com/mattn/go-isatty v0.0.20 h1:xfD0iDuEKnDkl03q4limB+vH+GxLEtL/jb4xVJSWWE
 github.com/mattn/go-isatty v0.0.20/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
 github.com/mattn/go-runewidth v0.0.19 h1:v++JhqYnZuu5jSKrk9RbgF5v4CGUjqRfBm05byFGLdw=
 github.com/mattn/go-runewidth v0.0.19/go.mod h1:XBkDxAl56ILZc9knddidhrOlY5R/pDhgLpndooCuJAs=
-github.com/nekrassov01/filter v0.0.6 h1:Ypokjuv5Xad7RxYSG6zecmHFbZN7vvjseqNvnGr0KII=
-github.com/nekrassov01/filter v0.0.6/go.mod h1:Kv44YfYdoprrx3IxggwkA/DNoq6pvUkw7kxF4mSo79o=
-github.com/nekrassov01/logger v0.0.5 h1:6G6udHQnoKL2yz3ZuAfeIl1XrVlIwbbKx0v15/WR2Zo=
-github.com/nekrassov01/logger v0.0.5/go.mod h1:ANWGgpiCIkvr15Q3EB5LhmvQmychhW7Cu9BuV/Ka+Pk=
+github.com/nekrassov01/filter v0.0.8 h1:Jf8fmQOa1gsxxfDFxn9fV+mGshOMF5p0pdmdNE3JdeI=
+github.com/nekrassov01/filter v0.0.8/go.mod h1:SxUQmELI0fGkIsN8xhMoHd2jF6rx2XJM4vonvkjHZdo=
+github.com/nekrassov01/logger v0.0.6 h1:xoosZxWL1X6oGKKeEfggyvKkaIkdjK2RfLVU/ir5A2Y=
+github.com/nekrassov01/logger v0.0.6/go.mod h1:ANWGgpiCIkvr15Q3EB5LhmvQmychhW7Cu9BuV/Ka+Pk=
 github.com/nekrassov01/mintab v0.0.57 h1:nerSHtmxMDu1gnyUlUD0ZB3hu6n0ce18O/9xyAQI7ZA=
 github.com/nekrassov01/mintab v0.0.57/go.mod h1:jIZGBd3fLAf3v/8TG66HDJ3hPiYQ+HFuyg7+OV6GRoQ=
 github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c h1:+mdjkGKdHQG3305AYmdv1U2eRNDiU2ErMBj1gwrq8eQ=

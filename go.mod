@@ -9,8 +9,8 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/go-echarts/go-echarts/v2 v2.6.7
 	github.com/google/go-cmp v0.7.0
-	github.com/nekrassov01/filter v0.0.6
-	github.com/nekrassov01/logger v0.0.5
+	github.com/nekrassov01/filter v0.0.8
+	github.com/nekrassov01/logger v0.0.6
 	github.com/nekrassov01/mintab v0.0.57
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/urfave/cli/v3 v3.6.1
