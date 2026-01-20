@@ -52,17 +52,17 @@ func (e *entry) Name() string {
 // This implements the filer.Target interface.
 func (e *entry) GetField(key string) (any, error) {
 	switch key {
-	case "name":
+	case "name", "Name", "LogGroupName":
 		return e.LogGroupName, nil
-	case "class":
+	case "class", "Class", "LogGroupClass":
 		return string(e.Class), nil
-	case "protected":
+	case "protected", "Protected", "DeletionProtection":
 		return e.DeletionProtection, nil
-	case "elapsed":
+	case "elapsed", "Elapsed", "ElapsedDays":
 		return e.ElapsedDays, nil
-	case "retention":
+	case "retention", "Retention", "RetentionInDays":
 		return e.RetentionInDays, nil
-	case "bytes":
+	case "bytes", "Bytes", "StoredBytes":
 		return e.StoredBytes, nil
 	default:
 		return 0, fmt.Errorf("field not found: %q", key)
