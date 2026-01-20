@@ -390,29 +390,7 @@ func TestManager_String(t *testing.T) {
 				desiredState: 7,
 				filterRaw:    `name == "logname"`,
 			},
-			want: `{
-  "regions": [
-    "ap-northeast-1",
-    "ap-northeast-2",
-    "ap-northeast-3",
-    "ap-south-1",
-    "ap-southeast-1",
-    "ap-southeast-2",
-    "ca-central-1",
-    "eu-central-1",
-    "eu-west-1",
-    "eu-west-2",
-    "eu-west-3",
-    "eu-north-1",
-    "sa-east-1",
-    "us-east-1",
-    "us-east-2",
-    "us-west-1",
-    "us-west-2"
-  ],
-  "desiredState": "1week",
-  "filter": "name == \"logname\""
-}`,
+			want: `{"regions":["ap-northeast-1","ap-northeast-2","ap-northeast-3","ap-south-1","ap-southeast-1","ap-southeast-2","ca-central-1","eu-central-1","eu-west-1","eu-west-2","eu-west-3","eu-north-1","sa-east-1","us-east-1","us-east-2","us-west-1","us-west-2"],"desiredState":"1week","filter":"name == \"logname\""}`,
 		},
 		{
 			name: "empty manager",
@@ -421,11 +399,7 @@ func TestManager_String(t *testing.T) {
 				desiredState: 0,
 				filterRaw:    "",
 			},
-			want: `{
-  "regions": null,
-  "desiredState": "delete",
-  "filter": ""
-}`,
+			want: `{"regions":null,"desiredState":"delete","filter":""}`,
 		},
 	}
 	for _, tt := range tests {

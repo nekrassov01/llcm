@@ -21,19 +21,10 @@ const (
 var logger = &log.Logger{}
 
 func newCmd(w, ew io.Writer) *cli.Command {
-	var (
-		withTime  = log.WithTime(true)
-		withStyle = log.WithStyle(log.Style1())
-		withLabel = log.WithLabel("LLCM:")
-	)
+	logger = log.NewLogger(log.NewCLIHandler(io.Discard))
 
-	logger = log.NewLogger(log.NewCLIHandler(ew,
-		log.WithLevel(slog.LevelInfo),
-		log.WithCaller(false),
-		withTime,
-		withStyle,
-		withLabel,
-	))
+	s := log.Style2()
+	s.Caller.Fullpath = true
 
 	profile := &cli.StringFlag{
 		Name:    "profile",
@@ -80,7 +71,7 @@ func newCmd(w, ew io.Writer) *cli.Command {
 	}
 
 	debug := func(man *llcm.Manager) {
-		logger.Debug("Manager\n" + man.String() + "\n")
+		logger.Debug("ManagerState: " + man.String())
 	}
 
 	newManager := func(cmd *cli.Command) (*llcm.Manager, error) {
@@ -119,22 +110,29 @@ func newCmd(w, ew io.Writer) *cli.Command {
 			level = slog.LevelInfo
 		}
 
-		// set logger options based on the log level
-		withLevel := log.WithLevel(level)
-		withCaller := log.WithCaller(level <= slog.LevelDebug)
+		// set logger options
+		var (
+			withLevel  = log.WithLevel(level)
+			withCaller = log.WithCaller(level <= slog.LevelDebug)
+			withStyle  = log.WithStyle(s)
+		)
+
+		// create logger for application
 		logger = log.NewLogger(log.NewCLIHandler(ew,
+			log.WithLabel("LLCM:"),
+			log.WithTime(true),
 			withLevel,
 			withCaller,
-			withTime,
 			withStyle,
-			withLabel,
 		))
+
+		// create logger for aws sdk
 		cfg.Logger = sdk.NewLogger(log.NewCLIHandler(ew,
+			log.WithLabel("SDK:"),
+			log.WithTime(false),
 			withLevel,
 			withCaller,
-			withTime,
 			withStyle,
-			log.WithLabel("SDK:"),
 		))
 		cfg.ClientLogMode = aws.LogRequest | aws.LogResponse | aws.LogRetries | aws.LogSigning | aws.LogDeprecatedUsage
 

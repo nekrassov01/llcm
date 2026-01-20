@@ -94,6 +94,6 @@ func (man *Manager) String() string {
 		DesiredState: man.desiredState.String(),
 		Filter:       man.filterRaw,
 	}
-	b, _ := json.MarshalIndent(s, "", "  ")
+	b, _ := json.Marshal(s)
 	return string(b)
 }
