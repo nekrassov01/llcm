@@ -63,7 +63,7 @@ func TestManager_SetRegion(t *testing.T) {
 		desiredState       DesiredState
 		desiredStateNative *int32
 		deletionProtection *bool
-		filterExpr         filterExpr
+		filterExpr         *filterExpr
 		sem                *semaphore.Weighted
 	}
 	type args struct {
@@ -219,7 +219,7 @@ func TestManager_SetDesiredState(t *testing.T) {
 		regions            []string
 		desiredState       DesiredState
 		desiredStateNative *int32
-		filterExpr         filterExpr
+		filterExpr         *filterExpr
 		sem                *semaphore.Weighted
 	}
 	type args struct {
@@ -297,7 +297,7 @@ func TestManager_SetFilter(t *testing.T) {
 		regions            []string
 		desiredState       DesiredState
 		desiredStateNative *int32
-		filterExpr         filterExpr
+		filterExpr         *filterExpr
 		filterRaw          string
 		sem                *semaphore.Weighted
 	}

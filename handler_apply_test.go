@@ -19,7 +19,7 @@ func TestManager_Apply(t *testing.T) {
 		desiredState       DesiredState
 		desiredStateNative *int32
 		deletionProtection *bool
-		filterExpr         filterExpr
+		filterExpr         *filterExpr
 		sem                *semaphore.Weighted
 	}
 	type args struct {

@@ -14,7 +14,7 @@ import (
 var NumWorker = int64(runtime.NumCPU()*2 + 1)
 
 type (
-	filterExpr   = *filter.Expr  // filterExpr is a type alias for filter.Expr.
+	filterExpr   = filter.Expr   // filterExpr is a type alias for filter.Expr.
 	filterTarget = filter.Target // filterTarget is a type alias for filter.Target.
 )
 
@@ -25,7 +25,7 @@ type Manager struct {
 	desiredState       DesiredState        // The desired state of the log group.
 	desiredStateNative *int32              // The desired state with the native type.
 	deletionProtection *bool               // Whether to enable log group deletion protection.
-	filterExpr         filterExpr          // The expressions for filtering log groups.
+	filterExpr         *filterExpr         // The expressions for filtering log groups.
 	filterRaw          string              // The raw filter string.
 	sem                *semaphore.Weighted // The weighted semaphore for concurrent processing.
 }

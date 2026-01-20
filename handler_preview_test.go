@@ -17,7 +17,7 @@ func TestManager_Preview(t *testing.T) {
 		regions            []string
 		desiredState       DesiredState
 		desiredStateNative *int32
-		filterExpr         filterExpr
+		filterExpr         *filterExpr
 		sem                *semaphore.Weighted
 	}
 	type args struct {
