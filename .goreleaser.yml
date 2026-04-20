@@ -6,7 +6,7 @@ before:
   hooks:
     - go mod tidy
 builds:
-  - main: /cmd/llcm/
+  - main: ./cmd/llcm/
     binary: llcm
     ldflags:
       - -s -w
