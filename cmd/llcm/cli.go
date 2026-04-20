@@ -8,7 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/dustin/go-humanize"
 	"github.com/nekrassov01/llcm"
-	sdk "github.com/nekrassov01/logger/aws"
+	"github.com/nekrassov01/logger/integrations/awssdk"
 	"github.com/nekrassov01/logger/log"
 	"github.com/urfave/cli/v3"
 )
@@ -22,9 +22,6 @@ var logger = &log.Logger{}
 
 func newCmd(w, ew io.Writer) *cli.Command {
 	logger = log.NewLogger(log.NewCLIHandler(io.Discard))
-
-	s := log.Style2()
-	s.Caller.Fullpath = true
 
 	profile := &cli.StringFlag{
 		Name:    "profile",
@@ -111,11 +108,11 @@ func newCmd(w, ew io.Writer) *cli.Command {
 		}
 
 		// set logger options
-		var (
-			withLevel  = log.WithLevel(level)
-			withCaller = log.WithCaller(level <= slog.LevelDebug)
-			withStyle  = log.WithStyle(s)
-		)
+		s := log.Style2()
+		s.Caller.Fullpath = true
+		withLevel := log.WithLevel(level)
+		withCaller := log.WithCaller(level <= slog.LevelDebug)
+		withStyle := log.WithStyle(s)
 
 		// create logger for application
 		logger = log.NewLogger(log.NewCLIHandler(ew,
@@ -127,7 +124,7 @@ func newCmd(w, ew io.Writer) *cli.Command {
 		))
 
 		// create logger for aws sdk
-		cfg.Logger = sdk.NewLogger(log.NewCLIHandler(ew,
+		cfg.Logger = awssdk.NewLogger(log.NewCLIHandler(ew,
 			log.WithLabel("SDK:"),
 			log.WithTime(false),
 			withLevel,
@@ -268,7 +265,7 @@ func newCmd(w, ew io.Writer) *cli.Command {
 
 	return &cli.Command{
 		Name:                  name,
-		Version:               getVersion(),
+		Version:               llcm.Version(),
 		Usage:                 "AWS Log groups lifecycle manager",
 		Description:           "A listing, updating, and deleting tool to manage the lifecycle of Amazon CloudWatch Logs.\nIt handles multiple regions fast while avoiding throttling. It can also return simulation\nresults based on the desired state.",
 		HideHelpCommand:       true,

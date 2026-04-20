@@ -1,11 +1,11 @@
-package main
+package llcm
 
 import (
 	"fmt"
 	"testing"
 )
 
-func Test_version(t *testing.T) {
+func TestVersion(t *testing.T) {
 	tests := []struct {
 		name     string
 		version  string
@@ -27,8 +27,8 @@ func Test_version(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			revision = tt.revision
-			if got := getVersion(); got != tt.want {
-				t.Errorf("version() = %v, want %v", got, tt.want)
+			if got := Version(); got != tt.want {
+				t.Errorf("Version() = %v, want %v", got, tt.want)
 			}
 		})
 	}
