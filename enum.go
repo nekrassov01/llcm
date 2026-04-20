@@ -9,15 +9,32 @@ import (
 type OutputType int
 
 const (
-	OutputTypeNone           OutputType = iota // The output type that means none.
-	OutputTypeJSON                             // The output type of JSON format.
-	OutputTypePrettyJSON                       // The output type of pretty JSON format.
-	OutputTypeText                             // The output type of text table format.
-	OutputTypeCompressedText                   // The output type of compressed text table format.
-	OutputTypeMarkdown                         // The output type of markdown table format.
-	OutputTypeBacklog                          // The output type of backlog table format.
-	OutputTypeTSV                              // The output type of tab-separated values.
-	OutputTypeChart                            // The output type that means pie chart.
+	// OutputTypeNone is the output type that means none.
+	OutputTypeNone OutputType = iota
+
+	// OutputTypeJSON is the output type that means JSON format.
+	OutputTypeJSON
+
+	// OutputTypePrettyJSON is the output type that means pretty JSON format.
+	OutputTypePrettyJSON
+
+	// OutputTypeText is the output type that means text table format.
+	OutputTypeText
+
+	// OutputTypeCompressedText is the output type that means compressed text table format.
+	OutputTypeCompressedText
+
+	// OutputTypeMarkdown is the output type that means markdown table format.
+	OutputTypeMarkdown
+
+	// OutputTypeBacklog is the output type that means backlog table format.
+	OutputTypeBacklog
+
+	// OutputTypeTSV is the output type that means tab-separated values.
+	OutputTypeTSV
+
+	// OutputTypeChart is the output type that means pie chart.
+	OutputTypeChart
 )
 
 // String returns the string representation of the OutputType.
@@ -79,33 +96,86 @@ func ParseOutputType(s string) (OutputType, error) {
 type DesiredState int32
 
 const (
-	DesiredStateNone           DesiredState = -1    // A value meaning none.
-	DesiredStateZero           DesiredState = 0     // A value meaning delete the log group.
-	DesiredStateOneDay         DesiredState = 1     // A value meaning retain the log group for one day.
-	DesiredStateThreeDays      DesiredState = 3     // A value meaning retain the log group for three days.
-	DesiredStateFiveDays       DesiredState = 5     // A value meaning retain the log group for five days.
-	DesiredStateOneWeek        DesiredState = 7     // A value meaning retain the log group for one week.
-	DesiredStateTwoWeeks       DesiredState = 14    // A value meaning retain the log group for two weeks.
-	DesiredStateOneMonth       DesiredState = 30    // A value meaning retain the log group for one month.
-	DesiredStateTwoMonths      DesiredState = 60    // A value meaning retain the log group for two months.
-	DesiredStateThreeMonths    DesiredState = 90    // A value meaning retain the log group for three months.
-	DesiredStateFourMonths     DesiredState = 120   // A value meaning retain the log group for four months.
-	DesiredStateFiveMonths     DesiredState = 150   // A value meaning retain the log group for five months.
-	DesiredStateSixMonths      DesiredState = 180   // A value meaning retain the log group for six months.
-	DesiredStateOneYear        DesiredState = 365   // A value meaning retain the log group for one year.
-	DesiredStateThirteenMonths DesiredState = 400   // A value meaning retain the log group for thirteen months.
-	DesiredStateEighteenMonths DesiredState = 545   // A value meaning retain the log group for eighteen months.
-	DesiredStateTwoYears       DesiredState = 731   // A value meaning retain the log group for two years.
-	DesiredStateThreeYears     DesiredState = 1096  // A value meaning retain the log group for three years.
-	DesiredStateFiveYears      DesiredState = 1827  // A value meaning retain the log group for five years.
-	DesiredStateSixYears       DesiredState = 2192  // A value meaning retain the log group for six years.
-	DesiredStateSevenYears     DesiredState = 2557  // A value meaning retain the log group for seven years.
-	DesiredStateEightYears     DesiredState = 2922  // A value meaning retain the log group for eight years.
-	DesiredStateNineYears      DesiredState = 3288  // A value meaning retain the log group for nine years.
-	DesiredStateTenYears       DesiredState = 3653  // A value meaning retain the log group for ten years.
-	DesiredStateInfinite       DesiredState = 9999  // A value meaning retain the log group infinity.
-	DesiredStateProtected      DesiredState = 10000 // A value meaning protect the log group.
-	DesiredStateUnprotected    DesiredState = 10001 // A value meaning unprotect the log group.
+	// DesiredStateNone is the desired state that means none.
+	DesiredStateNone DesiredState = -1
+
+	// DesiredStateZero is the desired state that means delete the log group.
+	DesiredStateZero DesiredState = 0
+
+	// DesiredStateOneDay is the desired state that means retain the log group for one day.
+	DesiredStateOneDay DesiredState = 1
+
+	// DesiredStateThreeDays is the desired state that means retain the log group for three days.
+	DesiredStateThreeDays DesiredState = 3
+
+	// DesiredStateFiveDays is the desired state that means retain the log group for five days.
+	DesiredStateFiveDays DesiredState = 5
+
+	// DesiredStateOneWeek is the desired state that means retain the log group for one week.
+	DesiredStateOneWeek DesiredState = 7
+
+	// DesiredStateTwoWeeks is the desired state that means retain the log group for two weeks.
+	DesiredStateTwoWeeks DesiredState = 14
+
+	// DesiredStateOneMonth is the desired state that means retain the log group for one month.
+	DesiredStateOneMonth DesiredState = 30
+
+	// DesiredStateTwoMonths is the desired state that means retain the log group for two months.
+	DesiredStateTwoMonths DesiredState = 60
+
+	// DesiredStateThreeMonths is the desired state that means retain the log group for three months.
+	DesiredStateThreeMonths DesiredState = 90
+
+	// DesiredStateFourMonths is the desired state that means retain the log group for four months.
+	DesiredStateFourMonths DesiredState = 120
+
+	// DesiredStateFiveMonths is the desired state that means retain the log group for five months.
+	DesiredStateFiveMonths DesiredState = 150
+
+	// DesiredStateSixMonths is the desired state that means retain the log group for six months.
+	DesiredStateSixMonths DesiredState = 180
+
+	// DesiredStateOneYear is the desired state that means retain the log group for one year.
+	DesiredStateOneYear DesiredState = 365
+
+	// DesiredStateThirteenMonths is the desired state that means retain the log group for thirteen months.
+	DesiredStateThirteenMonths DesiredState = 400
+
+	// DesiredStateEighteenMonths is the desired state that means retain the log group for eighteen months.
+	DesiredStateEighteenMonths DesiredState = 545
+
+	// DesiredStateTwoYears is the desired state that means retain the log group for two years.
+	DesiredStateTwoYears DesiredState = 731
+
+	// DesiredStateThreeYears is the desired state that means retain the log group for three years.
+	DesiredStateThreeYears DesiredState = 1096
+
+	// DesiredStateFiveYears is the desired state that means retain the log group for five years.
+	DesiredStateFiveYears DesiredState = 1827
+
+	// DesiredStateSixYears is the desired state that means retain the log group for six years.
+	DesiredStateSixYears DesiredState = 2192
+
+	// DesiredStateSevenYears is the desired state that means retain the log group for seven years.
+	DesiredStateSevenYears DesiredState = 2557
+
+	// DesiredStateEightYears is the desired state that means retain the log group for eight years.
+	DesiredStateEightYears DesiredState = 2922
+
+	// DesiredStateNineYears is the desired state that means retain the log group for nine years.
+	DesiredStateNineYears DesiredState = 3288
+
+	// DesiredStateTenYears is the desired state that means retain the log group for ten years.
+	DesiredStateTenYears DesiredState = 3653
+
+	// DesiredStateInfinite is the desired state that means retain the log group indefinitely.
+	DesiredStateInfinite DesiredState = 9999
+
+	// DesiredStateProtected is the desired state that means protect the log group.
+	DesiredStateProtected DesiredState = 10000
+
+	// DesiredStateUnprotected is the desired state that means unprotect the log group.
+	DesiredStateUnprotected DesiredState = 10001
 )
 
 // String returns the string representation of the DesiredState.
