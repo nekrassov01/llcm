@@ -1,10 +1,16 @@
-# llcm
+<p align="center">
+  <h2 align="center">LLCM</h2>
+  <p align="center">AWS log groups lifecycle manager</p>
+  <p align="center">
+    <a href="https://github.com/nekrassov01/llcm/actions/workflows/ci.yml"><img src="https://github.com/nekrassov01/llcm/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI" /></a>
+    <a href="https://pkg.go.dev/github.com/nekrassov01/llcm"><img src="https://pkg.go.dev/badge/github.com/nekrassov01/llcm.svg" alt="Go Reference" /></a>
+    <a href="https://goreportcard.com/report/github.com/nekrassov01/llcm"><img src="https://goreportcard.com/badge/github.com/nekrassov01/llcm" alt="Go Report Card" /></a>
+    <img src="https://img.shields.io/github/license/nekrassov01/llcm" alt="LICENSE" />
+    <a href="https://deepwiki.com/nekrassov01/llcm"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki" /></a>
+  </p>
+</p>
 
-[![CI](https://github.com/nekrassov01/llcm/actions/workflows/ci.yaml/badge.svg)](https://github.com/nekrassov01/llcm/actions/workflows/ci.yaml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/nekrassov01/llcm)](https://goreportcard.com/report/github.com/nekrassov01/llcm)
-![GitHub](https://img.shields.io/github/license/nekrassov01/llcm)
-![GitHub](https://img.shields.io/github/v/release/nekrassov01/llcm)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/nekrassov01/llcm)
+## Overview
 
 llcm is a CLI tool to manage the lifecycle of Amazon CloudWatch Logs log groups. List, update, and delete log groups to manage their lifecycle. It handles multiple regions at high speed while avoiding throttling errors. It can also return simulation results based on desired states.
 

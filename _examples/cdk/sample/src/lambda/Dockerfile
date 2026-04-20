@@ -1,4 +1,4 @@
-FROM --platform=arm64 golang:1.24.6-alpine AS build
+FROM --platform=arm64 golang:1.26.2-alpine AS build
 WORKDIR /build
 COPY go.mod go.sum ./
 COPY main.go .

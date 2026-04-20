@@ -10,8 +10,8 @@ builds:
     binary: llcm
     ldflags:
       - -s -w
-      - -X main.version={{ .Version }}
-      - -X main.revision={{ .ShortCommit }}
+      - -X github.com/nekrassov01/llcm.version={{ .Version }}
+      - -X github.com/nekrassov01/llcm.revision={{ .ShortCommit }}
     env:
       - CGO_ENABLED=0
     goos:
@@ -21,12 +21,11 @@ builds:
 archives:
   - formats: [tar.gz]
     name_template: >-
-      {{ .ProjectName }}_
+      {{ .ProjectName }}_{{ .Version }}_
       {{- title .Os }}_
       {{- if eq .Arch "amd64" }}x86_64
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
-      {{- if .Arm }}v{{ .Arm }}{{ end }}
     format_overrides:
       - goos: windows
         formats: [zip]
@@ -44,9 +43,11 @@ brews:
   - repository:
       owner: nekrassov01
       name: homebrew-tap
-      branch: main
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
-    description: "AWS log groups lifecycle manager"
-    homepage: "https://github.com/nekrassov01/llcm"
-    license: "MIT"
+      branch: main
     directory: Formula
+    homepage: "https://github.com/nekrassov01/llcm"
+    description: Your shadow repository for ignored files
+    license: "MIT"
+release:
+  use_existing_draft: true
