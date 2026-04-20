@@ -1,7 +1,5 @@
 # Changelog
 
-## [v0.1.1](https://github.com/nekrassov01/llcm/compare/v0.1.0...v0.1.1) - 2026-04-20
-
 ## [v0.1.0](https://github.com/nekrassov01/llcm/compare/v0.0.29...v0.1.0) - 2026-04-20
 - Update for common settings for gh-infra by @nekrassov01 in https://github.com/nekrassov01/llcm/pull/1
 
